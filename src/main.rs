@@ -2,7 +2,7 @@ use openssh::*;
 
 #[tokio::main]
 async fn main() {
-    let session = Session::connect("ssh://Yunhao@server0", KnownHosts::Strict)
+    let session = Session::connect("ssh://Yunhao@server0", KnownHosts::Accept)
         .await
         .unwrap();
 
