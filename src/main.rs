@@ -12,11 +12,14 @@ async fn main() -> Result<(), OracleError> {
     // Example of openssh
     let session = Session::connect("ssh://Yunhao@server0", KnownHosts::Accept)
         .await
-        .map_err(|_| OracleError::SshFailed)?;
+        .map_err(|_| OracleError::SshConnFailed)?;
 
     let whoami = session.command("whoami").output().await.unwrap();
     println!("Ssh succeeds: {}", String::from_utf8(whoami.stdout).unwrap());
 
-    session.close().await.unwrap();
+    session.close()
+        .await
+        .map_err(|_| OracleError::SshCloseFailed)?;
+
     Ok(())
 }
