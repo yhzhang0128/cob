@@ -1,0 +1,7 @@
+# All geo-locations involved
+locations = ["eu-west", "us-west", "au"]
+
+# Latencies in millisecond for Paris, San Francisco and Sydney
+eu-west = ["0", "144", "238"]
+us-west = ["144", "0", "136"]
+au      = ["238", "136", "0"]

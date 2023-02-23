@@ -1,23 +1,5 @@
-[client1]
-hostname = "client1"
-location = "US West"
+# Hostname of all machines
+hostnames = ["client1", "client2", "client3", "server1", "server2", "server3"]
 
-[client2]
-hostname = "client2"
-location = "EU West"
-
-[client3]
-hostname = "client3"
-location = "AU"
-
-[server1]
-hostname = "server1"
-location = "US West"
-
-[server2]
-hostname = "server2"
-location = "EU West"
-
-[server3]
-hostname = "server3"
-location = "AU"
+# Geo-location of all machines
+locations = ["us-west", "eu-west", "au", "us-west", "eu-west", "au"]
