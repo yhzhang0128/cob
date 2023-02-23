@@ -5,6 +5,14 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[bin]]
+name = "oracle"
+path = "src/main.rs"
+
+[[bin]]
+name = "testenv"
+path = "target_systems/testenv/main.rs"
+
 [dependencies]
 config = "0.13.3"
 openssh = "0.9.9"
