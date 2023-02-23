@@ -2,6 +2,7 @@
 name = "chance-oracle-benchmark"
 version = "0.1.0"
 edition = "2021"
+default-run = "oracle"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -17,3 +18,4 @@ path = "target_systems/testenv/main.rs"
 config = "0.13.3"
 openssh = "0.9.9"
 tokio = { version = "1", features = ["full"] }
+clap = { version = "4.1.6", features = ["derive"] }

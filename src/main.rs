@@ -1,12 +1,23 @@
+pub mod cli;
 pub mod error;
 pub mod config;
 
 use openssh::*;
+use clap::Parser;
+use cli::{Cli, Action};
 use crate::error::OracleError;
-
 
 #[tokio::main]
 async fn main() -> Result<(), OracleError> {
+    // Parse arguments
+    let cli = Cli::parse();
+    match cli.action {
+        Action::Eval { target } => {
+            println!("target is {}", target);
+        }
+    }
+
+    // Config network latency
     config::config_latency()?;
 
     // Example of openssh
@@ -20,6 +31,7 @@ async fn main() -> Result<(), OracleError> {
     session.close()
         .await
         .map_err(|_| OracleError::SshCloseFailed)?;
+
 
     Ok(())
 }
