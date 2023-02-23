@@ -1,0 +1,23 @@
+[client1]
+hostname = "client1"
+location = "US West"
+
+[client2]
+hostname = "client2"
+location = "EU West"
+
+[client3]
+hostname = "client3"
+location = "AU"
+
+[server1]
+hostname = "server1"
+location = "US West"
+
+[server2]
+hostname = "server2"
+location = "EU West"
+
+[server3]
+hostname = "server3"
+location = "AU"
