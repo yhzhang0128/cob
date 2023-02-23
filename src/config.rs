@@ -7,13 +7,14 @@ fn read_machine_config() -> Result<HashMap<String, Vec<String>>, OracleError> {
         .add_source(File::with_name("config/machine"))
         .build()
         .map_err(|_| OracleError::ConfigError)?;
+
     return machine_config
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| OracleError::ConfigError);
 }
 
 pub fn config_latency() -> Result<(), OracleError> {
-    // Reading latency configuration
+    // Read latency configuration
     let latency_config = Config::builder()
         .add_source(File::with_name("config/latency"))
         .build()
@@ -23,6 +24,7 @@ pub fn config_latency() -> Result<(), OracleError> {
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| OracleError::ConfigError)?;
 
+    // Parse strings into i32 integers
     let mut latency_matrix : HashMap<String, Vec<i32>> = HashMap::new();
     for location in &latencies["locations"] {
         let mut tmp : Vec<i32> = Vec::new();
@@ -36,7 +38,7 @@ pub fn config_latency() -> Result<(), OracleError> {
     println!("# Latency matrix:");
     println!("{:?}", latency_matrix);
 
-    // Reading machine configuration
+    // Read machine configuration
     let machines = read_machine_config()?;
     println!("# Machine configuration:");
     println!("{:?}", machines);
