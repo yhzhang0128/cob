@@ -25,7 +25,9 @@ async fn main() -> Result<(), OracleError> {
         .await
         .map_err(|_| OracleError::SshConnFailed)?;
 
-    let whoami = session.command("whoami").output().await.unwrap();
+    let whoami = session.command("whoami").output()
+        .await
+        .map_err(|_| OracleError::SshCommandFailed)?;
     println!("Ssh succeeds: {}", String::from_utf8(whoami.stdout).unwrap());
 
     session.close()
