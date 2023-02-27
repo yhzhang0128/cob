@@ -39,7 +39,7 @@ async fn main() -> Result<(), OracleError> {
     prepare_files(&ssh_conns, &host_config).await?;
 
     // Execute servers and clients through the ssh connections
-    println!("[5/6] Execute remote client/server.");
+    println!("[5/6] Execute remote client/server on the hosts.");
     let mut clients = vec![];
     let mut servers = vec![];
     for s in &ssh_conns {
@@ -82,7 +82,7 @@ async fn main() -> Result<(), OracleError> {
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    println!("[6/6] Collect stdout output of remote client/server.");
+    println!("[6/6] Collect stdout output of remote clients.");
     for mut client in clients {
         // cat should print it back on stdout
         let mut stdout = client.stdout().take().unwrap();
