@@ -17,7 +17,7 @@ pub enum Action {
     #[clap(about = "Evaluate a target system")]
     Eval {
         #[clap(
-            short = 's', long = "sys",
+            short = 't', long = "target",
             default_value = "testenv",
             help = "Specify the target system"
         )]
