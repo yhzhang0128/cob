@@ -1,5 +1,6 @@
 #[derive(Debug)]
 pub enum OracleError {
+    UnknownTarget,
     ConfigError,
     SshConnFailed,
     SshCloseFailed,

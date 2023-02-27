@@ -21,7 +21,7 @@ pub enum Action {
             default_value = "testenv",
             help = "Specify the target system"
         )]
-        target: String,
+        target_arg: String,
     },
 }
 

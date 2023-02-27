@@ -2,18 +2,26 @@ use config::{Config, File};
 use std::collections::HashMap;
 use crate::error::OracleError;
 
-fn read_machine_config() -> Result<HashMap<String, Vec<String>>, OracleError> {
-    let machine_config = Config::builder()
-        .add_source(File::with_name("config/machine"))
+#[derive(Debug)]
+pub enum TargetType {
+    TestEnv,
+    HotStuff,
+    Pompe,
+    Unknown,
+}
+
+pub fn read_host_config() -> Result<HashMap<String, Vec<String>>, OracleError> {
+    let host_config = Config::builder()
+        .add_source(File::with_name("config/host"))
         .build()
         .map_err(|_| OracleError::ConfigError)?;
 
-    return machine_config
+    return host_config
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| OracleError::ConfigError);
 }
 
-pub fn config_latency() -> Result<(), OracleError> {
+pub fn read_latency_config() -> Result<HashMap<String, Vec<i32>>, OracleError> {
     // Read latency configuration
     let latency_config = Config::builder()
         .add_source(File::with_name("config/latency"))
@@ -35,13 +43,5 @@ pub fn config_latency() -> Result<(), OracleError> {
         }
         latency_matrix.insert(location.to_string(), tmp);
     }
-    println!("# Latency matrix:");
-    println!("{:?}", latency_matrix);
-
-    // Read machine configuration
-    let machines = read_machine_config()?;
-    println!("# Machine configuration:");
-    println!("{:?}", machines);
-
-    Ok(())
+    return Ok(latency_matrix);
 }
