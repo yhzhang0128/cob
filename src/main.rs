@@ -3,14 +3,9 @@ pub mod ssh;
 pub mod error;
 pub mod config;
 
-use clap::Parser;
-use cli::{
-    Cli,
-    Action
-};
+use cli::parse_target_type;
 
 use crate::config::{
-    TargetType,
     read_host_config,
     read_latency_config,
 };
@@ -26,18 +21,7 @@ use crate::error::OracleError;
 #[tokio::main]
 async fn main() -> Result<(), OracleError> {
     // Parse the target from arguments
-    let cli = Cli::parse();
-    let mut target = TargetType::Unknown;
-    match cli.action {
-        Action::Eval { target_arg } => {
-            match target_arg.as_str() {
-                "envtest" => { target = TargetType::EnvTest }
-                "hotstuff" => { target = TargetType::HotStuff }
-                "pompe" => { target = TargetType::Pompe }
-                _ => { Err(OracleError::UnknownTarget)? }
-            }
-        }
-    };
+    let target = parse_target_type()?;
     println!("Evaluation target: {:?}", target);
 
     // Start ssh connections

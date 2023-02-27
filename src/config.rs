@@ -2,14 +2,6 @@ use config::{Config, File};
 use std::collections::HashMap;
 use crate::error::OracleError;
 
-#[derive(Debug)]
-pub enum TargetType {
-    EnvTest,
-    HotStuff,
-    Pompe,
-    Unknown,
-}
-
 pub fn read_host_config() -> Result<HashMap<String, Vec<String>>, OracleError> {
     let host_config = Config::builder()
         .add_source(File::with_name("config/host"))
