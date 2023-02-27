@@ -78,7 +78,19 @@ async fn main() -> Result<(), OracleError> {
     }
     bar.finish();
 
-    // Run servers and clients through the ssh connections
+    // Execute servers and clients through the ssh connections
+    for s in &ssh_conns {
+        let client = s.command("/opt/chance/target_binary/envtest_client")
+            .output()
+            .await
+            .map_err(|_| OracleError::SshCommandFailed)?;
+        let server = s.command("/opt/chance/target_binary/envtest_server")
+            .output()
+            .await
+            .map_err(|_| OracleError::SshCommandFailed)?;
+        println!("Client: {}", String::from_utf8(client.stdout).unwrap());
+        println!("Server: {}", String::from_utf8(server.stdout).unwrap());
+    }
 
     // Stop experiments and collect results
 
