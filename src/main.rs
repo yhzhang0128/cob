@@ -51,7 +51,7 @@ async fn main() -> Result<(), OracleError> {
     // Create directories for copying the target binary
     for s in &ssh_conns {
         let _mkdir = s.command("mkdir")
-            .arg("-p").arg("/opt/chance/target_binary")
+            .args(["-p", "/opt/chance/target_binary"])
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
