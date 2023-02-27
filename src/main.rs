@@ -4,13 +4,13 @@ pub mod error;
 pub mod config;
 pub mod prepare;
 
+use openssh::Stdio;
 use std::{thread, time};
 use cli::parse_target_type;
 use indicatif::ProgressBar;
+use tokio::io::AsyncReadExt;
 use crate::error::OracleError;
 
-use openssh::Stdio;
-use tokio::io::AsyncReadExt;
 use crate::ssh::{
     start_ssh_conns,
     close_ssh_conns,
@@ -33,12 +33,13 @@ async fn main() -> Result<(), OracleError> {
     
     // Setup network latency emulation
     let latency_matrix = read_latency_config()?;
-    println!("TODO: setup latency: {:?}", latency_matrix);
+    println!("[2/6] TODO: setup latency: {:?}", latency_matrix);
 
     // Prepare the directories and binary files
     prepare_files(&ssh_conns, &host_config).await?;
 
     // Execute servers and clients through the ssh connections
+    println!("[5/6] Execute remote client/server.");
     let mut clients = vec![];
     let mut servers = vec![];
     for s in &ssh_conns {
@@ -81,6 +82,7 @@ async fn main() -> Result<(), OracleError> {
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
+    println!("[6/6] Collect stdout output of remote client/server.");
     for mut client in clients {
         // cat should print it back on stdout
         let mut stdout = client.stdout().take().unwrap();
@@ -94,7 +96,6 @@ async fn main() -> Result<(), OracleError> {
         let mut stdout = server.stdout().take().unwrap();
         let mut out = String::new();
         stdout.read_to_string(&mut out).await.unwrap();
-        println!("Server output: {}", out);
         drop(stdout);
     }
 
