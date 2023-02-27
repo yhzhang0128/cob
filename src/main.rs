@@ -10,6 +10,7 @@ use indicatif::ProgressBar;
 use crate::error::OracleError;
 
 use openssh::Stdio;
+use tokio::io::AsyncReadExt;
 use crate::ssh::{
     start_ssh_conns,
     close_ssh_conns,
@@ -58,13 +59,20 @@ async fn main() -> Result<(), OracleError> {
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
 
-        let _server = s.command(server_cmd.as_str())
+        let mut server = s.command(server_cmd.as_str())
             .args(&host_config["server-args"])
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
             .spawn()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
+
+        // cat should print it back on stdout
+        let mut stdout = server.stdout().take().unwrap();
+        let mut out = String::new();
+        stdout.read_to_string(&mut out).await.unwrap();
+        println!("Output: {}", out);
+        drop(stdout);
     }
 
     // Wait a duration and terminate the experiment
