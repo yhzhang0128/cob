@@ -4,7 +4,6 @@ pub mod error;
 pub mod config;
 pub mod prepare;
 
-use openssh::Stdio;
 use std::{thread, time};
 use cli::parse_target_type;
 use indicatif::ProgressBar;
@@ -56,8 +55,6 @@ async fn main() -> Result<(), OracleError> {
             Some(s) => {
                 clients.push(s.command(client_cmd.as_str())
                              .args(&host_config["client-args"])
-                             .stdin(Stdio::null())
-                             .stdout(Stdio::piped())
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?
@@ -75,8 +72,6 @@ async fn main() -> Result<(), OracleError> {
             Some(s) => {
                 servers.push(s.command(server_cmd.as_str())
                              .args(&host_config["server-args"])
-                             .stdin(Stdio::null())
-                             .stdout(Stdio::piped())
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?
