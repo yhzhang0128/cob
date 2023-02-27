@@ -39,7 +39,6 @@ async fn main() -> Result<(), OracleError> {
     prepare_files(&ssh_conns, &host_config).await?;
 
     // Execute servers and clients through the ssh connections
-    println!("[5/6] Execute remote client/server on the hosts.");
     let mut clients = vec![];
     let mut servers = vec![];
 
@@ -49,26 +48,44 @@ async fn main() -> Result<(), OracleError> {
     let client_cmd = format!("{}{}", binary_dir, client_bin);
     let server_cmd = format!("{}{}", binary_dir, server_bin);
 
-    for (_, s) in &ssh_conns {
-        let client = s.command(client_cmd.as_str())
-            .args(&host_config["client-args"])
-            .stdin(Stdio::null())
-            .stdout(Stdio::piped())
-            .spawn()
-            .await
-            .map_err(|_| OracleError::SshCommandFailed)?;
-        clients.push(client);
-
-        let server = s.command(server_cmd.as_str())
-            .args(&host_config["server-args"])
-            .stdin(Stdio::null())
-            .stdout(Stdio::piped())
-            .spawn()
-            .await
-            .map_err(|_| OracleError::SshCommandFailed)?;
-        servers.push(server);
+    let mut client_id = 0;
+    for client in &host_config["client-hosts"] {
+        match ssh_conns.get(client) {
+            None => { Err(OracleError::InvalidClientHost)? }
+            Some(s) => {
+                clients.push(s.command(client_cmd.as_str())
+                             .args(&host_config["client-args"])
+                             .stdin(Stdio::null())
+                             .stdout(Stdio::piped())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+        client_id += 1;
     }
+    println!("[5/6] Execute remote clients on {} hosts.", client_id);
 
+    let mut server_id = 0;
+    for server in &host_config["server-hosts"] {
+        match ssh_conns.get(server) {
+            None => { Err(OracleError::InvalidServerHost)? }
+            Some(s) => {
+                servers.push(s.command(server_cmd.as_str())
+                             .args(&host_config["server-args"])
+                             .stdin(Stdio::null())
+                             .stdout(Stdio::piped())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+        server_id += 1;
+    }
+    println!("[5/6] Execute remote servers on {} hosts.", server_id);
+    
     // Wait a duration and terminate the experiment
     let duration = 5000;
     let pb = ProgressBar::new_spinner();

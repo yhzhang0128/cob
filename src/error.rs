@@ -6,4 +6,6 @@ pub enum OracleError {
     SshCloseFailed,
     SshCommandFailed,
     BinaryCopyFailed,
+    InvalidClientHost,
+    InvalidServerHost,
 }
