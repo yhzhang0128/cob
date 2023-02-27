@@ -9,10 +9,18 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
     let remote_bin_dir = &config["remote-dir"][0];
     let local_config_dir = &config["local-dir"][1];
     let remote_config_dir = &config["remote-dir"][1];
+    let log_dir = format!("{}*", &config["log-dir"][0]);
 
     // Create directories for copying the client/server binaries
-    println!("[3/7] Make directories for binary and config on remote hosts.");
+    println!("[3/7] Setup directories for log, binary and config files on remote hosts.");
     for (_, s) in ssh_conns {
+        // Cleanup directory for logs
+        let _clean = s.command("rm")
+            .args(["-rf", log_dir.as_str()])
+            .output()
+            .await
+            .map_err(|_| OracleError::SshCommandFailed)?;
+
         // Make directory for executable binaries
         let _mkdir = s.command("mkdir")
             .args(["-p", remote_bin_dir.as_str()])
