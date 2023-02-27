@@ -42,6 +42,7 @@ async fn main() -> Result<(), OracleError> {
         let client_cmd = format!("{}{}", binaries[4], binaries[1]);
         let server_cmd = format!("{}{}", binaries[4], binaries[3]);
 
+        // TODO: if client/server failed, this may not return error
         let client = s.command(client_cmd.as_str())
             .output()
             .await

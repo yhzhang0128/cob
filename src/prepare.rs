@@ -24,6 +24,7 @@ pub async fn prepare_files(ssh_conns: &Vec<Session>, hosts: &Vec<String>, binari
         let client = format!("{}{}", binaries[0], binaries[1]);
         let server = format!("{}{}", binaries[2], binaries[3]);
 
+        // TODO: if scp failed, this may not return error
         Command::new("scp")
             .args([client.as_str(), dir.as_str()])
             .output()
