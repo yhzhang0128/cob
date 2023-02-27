@@ -5,6 +5,7 @@ use crate::error::OracleError;
 
 pub async fn prepare_files(ssh_conns: &Vec<Session>, hosts: &Vec<String>) -> Result<(), OracleError> {
     // Create directories for copying the client/server binaries
+    println!("Creat /opt/chance/target_binary on all the hosts.");
     for s in ssh_conns {
         let _mkdir = s.command("mkdir")
             .args(["-p", "/opt/chance/target_binary"])
@@ -12,7 +13,6 @@ pub async fn prepare_files(ssh_conns: &Vec<Session>, hosts: &Vec<String>) -> Res
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
     }
-    println!("Created /opt/chance/target_binary on all the hosts.");
 
     // Copy client and server binaries to remote hosts
     println!("Copy client/server binaries to the hosts.");
