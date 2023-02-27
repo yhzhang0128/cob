@@ -34,7 +34,7 @@ async fn main() -> Result<(), OracleError> {
     // Setup network latency emulation
     let latency_matrix = read_latency_config()?;
     println!("[2/7] TODO: setup latency.");
-    println!("{:?}", latency_matrix);
+    println!("  {:?}", latency_matrix);
 
     // Prepare the directories and binary files
     prepare_files(&ssh_conns, &host_config).await?;
@@ -104,7 +104,7 @@ async fn main() -> Result<(), OracleError> {
         let mut stdout = client.stdout().take().unwrap();
         let mut out = String::new();
         stdout.read_to_string(&mut out).await.unwrap();
-        println!("Client output: {}", out);
+        println!("  Client output: {}", out);
         drop(stdout);
     }
     for mut server in servers {
