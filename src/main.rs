@@ -6,6 +6,7 @@ pub mod prepare;
 
 use std::{thread, time};
 use cli::parse_target_type;
+use indicatif::ProgressBar;
 use crate::error::OracleError;
 
 use crate::ssh::{
@@ -39,7 +40,7 @@ async fn main() -> Result<(), OracleError> {
 
     // Execute servers and clients through the ssh connections
     let duration = 5000;
-    println!("Execute remote client/server binaries for {}ms.", duration);
+    println!();
     for s in &ssh_conns {
         let binaries = &host_config["binaries"];
         let client_cmd = format!("{}{}", binaries[4], binaries[1]);
@@ -51,8 +52,14 @@ async fn main() -> Result<(), OracleError> {
     }
 
     // Wait a duration and terminate the experiment
+    let pb = ProgressBar::new_spinner();
+    pb.enable_steady_tick(time::Duration::from_millis(120));
+    let spin_msg = format!("Executing remote client/server binaries for {}ms.", duration);
+    pb.set_message(spin_msg);
     thread::sleep(time::Duration::from_millis(duration));
-    println!("Terminate experiment after {}ms.", duration);
+
+    let finish_msg = format!("Terminate experiment after {}ms.", duration);
+    pb.finish_with_message(finish_msg);
     close_ssh_conns(ssh_conns).await?;
 
     // Collect experimental results
