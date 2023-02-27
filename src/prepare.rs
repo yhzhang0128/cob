@@ -3,12 +3,12 @@ use std::process::Command;
 use indicatif::ProgressBar;
 use crate::error::OracleError;
 
-pub async fn prepare_files(ssh_conns: &Vec<Session>, hosts: &Vec<String>) -> Result<(), OracleError> {
+pub async fn prepare_files(ssh_conns: &Vec<Session>, hosts: &Vec<String>, binaries: &Vec<String>) -> Result<(), OracleError> {
     // Create directories for copying the client/server binaries
-    println!("Creat /opt/chance/target_binary on all the hosts.");
+    println!("Creat {} on all the hosts.", binaries[2]);
     for s in ssh_conns {
         let _mkdir = s.command("mkdir")
-            .args(["-p", "/opt/chance/target_binary"])
+            .args(["-p", binaries[2].as_str()])
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
@@ -20,14 +20,14 @@ pub async fn prepare_files(ssh_conns: &Vec<Session>, hosts: &Vec<String>) -> Res
     let bar = ProgressBar::new(num);
 
     for host in hosts {
-        let dir = format!("{}:/opt/chance/target_binary/", host);
+        let dir = format!("{}:{}", host, binaries[2].as_str());
 
         Command::new("scp")
-            .args(["/opt/chance/cob/target/debug/envtest_client", dir.as_str()])
+            .args([binaries[0].as_str(), dir.as_str()])
             .output()
             .map_err(|_| OracleError::BinaryCopyFailed)?;
         Command::new("scp")
-            .args(["/opt/chance/cob/target/debug/envtest_server", dir.as_str()])
+            .args([binaries[1].as_str(), dir.as_str()])
             .output()
             .map_err(|_| OracleError::BinaryCopyFailed)?;
         bar.inc(1);

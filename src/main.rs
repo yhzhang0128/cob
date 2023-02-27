@@ -32,15 +32,15 @@ async fn main() -> Result<(), OracleError> {
     println!("TODO: setup latency: {:?}", latency_matrix);
 
     // Prepare the directories and binary files
-    prepare_files(&ssh_conns, &host_config["hostnames"]).await?;
+    prepare_files(&ssh_conns, &host_config["hostnames"], &host_config["binaries"]).await?;
 
     // Execute servers and clients through the ssh connections
     for s in &ssh_conns {
-        let client = s.command("/opt/chance/target_binary/envtest_client")
+        let client = s.command(host_config["binaries"][0].as_str())
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
-        let server = s.command("/opt/chance/target_binary/envtest_server")
+        let server = s.command(host_config["binaries"][1].as_str())
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
