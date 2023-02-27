@@ -45,14 +45,10 @@ async fn main() -> Result<(), OracleError> {
         // TODO: if client/server failed, this may not return error
         let client = s.command(client_cmd.as_str())
             .output()
-            .await
             .map_err(|_| OracleError::SshCommandFailed)?;
         let server = s.command(server_cmd.as_str())
             .output()
-            .await
             .map_err(|_| OracleError::SshCommandFailed)?;
-        println!("Client: {}", String::from_utf8(client.stdout).unwrap());
-        println!("Server: {}", String::from_utf8(server.stdout).unwrap());
     }
 
     // Stop experiments and collect results
