@@ -9,6 +9,7 @@ use cli::parse_target_type;
 use indicatif::ProgressBar;
 use crate::error::OracleError;
 
+use openssh::Stdio;
 use crate::ssh::{
     start_ssh_conns,
     close_ssh_conns,
@@ -51,13 +52,17 @@ async fn main() -> Result<(), OracleError> {
 
         let _client = s.command(client_cmd.as_str())
             .args(&host_config["client-args"])
-            .output()
+            .stdin(Stdio::null())
+            .stdout(Stdio::piped())
+            .spawn()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
 
         let _server = s.command(server_cmd.as_str())
             .args(&host_config["server-args"])
-            .output()
+            .stdin(Stdio::null())
+            .stdout(Stdio::piped())
+            .spawn()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
     }
