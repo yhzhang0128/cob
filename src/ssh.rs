@@ -7,7 +7,7 @@ pub async fn start_ssh_conns(hosts: &Vec<String>) -> Result<Vec<Session>, Oracle
     let num = hosts.len().try_into().unwrap();
     let bar = ProgressBar::new(num);
 
-    println!("[1/6] Start {} ssh connections", num);
+    println!("[1/6] Start ssh connections to {} hosts.", num);
     for host in hosts {
         let cmd = format!("ssh://{}@{}", "Yunhao", host);
         let session = Session::connect(cmd.as_str(), KnownHosts::Accept)
