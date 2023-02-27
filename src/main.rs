@@ -38,7 +38,7 @@ async fn main() -> Result<(), OracleError> {
     };
     println!("Target: {:?}", target);
 
-    // Test ssh connections
+    // Start the ssh connections
     let host_config = read_host_config()?;
     let ssh_conns = start_ssh_conns(&host_config["hostnames"]).await?;
 
@@ -49,7 +49,7 @@ async fn main() -> Result<(), OracleError> {
         println!("Ssh who: {}", String::from_utf8(whoami.stdout).unwrap());
     }
     
-    close_ssh_conns(&ssh_conns).await?;
+    close_ssh_conns(ssh_conns).await?;
     
     // Config network latency
     let latency_matrix = read_latency_config()?;
