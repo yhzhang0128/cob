@@ -1,6 +1,6 @@
 # Hostname and geo-locationof all machines
-hostnames = ["host0",   "host1",   "host2",   "host3",   "host4",   "host5",   "host6", "host7", ]
-locations = ["us-west", "us-west", "us-west", "us-west", "eu-west", "eu-west", "au",    "au"]
+hostnames = ["host0",   "host1",   "host2",   "host3",   "host4",   "host5",   "host6",   "host7", ]
+locations = ["us-west", "us-west", "eu-west", "eu-west", "au",      "us-west", "eu-west", "au"]
 
 # Envtest files and directories
 local-dir = ["/opt/chance/cob/target/debug/", "/opt/chance/cob/config/"]
@@ -9,9 +9,12 @@ remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 config-files = ["host.toml"]
 binary-files = ["envtest_client", "envtest_server"]
 
-
 client-args = ["--config", "../target_config/host"]
 server-args = ["--config", "../target_config/host"]
+
+client-hosts = ["host5", "host6", "host7"]
+server-hosts = ["host0", "host1", "host2", "host3", "host4"]
+server-ports = ["10000", "10000", "10000", "10000", "10000"]
 
 # client-args = ["--config", "/opt/chance/target_config/host.toml"]
 # server-args = ["--config", "/opt/chance/target_config/host.toml"]
