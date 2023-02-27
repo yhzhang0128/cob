@@ -33,7 +33,7 @@ async fn main() -> Result<(), OracleError> {
     
     // Setup network latency emulation
     let latency_matrix = read_latency_config()?;
-    println!("[2/6] TODO: setup latency: {:?}", latency_matrix);
+    println!("[2/7] TODO: setup latency.");
 
     // Prepare the directories and binary files
     prepare_files(&ssh_conns, &host_config).await?;
@@ -65,7 +65,7 @@ async fn main() -> Result<(), OracleError> {
         }
         client_id += 1;
     }
-    println!("[5/6] Execute remote clients on {} hosts.", client_id);
+    println!("[5/7] Execute {} clients on remote hosts.", client_id);
 
     let mut server_id = 0;
     for server in &host_config["server-hosts"] {
@@ -84,7 +84,7 @@ async fn main() -> Result<(), OracleError> {
         }
         server_id += 1;
     }
-    println!("[5/6] Execute remote servers on {} hosts.", server_id);
+    println!("[6/7] Execute {} servers on remote hosts.", server_id);
     
     // Wait a duration and terminate the experiment
     let duration = 5000;
@@ -97,7 +97,7 @@ async fn main() -> Result<(), OracleError> {
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    println!("[6/6] Collect stdout output of remote clients.");
+    println!("[7/7] Collect the stdout output of clients.");
     for mut client in clients {
         // cat should print it back on stdout
         let mut stdout = client.stdout().take().unwrap();
