@@ -4,6 +4,7 @@ pub mod error;
 pub mod config;
 pub mod prepare;
 
+use std::{thread, time};
 use cli::parse_target_type;
 use crate::error::OracleError;
 
@@ -37,6 +38,7 @@ async fn main() -> Result<(), OracleError> {
                   &host_config["binaries"]).await?;
 
     // Execute servers and clients through the ssh connections
+    println!("Execute remote client/server binaries.");
     for s in &ssh_conns {
         let binaries = &host_config["binaries"];
         let client_cmd = format!("{}{}", binaries[4], binaries[1]);
@@ -47,10 +49,14 @@ async fn main() -> Result<(), OracleError> {
         let _server = s.command(server_cmd.as_str());
     }
 
-    // Stop experiments and collect results
-
-    // Close ssh connections
+    // Wait a duration and terminate the experiment
+    let experiment_duration = 5000;
+    thread::sleep(time::Duration::from_millis(experiment_duration));
+    println!("Terminate experiment after {}ms.", experiment_duration);
     close_ssh_conns(ssh_conns).await?;
+
+    // Collect experimental results
+    // TODO
 
     Ok(())
 }
