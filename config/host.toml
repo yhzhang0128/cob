@@ -10,4 +10,8 @@ locations = ["us-west", "eu-west", "au", "us-west", "eu-west", "au"]
 #            "local server binary path",    #2
 #            "server binary name"           #3
 #            "remote path"]                 #4
-binaries = ["/opt/chance/cob/target/debug/", "envtest_client", "/opt/chance/cob/target/debug/", "envtest_server", "/opt/chance/target_binary/"]
+binaries = ["/opt/chance/cob/target/debug/",
+            "envtest_client",
+            "/opt/chance/cob/target/debug/",
+            "envtest_server",
+            "/opt/chance/target_binary/"]
