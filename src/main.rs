@@ -58,9 +58,9 @@ async fn main() -> Result<(), OracleError> {
     pb.set_message(spin_msg);
     thread::sleep(time::Duration::from_millis(duration));
 
-    close_ssh_conns(ssh_conns).await?;
     let finish_msg = format!("Finish experiment after {}ms.", duration);
     pb.finish_with_message(finish_msg);
+    close_ssh_conns(ssh_conns).await?;
 
     // Collect experimental results
     // TODO

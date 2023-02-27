@@ -23,18 +23,10 @@ pub async fn start_ssh_conns(hosts: &Vec<String>) -> Result<Vec<Session>, Oracle
 }
 
 pub async fn close_ssh_conns(sessions: Vec<Session>) -> Result<(), OracleError> {
-    let num = sessions.len().try_into().unwrap();
-    let bar = ProgressBar::new(num);
-
-    println!("Close {} ssh connections", num);
-
     for s in sessions {
         s.close()
             .await
             .map_err(|_| OracleError::SshCloseFailed)?;
-        bar.inc(1);
     }
-    
-    bar.finish();
     Ok(())
 }
