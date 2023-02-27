@@ -6,6 +6,6 @@ fn main() -> std::io::Result<()> {
     file.write_all(b"This is envtest server.")?;
 
     println!("This is envtest server.");
-    Ok(())
+    loop {};
 }
 
