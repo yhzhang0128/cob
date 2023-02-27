@@ -34,17 +34,20 @@ async fn main() -> Result<(), OracleError> {
     println!("TODO: setup latency: {:?}", latency_matrix);
 
     // Prepare the directories and binary files
-    prepare_files(&ssh_conns,
-                  &host_config["hostnames"],
-                  &host_config["binaries"]).await?;
+    prepare_files(&ssh_conns, &host_config).await?;
 
     // Execute servers and clients through the ssh connections
     let duration = 10000;
     println!();
     for s in &ssh_conns {
-        let binaries = &host_config["binaries"];
-        let client_cmd = format!("{}{}", binaries[4], binaries[1]);
-        let server_cmd = format!("{}{}", binaries[4], binaries[3]);
+        let binary_dir = &host_config["remote-dir"][0];
+        let _config_dir = &host_config["remote-dir"][1];
+
+        let client_bin = &host_config["binary-files"][0];
+        let server_bin = &host_config["binary-files"][1];
+
+        let client_cmd = format!("{}{}", binary_dir, client_bin);
+        let server_cmd = format!("{}{}", binary_dir, server_bin);
 
         // TODO: if client/server failed, this may not return error
         let _client = s.command(client_cmd.as_str());

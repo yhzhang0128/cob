@@ -1,38 +1,57 @@
 use openssh::*;
 use std::process::Command;
 use indicatif::ProgressBar;
+use std::collections::HashMap;
 use crate::error::OracleError;
 
-pub async fn prepare_files(ssh_conns: &Vec<Session>, hosts: &Vec<String>, binaries: &Vec<String>) -> Result<(), OracleError> {
+pub async fn prepare_files(ssh_conns: &Vec<Session>, config: &HashMap<String, Vec<String>>) -> Result<(), OracleError> {
+    let local_bin_dir = &config["local-dir"][0];
+    let remote_bin_dir = &config["remote-dir"][0];
+    let local_config_dir = &config["local-dir"][1];
+    let remote_config_dir = &config["remote-dir"][1];
+
     // Create directories for copying the client/server binaries
-    println!("Creat {} on all the hosts.", binaries[4]);
+    println!("Creat binary and config directories on all the hosts.");
     for s in ssh_conns {
         let _mkdir = s.command("mkdir")
-            .args(["-p", binaries[4].as_str()])
+            .args(["-p", remote_bin_dir.as_str()])        // binary dir
+            .output()
+            .await
+            .map_err(|_| OracleError::SshCommandFailed)?;
+
+        let _mkdir = s.command("mkdir")
+            .args(["-p", remote_config_dir.as_str()])     // config dir
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
     }
 
     // Copy client and server binaries to remote hosts
-    println!("Copy client/server binaries to the hosts.");
+    println!("Copy client/server binaries and configs to the hosts.");
+
+    let hosts = &config["hostnames"];
     let num = hosts.len().try_into().unwrap();
     let bar = ProgressBar::new(num);
 
     for host in hosts {
-        let dir = format!("{}:{}", host, binaries[4]);
-        let client = format!("{}{}", binaries[0], binaries[1]);
-        let server = format!("{}{}", binaries[2], binaries[3]);
+        let bin_dir = format!("{}:{}", host, remote_bin_dir);
+        for bin in &config["binary-files"] {
+            let file = format!("{}{}", local_bin_dir, bin);
+            Command::new("scp")
+                .args([file.as_str(), bin_dir.as_str()])
+                .output()
+                .map_err(|_| OracleError::BinaryCopyFailed)?;
+        }
 
-        // TODO: if scp failed, this may not return error
-        Command::new("scp")
-            .args([client.as_str(), dir.as_str()])
-            .output()
-            .map_err(|_| OracleError::BinaryCopyFailed)?;
-        Command::new("scp")
-            .args([server.as_str(), dir.as_str()])
-            .output()
-            .map_err(|_| OracleError::BinaryCopyFailed)?;
+        let config_dir = format!("{}:{}", host, remote_config_dir);
+        for con in &config["config-files"] {
+            let file = format!("{}{}", local_config_dir, con);
+            Command::new("scp")
+                .args([file.as_str(), config_dir.as_str()])
+                .output()
+                .map_err(|_| OracleError::BinaryCopyFailed)?;
+        }
+        
         bar.inc(1);
     }
     bar.finish();
