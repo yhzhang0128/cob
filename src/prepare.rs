@@ -4,7 +4,7 @@ use indicatif::ProgressBar;
 use std::collections::HashMap;
 use crate::error::OracleError;
 
-pub async fn prepare_files(ssh_conns: &Vec<Session>, config: &HashMap<String, Vec<String>>) -> Result<(), OracleError> {
+pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMap<String, Vec<String>>) -> Result<(), OracleError> {
     let local_bin_dir = &config["local-dir"][0];
     let remote_bin_dir = &config["remote-dir"][0];
     let local_config_dir = &config["local-dir"][1];
@@ -12,7 +12,7 @@ pub async fn prepare_files(ssh_conns: &Vec<Session>, config: &HashMap<String, Ve
 
     // Create directories for copying the client/server binaries
     println!("[3/6] Creat binary and config directories on all the hosts.");
-    for s in ssh_conns {
+    for (_, s) in ssh_conns {
         // Make directory for executable binaries
         let _mkdir = s.command("mkdir")
             .args(["-p", remote_bin_dir.as_str()])

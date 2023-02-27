@@ -42,16 +42,14 @@ async fn main() -> Result<(), OracleError> {
     println!("[5/6] Execute remote client/server on the hosts.");
     let mut clients = vec![];
     let mut servers = vec![];
-    for s in &ssh_conns {
-        let binary_dir = &host_config["remote-dir"][0];
-        let _config_dir = &host_config["remote-dir"][1];
 
-        let client_bin = &host_config["binary-files"][0];
-        let server_bin = &host_config["binary-files"][1];
+    let binary_dir = &host_config["remote-dir"][0];
+    let client_bin = &host_config["binary-files"][0];
+    let server_bin = &host_config["binary-files"][1];
+    let client_cmd = format!("{}{}", binary_dir, client_bin);
+    let server_cmd = format!("{}{}", binary_dir, server_bin);
 
-        let client_cmd = format!("{}{}", binary_dir, client_bin);
-        let server_cmd = format!("{}{}", binary_dir, server_bin);
-
+    for (_, s) in &ssh_conns {
         let client = s.command(client_cmd.as_str())
             .args(&host_config["client-args"])
             .stdin(Stdio::null())
