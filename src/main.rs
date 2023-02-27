@@ -50,8 +50,10 @@ async fn main() -> Result<(), OracleError> {
         let server_cmd = format!("{}{}", binary_dir, server_bin);
 
         // TODO: if client/server failed, this may not return error
-        let _client = s.command(client_cmd.as_str());
-        let _server = s.command(server_cmd.as_str());
+        let _client = s.command(client_cmd.as_str())
+            .args(&host_config["client-args"]);
+        let _server = s.command(server_cmd.as_str())
+            .args(&host_config["server-args"]);
     }
 
     // Wait a duration and terminate the experiment

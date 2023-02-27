@@ -2,10 +2,16 @@
 hostnames = ["host0",   "host1",   "host2",   "host3",   "host4",   "host5",   "host6", "host7", ]
 locations = ["us-west", "us-west", "us-west", "us-west", "eu-west", "eu-west", "au",    "au"]
 
-# Binary and config file directories
+# Envtest files and directories
+local-dir = ["/opt/chance/cob/target/debug/", "/opt/chance/cob/config/"]
 remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 
-# Envtest files and directories
 config-files = ["host.toml"]
 binary-files = ["envtest_client", "envtest_server"]
-local-dir = ["/opt/chance/cob/target/debug/", "/opt/chance/cob/config/"]
+
+
+client-args = [">", "/users/Yunhao/client_log.txt"]
+server-args = [">", "/users/Yunhao/server_log.txt"]
+
+# client-args = ["--config", "/opt/chance/target_config/host.toml"]
+# server-args = ["--config", "/opt/chance/target_config/host.toml"]
