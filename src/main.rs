@@ -52,6 +52,11 @@ async fn main() -> Result<(), OracleError> {
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
+        let ls = s.command("ls /opt/chance")
+            .output()
+            .await
+            .map_err(|_| OracleError::SshCommandFailed)?;
+        println!("Ssh ls: {}", String::from_utf8(ls.stdout).unwrap());
     }
     println!("Created /opt/chance/target_binary on all hosts.");
 
