@@ -29,7 +29,7 @@ async fn main() -> Result<(), OracleError> {
     match cli.action {
         Action::Eval { target_arg } => {
             match target_arg.as_str() {
-                "testenv" => { target = TargetType::TestEnv }
+                "envtest" => { target = TargetType::EnvTest }
                 "hotstuff" => { target = TargetType::HotStuff }
                 "pompe" => { target = TargetType::Pompe }
                 _ => { Err(OracleError::UnknownTarget)? }

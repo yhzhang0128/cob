@@ -4,7 +4,7 @@ use crate::error::OracleError;
 
 #[derive(Debug)]
 pub enum TargetType {
-    TestEnv,
+    EnvTest,
     HotStuff,
     Pompe,
     Unknown,

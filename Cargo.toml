@@ -11,8 +11,12 @@ name = "oracle"
 path = "src/main.rs"
 
 [[bin]]
-name = "testenv"
-path = "target_systems/testenv/main.rs"
+name = "envtest_client"
+path = "target_systems/envtest/client/main.rs"
+
+[[bin]]
+name = "envtest_server"
+path = "target_systems/envtest/server/main.rs"
 
 [dependencies]
 config = "0.13.3"

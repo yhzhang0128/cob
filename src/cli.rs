@@ -18,7 +18,7 @@ pub enum Action {
     Eval {
         #[clap(
             short = 't', long = "target",
-            default_value = "testenv",
+            default_value = "envtest",
             help = "Specify the target system"
         )]
         target_arg: String,
