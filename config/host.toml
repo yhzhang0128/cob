@@ -10,8 +10,8 @@ config-files = ["host.toml"]
 binary-files = ["envtest_client", "envtest_server"]
 
 
-client-args = [">", "/users/Yunhao/client_log.txt"]
-server-args = [">", "/users/Yunhao/server_log.txt"]
+client-args = ["--config", "../target_config/host"]
+server-args = ["--config", "../target_config/host"]
 
 # client-args = ["--config", "/opt/chance/target_config/host.toml"]
 # server-args = ["--config", "/opt/chance/target_config/host.toml"]
