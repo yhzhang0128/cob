@@ -5,10 +5,10 @@ use crate::error::OracleError;
 
 pub async fn prepare_files(ssh_conns: &Vec<Session>, hosts: &Vec<String>, binaries: &Vec<String>) -> Result<(), OracleError> {
     // Create directories for copying the client/server binaries
-    println!("Creat {} on all the hosts.", binaries[2]);
+    println!("Creat {} on all the hosts.", binaries[4]);
     for s in ssh_conns {
         let _mkdir = s.command("mkdir")
-            .args(["-p", binaries[2].as_str()])
+            .args(["-p", binaries[4].as_str()])
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
@@ -20,14 +20,16 @@ pub async fn prepare_files(ssh_conns: &Vec<Session>, hosts: &Vec<String>, binari
     let bar = ProgressBar::new(num);
 
     for host in hosts {
-        let dir = format!("{}:{}", host, binaries[2].as_str());
+        let dir = format!("{}:{}", host, binaries[4]);
+        let client = format!("{}{}", binaries[0], binaries[1]);
+        let server = format!("{}{}", binaries[2], binaries[3]);
 
         Command::new("scp")
-            .args([binaries[0].as_str(), dir.as_str()])
+            .args([client.as_str(), dir.as_str()])
             .output()
             .map_err(|_| OracleError::BinaryCopyFailed)?;
         Command::new("scp")
-            .args([binaries[1].as_str(), dir.as_str()])
+            .args([server.as_str(), dir.as_str()])
             .output()
             .map_err(|_| OracleError::BinaryCopyFailed)?;
         bar.inc(1);

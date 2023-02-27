@@ -36,11 +36,15 @@ async fn main() -> Result<(), OracleError> {
 
     // Execute servers and clients through the ssh connections
     for s in &ssh_conns {
-        let client = s.command(host_config["binaries"][0].as_str())
+        let binaries = &host_config["binaries"];
+        let client_cmd = format!("{}{}", binaries[4], binaries[1]);
+        let server_cmd = format!("{}{}", binaries[4], binaries[3]);
+
+        let client = s.command(client_cmd.as_str())
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
-        let server = s.command(host_config["binaries"][1].as_str())
+        let server = s.command(server_cmd.as_str())
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
