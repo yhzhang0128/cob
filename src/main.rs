@@ -32,7 +32,9 @@ async fn main() -> Result<(), OracleError> {
     println!("TODO: setup latency: {:?}", latency_matrix);
 
     // Prepare the directories and binary files
-    prepare_files(&ssh_conns, &host_config["hostnames"], &host_config["binaries"]).await?;
+    prepare_files(&ssh_conns,
+                  &host_config["hostnames"],
+                  &host_config["binaries"]).await?;
 
     // Execute servers and clients through the ssh connections
     for s in &ssh_conns {
