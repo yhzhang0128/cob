@@ -20,6 +20,7 @@ use crate::ssh::{
 };
 
 use std::process::Command;
+use indicatif::ProgressBar;
 use crate::error::OracleError;
 
 #[tokio::main]
@@ -58,6 +59,10 @@ async fn main() -> Result<(), OracleError> {
     println!("Created /opt/chance/target_binary on all the hosts.");
 
     // Copy client and server binary to remote hosts
+    println!("Copy target binaries to the hosts.");
+    let num = host_config["hostnames"].len().try_into().unwrap();
+    let bar = ProgressBar::new(num);
+
     for host in &host_config["hostnames"] {
         let dir = format!("{}:/opt/chance/target_binary/", host);
 
@@ -69,8 +74,9 @@ async fn main() -> Result<(), OracleError> {
             .args(["/opt/chance/cob/target/debug/envtest_server", dir.as_str()])
             .output()
             .map_err(|_| OracleError::BinaryCopyFailed)?;
+        bar.inc(1);
     }
-    println!("Copied target binaries to all the hosts.");
+    bar.finish();
 
     // Run servers and clients through the ssh connections
 
