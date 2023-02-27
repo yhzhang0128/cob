@@ -4,5 +4,6 @@ pub enum OracleError {
     ConfigError,
     SshConnFailed,
     SshCloseFailed,
-    SshCommandFailed
+    SshCommandFailed,
+    BinaryCopyFailed,
 }

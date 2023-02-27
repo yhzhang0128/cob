@@ -19,6 +19,7 @@ use crate::ssh::{
     close_ssh_conns,
 };
 
+use std::process::Command;
 use crate::error::OracleError;
 
 #[tokio::main]
@@ -44,7 +45,7 @@ async fn main() -> Result<(), OracleError> {
     
     // Setup network latency emulation
     let latency_matrix = read_latency_config()?;
-    println!("TODO: latency matrix: {:?}", latency_matrix);
+    println!("TODO: setup latency: {:?}", latency_matrix);
 
     // Create directories for copying the target binary
     for s in &ssh_conns {
@@ -54,9 +55,22 @@ async fn main() -> Result<(), OracleError> {
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
     }
-    println!("Created /opt/chance/target_binary on all hosts.");
+    println!("Created /opt/chance/target_binary on all the hosts.");
 
     // Copy client and server binary to remote hosts
+    for host in &host_config["hostnames"] {
+        let dir = format!("{}:/opt/chance/target_binary/", host);
+
+        Command::new("scp")
+            .args(["/opt/chance/cob/target/debug/envtest_client", dir.as_str()])
+            .output()
+            .map_err(|_| OracleError::BinaryCopyFailed)?;
+        Command::new("scp")
+            .args(["/opt/chance/cob/target/debug/envtest_server", dir.as_str()])
+            .output()
+            .map_err(|_| OracleError::BinaryCopyFailed)?;
+    }
+    println!("Copied target binaries to all the hosts.");
 
     // Run servers and clients through the ssh connections
 
