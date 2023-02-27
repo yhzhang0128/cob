@@ -1,8 +1,6 @@
-# Hostname of all machines
-hostnames = ["client0", "client1", "client2", "server0", "server1", "server2"]
-
-# Geo-location of all machines
-locations = ["us-west", "eu-west", "au", "us-west", "eu-west", "au"]
+# Hostname and geo-locationof all machines
+hostnames = ["host0",   "host1",   "host2",   "host3",   "host4",   "host5",   "host6", "host7", ]
+locations = ["us-west", "us-west", "us-west", "us-west", "eu-west", "eu-west", "au",    "au"]
 
 # Envtest binaries
 #   format: ["local client binary path",    #0
@@ -15,5 +13,3 @@ binaries = ["/opt/chance/cob/target/debug/",
             "/opt/chance/cob/target/debug/",
             "envtest_server",
             "/opt/chance/target_binary/"]
-servers = ["server0", "server1", "server2"]
-clients = ["client0", "client0", "client1", "client1", "client2", "client2"]
