@@ -36,7 +36,7 @@ async fn main() -> Result<(), OracleError> {
             }
         }
     };
-    println!("Target: {:?}", target);
+    println!("Evaluation target: {:?}", target);
 
     // Start the ssh connections
     let host_config = read_host_config()?;
