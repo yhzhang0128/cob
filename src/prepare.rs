@@ -27,7 +27,7 @@ pub async fn prepare_files(ssh_conns: &Vec<Session>, config: &HashMap<String, Ve
     }
 
     // Copy client and server binaries to remote hosts
-    println!("Copy client/server binaries and configs to the hosts.");
+    println!("Copy binaries and configs to the hosts.");
 
     let hosts = &config["hostnames"];
     let num = hosts.len().try_into().unwrap();
