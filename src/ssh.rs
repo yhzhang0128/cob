@@ -13,11 +13,6 @@ pub async fn start_ssh_conns(hosts: &Vec<String>) -> Result<Vec<Session>, Oracle
         let session = Session::connect(cmd.as_str(), KnownHosts::Accept)
             .await
             .map_err(|_| OracleError::SshConnFailed)?;
-        let ls = session.command("ls /opt/chance")
-            .output()
-            .await
-            .map_err(|_| OracleError::SshCommandFailed)?;
-        println!("Ssh ls: {}", String::from_utf8(ls.stdout).unwrap());
 
         bar.inc(1);
         result.push(session);
