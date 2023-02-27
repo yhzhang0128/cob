@@ -43,7 +43,7 @@ async fn main() -> Result<(), OracleError> {
     println!("Created /opt/chance/target_binary on all the hosts.");
 
     // Copy client and server binary to remote hosts
-    println!("Copy target binaries to the hosts.");
+    println!("Copy client/server binaries to the hosts.");
     let num = host_config["hostnames"].len().try_into().unwrap();
     let bar = ProgressBar::new(num);
 
