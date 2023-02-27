@@ -18,8 +18,10 @@ pub async fn start_ssh_conns(hosts: &Vec<String>) -> Result<Vec<Session>, Oracle
 }
 
 pub async fn close_ssh_conns(_sessions: &Vec<Session>) -> Result<(), OracleError> {
-    // for session in sessions {
-    //     session.close()
+    // TODO: how to close connections without compiler error
+    
+    // for s in sessions {
+    //     s.close()
     //         .await
     //         .map_err(|_| OracleError::SshCloseFailed)?;
     // }

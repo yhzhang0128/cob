@@ -16,7 +16,7 @@ use crate::config::{
 };
 use crate::ssh::{
     start_ssh_conns,
-//    close_ssh_conns,
+    close_ssh_conns,
 };
 
 use crate::error::OracleError;
@@ -48,10 +48,8 @@ async fn main() -> Result<(), OracleError> {
             .map_err(|_| OracleError::SshCommandFailed)?;
         println!("Ssh who: {}", String::from_utf8(whoami.stdout).unwrap());
     }
-
     
-    //close_ssh_conns(&ssh_conns).await?;
-    println!("{:?}", host_config["hostnames"]);
+    close_ssh_conns(&ssh_conns).await?;
     
     // Config network latency
     let latency_matrix = read_latency_config()?;
