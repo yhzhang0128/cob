@@ -77,10 +77,10 @@ async fn main() -> Result<(), OracleError> {
     let msg = format!("Executing remote client/server for {}ms.", duration);
     pb.set_message(msg);
     thread::sleep(time::Duration::from_millis(duration));
-
     let finish_msg = format!("Finish experiment after {}ms.", duration);
     pb.finish_with_message(finish_msg);
 
+    // Collect output and close connections
     for mut client in clients {
         // cat should print it back on stdout
         let mut stdout = client.stdout().take().unwrap();
@@ -99,9 +99,6 @@ async fn main() -> Result<(), OracleError> {
     }
 
     close_ssh_conns(ssh_conns).await?;
-
-    // Collect experimental results
-    // TODO
 
     Ok(())
 }
