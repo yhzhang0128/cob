@@ -35,5 +35,6 @@ pub async fn close_ssh_conns(sessions: Vec<Session>) -> Result<(), OracleError> 
         bar.inc(1);
     }
     
+    bar.finish();
     Ok(())
 }
