@@ -1,5 +1,5 @@
 # Hostname of all machines
-hostnames = ["client1", "client2", "client3", "server1", "server2", "server3"]
+hostnames = ["client0", "client1", "client2", "server0", "server1", "server2"]
 
 # Geo-location of all machines
 locations = ["us-west", "eu-west", "au", "us-west", "eu-west", "au"]
