@@ -43,12 +43,8 @@ async fn main() -> Result<(), OracleError> {
         let server_cmd = format!("{}{}", binaries[4], binaries[3]);
 
         // TODO: if client/server failed, this may not return error
-        let client = s.command(client_cmd.as_str())
-            .output()
-            .map_err(|_| OracleError::SshCommandFailed)?;
-        let server = s.command(server_cmd.as_str())
-            .output()
-            .map_err(|_| OracleError::SshCommandFailed)?;
+        let _client = s.command(client_cmd.as_str());
+        let _server = s.command(server_cmd.as_str());
     }
 
     // Stop experiments and collect results
