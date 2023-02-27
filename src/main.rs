@@ -50,8 +50,10 @@ async fn main() -> Result<(), OracleError> {
         let server_cmd = format!("{}{}", binary_dir, server_bin);
 
         // TODO: if client/server failed, this may not return error
+        println!("execute: {}", client_cmd);
         let _client = s.command(client_cmd.as_str())
             .args(&host_config["client-args"]);
+        println!("execute: {}", server_cmd);
         let _server = s.command(server_cmd.as_str())
             .args(&host_config["server-args"]);
     }
