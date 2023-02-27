@@ -15,3 +15,5 @@ binaries = ["/opt/chance/cob/target/debug/",
             "/opt/chance/cob/target/debug/",
             "envtest_server",
             "/opt/chance/target_binary/"]
+servers = ["server0", "server1", "server2"]
+clients = ["client0", "client0", "client1", "client1", "client2", "client2"]
