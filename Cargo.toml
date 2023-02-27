@@ -17,5 +17,6 @@ path = "target_systems/testenv/main.rs"
 [dependencies]
 config = "0.13.3"
 openssh = "0.9.9"
+indicatif = "0.17.3"
 tokio = { version = "1", features = ["full"] }
 clap = { version = "4.1.6", features = ["derive"] }

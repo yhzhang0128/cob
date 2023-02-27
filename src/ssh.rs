@@ -1,8 +1,10 @@
 use openssh::*;
+use indicatif::ProgressBar;
 use crate::error::OracleError;
 
 pub async fn start_ssh_conns(hosts: &Vec<String>) -> Result<Vec<Session>, OracleError> {
     let mut result = vec![];
+    let bar = ProgressBar::new(hosts.len().try_into().unwrap());
 
     for host in hosts {
         let cmd = format!("ssh://{}@{}", "Yunhao", host);
@@ -11,9 +13,11 @@ pub async fn start_ssh_conns(hosts: &Vec<String>) -> Result<Vec<Session>, Oracle
             .await
             .map_err(|_| OracleError::SshConnFailed)?;
 
+        bar.inc(1);
         result.push(session);
     }
 
+    bar.finish();
     return Ok(result);
 }
 
