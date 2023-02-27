@@ -5,13 +5,13 @@ pub mod config;
 
 use cli::parse_target_type;
 
-use crate::config::{
-    read_host_config,
-    read_latency_config,
-};
 use crate::ssh::{
     start_ssh_conns,
     close_ssh_conns,
+};
+use crate::config::{
+    read_host_config,
+    read_latency_config,
 };
 
 use std::process::Command;
