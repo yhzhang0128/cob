@@ -39,8 +39,8 @@ async fn main() -> Result<(), OracleError> {
     prepare_files(&ssh_conns, &host_config).await?;
 
     // Execute servers and clients through the ssh connections
-    let duration = 10000;
-    println!();
+    let mut clients = vec![];
+    let mut servers = vec![];
     for s in &ssh_conns {
         let binary_dir = &host_config["remote-dir"][0];
         let _config_dir = &host_config["remote-dir"][1];
@@ -51,31 +51,27 @@ async fn main() -> Result<(), OracleError> {
         let client_cmd = format!("{}{}", binary_dir, client_bin);
         let server_cmd = format!("{}{}", binary_dir, server_bin);
 
-        let _client = s.command(client_cmd.as_str())
+        let client = s.command(client_cmd.as_str())
             .args(&host_config["client-args"])
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
             .spawn()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
+        clients.push(client);
 
-        let mut server = s.command(server_cmd.as_str())
+        let server = s.command(server_cmd.as_str())
             .args(&host_config["server-args"])
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
             .spawn()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
-
-        // cat should print it back on stdout
-        let mut stdout = server.stdout().take().unwrap();
-        let mut out = String::new();
-        stdout.read_to_string(&mut out).await.unwrap();
-        println!("Output: {}", out);
-        drop(stdout);
+        servers.push(server);
     }
 
     // Wait a duration and terminate the experiment
+    let duration = 5000;
     let pb = ProgressBar::new_spinner();
     pb.enable_steady_tick(time::Duration::from_millis(120));
     let msg = format!("Executing remote client/server for {}ms.", duration);
@@ -84,6 +80,24 @@ async fn main() -> Result<(), OracleError> {
 
     let finish_msg = format!("Finish experiment after {}ms.", duration);
     pb.finish_with_message(finish_msg);
+
+    for mut client in clients {
+        // cat should print it back on stdout
+        let mut stdout = client.stdout().take().unwrap();
+        let mut out = String::new();
+        stdout.read_to_string(&mut out).await.unwrap();
+        println!("Client output: {}", out);
+        drop(stdout);
+    }
+    for mut server in servers {
+        // cat should print it back on stdout
+        let mut stdout = server.stdout().take().unwrap();
+        let mut out = String::new();
+        stdout.read_to_string(&mut out).await.unwrap();
+        println!("Server output: {}", out);
+        drop(stdout);
+    }
+
     close_ssh_conns(ssh_conns).await?;
 
     // Collect experimental results
