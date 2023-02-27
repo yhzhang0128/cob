@@ -7,7 +7,6 @@ pub mod prepare;
 use std::{thread, time};
 use cli::parse_target_type;
 use indicatif::ProgressBar;
-use tokio::io::AsyncReadExt;
 use crate::error::OracleError;
 
 use crate::ssh::{
@@ -93,23 +92,7 @@ async fn main() -> Result<(), OracleError> {
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    // println!("[7/7] Collect the stdout output of clients.");
-    // for mut client in clients {
-    //     // cat should print it back on stdout
-    //     let mut stdout = client.stdout().take().unwrap();
-    //     let mut out = String::new();
-    //     stdout.read_to_string(&mut out).await.unwrap();
-    //     println!("  Client output: {}", out);
-    //     drop(stdout);
-    // }
-    // for mut server in servers {
-    //     // cat should print it back on stdout
-    //     let mut stdout = server.stdout().take().unwrap();
-    //     let mut out = String::new();
-    //     stdout.read_to_string(&mut out).await.unwrap();
-    //     drop(stdout);
-    // }
-
+    println!("[7/7] Close the ssh connections.");
     close_ssh_conns(ssh_conns).await?;
 
     Ok(())
