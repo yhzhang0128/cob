@@ -39,7 +39,7 @@ async fn main() -> Result<(), OracleError> {
                   &host_config["binaries"]).await?;
 
     // Execute servers and clients through the ssh connections
-    let duration = 5000;
+    let duration = 10000;
     println!();
     for s in &ssh_conns {
         let binaries = &host_config["binaries"];
@@ -58,7 +58,7 @@ async fn main() -> Result<(), OracleError> {
     pb.set_message(spin_msg);
     thread::sleep(time::Duration::from_millis(duration));
 
-    let finish_msg = format!("Terminate experiment after {}ms.", duration);
+    let finish_msg = format!("Finish experiment after {}ms.", duration);
     pb.finish_with_message(finish_msg);
     close_ssh_conns(ssh_conns).await?;
 
