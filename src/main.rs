@@ -34,6 +34,7 @@ async fn main() -> Result<(), OracleError> {
     // Setup network latency emulation
     let latency_matrix = read_latency_config()?;
     println!("[2/7] TODO: setup latency.");
+    println!("{:?}", latency_matrix);
 
     // Prepare the directories and binary files
     prepare_files(&ssh_conns, &host_config).await?;
