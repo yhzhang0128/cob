@@ -13,14 +13,15 @@ pub async fn prepare_files(ssh_conns: &Vec<Session>, config: &HashMap<String, Ve
     // Create directories for copying the client/server binaries
     println!("Creat binary and config directories on all the hosts.");
     for s in ssh_conns {
+        // Make directory for executable binaries
         let _mkdir = s.command("mkdir")
-            .args(["-p", remote_bin_dir.as_str()])        // binary dir
+            .args(["-p", remote_bin_dir.as_str()])
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
-
+        // Make directory for config files
         let _mkdir = s.command("mkdir")
-            .args(["-p", remote_config_dir.as_str()])     // config dir
+            .args(["-p", remote_config_dir.as_str()])
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
@@ -34,18 +35,19 @@ pub async fn prepare_files(ssh_conns: &Vec<Session>, config: &HashMap<String, Ve
     let bar = ProgressBar::new(num);
 
     for host in hosts {
-        let bin_dir = format!("{}:{}", host, remote_bin_dir);
+        // Copy executable binary files
         for bin in &config["binary-files"] {
             let file = format!("{}{}", local_bin_dir, bin);
+            let bin_dir = format!("{}:{}", host, remote_bin_dir);
             Command::new("scp")
                 .args([file.as_str(), bin_dir.as_str()])
                 .output()
                 .map_err(|_| OracleError::BinaryCopyFailed)?;
         }
-
-        let config_dir = format!("{}:{}", host, remote_config_dir);
+        // Copy config files
         for con in &config["config-files"] {
             let file = format!("{}{}", local_config_dir, con);
+            let config_dir = format!("{}:{}", host, remote_config_dir);
             Command::new("scp")
                 .args([file.as_str(), config_dir.as_str()])
                 .output()
