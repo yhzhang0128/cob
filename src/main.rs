@@ -41,17 +41,25 @@ async fn main() -> Result<(), OracleError> {
     // Start ssh connections
     let host_config = read_host_config()?;
     let ssh_conns = start_ssh_conns(&host_config["hostnames"]).await?;
-
-    for s in &ssh_conns {
-        let whoami = s.command("whoami").output()
-            .await
-            .map_err(|_| OracleError::SshCommandFailed)?;
-        println!("Ssh who: {}", String::from_utf8(whoami.stdout).unwrap());
-    }
     
     // Setup network latency emulation
     let latency_matrix = read_latency_config()?;
-    println!("{:?}", latency_matrix);
+    println!("TODO: latency matrix: {:?}", latency_matrix);
+
+    // Create directories for copying the target binary
+    for s in &ssh_conns {
+        let _mkdir = s.command("mkdir -p /opt/chance/target_binary")
+            .output()
+            .await
+            .map_err(|_| OracleError::SshCommandFailed)?;
+    }
+    println!("Created /opt/chance/target_binary on all hosts.");
+
+    // Copy client and server binary to remote hosts
+
+    // Run servers and clients through the ssh connections
+
+    // Stop experiments and collect results
 
     // Close ssh connections
     close_ssh_conns(ssh_conns).await?;
