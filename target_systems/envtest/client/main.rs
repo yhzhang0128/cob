@@ -8,7 +8,7 @@ use std::time;
 use std::thread;
 use std::io::prelude::*;
 use std::net::TcpStream;
-use std::str::from_utf8;
+use std::time::SystemTime;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -52,6 +52,7 @@ async fn main() -> Result<(), EnvTestError> {
             let host = &host_config["server-hosts"][idx];
             let port = &host_config["server-ports"][idx];
 
+            let sent = SystemTime::now();
             let addr = format!("{}:{}", host, port);
             let mut stream = TcpStream::connect(addr)
                 .map_err(|_| EnvTestError::TcpConnError)?;
@@ -63,10 +64,7 @@ async fn main() -> Result<(), EnvTestError> {
             raw_log.write_all(&rx_bytes)
                 .map_err(|_| EnvTestError::FileOpError)?;
 
-            let tv_sec  = from_utf8(&rx_bytes[21..31]).unwrap();
-            let tv_nsec = from_utf8(&rx_bytes[42..51]).unwrap();
-
-            let entry = format!("{}:{}\n", tv_sec, tv_nsec);
+            let entry = format!("{:?}\n", sent.elapsed().unwrap());
             log.write_all(&entry.as_bytes())
                 .map_err(|_| EnvTestError::FileOpError)?;
 
