@@ -15,6 +15,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
     println!("[3/7] Setup directories for log, binary and config files on remote hosts.");
     for (_, s) in ssh_conns {
         // Cleanup directory for logs
+        println!("rm -rf {}", log_dir);
         s.command("rm")
             .args(["-rf", log_dir.as_str()])
             .output()
