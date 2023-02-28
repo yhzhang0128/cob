@@ -63,8 +63,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
     println!("[4/7] Copy binary and config files to remote hosts.");
 
     let hosts = &config["hostnames"];
-    let num = hosts.len().try_into().unwrap();
-    let bar = ProgressBar::new(num);
+    let bar = ProgressBar::new((hosts.len() * 2).try_into().unwrap());
 
     for host in hosts {
         // Copy executable binary files
@@ -76,6 +75,8 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
                 .output()
                 .map_err(|_| OracleError::BinaryCopyFailed)?;
         }
+        bar.inc(1);
+
         // Copy config files
         for con in &config["config-files"] {
             let file = format!("{}{}", local_config_dir, con);
@@ -85,7 +86,6 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
                 .output()
                 .map_err(|_| OracleError::BinaryCopyFailed)?;
         }
-        
         bar.inc(1);
     }
     bar.finish();

@@ -5,8 +5,7 @@ use crate::error::OracleError;
 
 pub async fn start_ssh_conns(hosts: &Vec<String>) -> Result<HashMap<String, Session>, OracleError> {
     let mut result = HashMap::new();
-    let num = hosts.len().try_into().unwrap();
-    let bar = ProgressBar::new(num);
+    let bar = ProgressBar::new(hosts.len().try_into().unwrap());
 
     for host in hosts {
         let cmd = format!("ssh://{}@{}", "Yunhao", host);
