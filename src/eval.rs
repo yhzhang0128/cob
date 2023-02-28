@@ -42,25 +42,6 @@ pub async fn evaluate(target: TargetType) -> Result<(), OracleError>{
     let client_cmd = format!("{}{}", binary_dir, client_bin);
     let server_cmd = format!("{}{}", binary_dir, server_bin);
 
-    let mut client_id = 0;
-    for client in &host_config["client-hosts"] {
-        match ssh_conns.get(client) {
-            None => { Err(OracleError::InvalidClientHost)? }
-            Some(s) => {
-                clients.push(s.command(client_cmd.as_str())
-                             .args(&host_config["client-args"])
-                             .arg("--idx")
-                             .arg(client_id.to_string())
-                             .spawn()
-                             .await
-                             .map_err(|_| OracleError::SshCommandFailed)?
-                );
-            }
-        }
-        client_id += 1;
-    }
-    println!("[5/7] Execute {} clients on remote hosts.", client_id);
-
     let mut server_id = 0;
     for server in &host_config["server-hosts"] {
         match ssh_conns.get(server) {
@@ -78,8 +59,28 @@ pub async fn evaluate(target: TargetType) -> Result<(), OracleError>{
         }
         server_id += 1;
     }
-    println!("[6/7] Execute {} servers on remote hosts.", server_id);
-    
+    println!("[5/7] Execute {} servers on remote hosts.", server_id);
+    thread::sleep(time::Duration::from_millis(1000));
+
+    let mut client_id = 0;
+    for client in &host_config["client-hosts"] {
+        match ssh_conns.get(client) {
+            None => { Err(OracleError::InvalidClientHost)? }
+            Some(s) => {
+                clients.push(s.command(client_cmd.as_str())
+                             .args(&host_config["client-args"])
+                             .arg("--idx")
+                             .arg(client_id.to_string())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+        client_id += 1;
+    }
+    println!("[6/7] Execute {} clients on remote hosts.", client_id);
+
     // Wait a duration and terminate the experiment
     let duration = 5000;
     let pb = ProgressBar::new_spinner();
