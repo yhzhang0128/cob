@@ -24,6 +24,7 @@ struct Args {
    idx: u8,
 }
 
+
 #[tokio::main]
 async fn main() -> Result<(), EnvTestError> {
     let args = Args::parse();
@@ -39,16 +40,13 @@ async fn main() -> Result<(), EnvTestError> {
 
     let dir = &host_config["log-dir"][0];
     let log_file = format!("{}env_client{}_rtt.log", dir, args.idx);
-    let latency_file = format!("{}latency{}.log", dir, args.idx);
     let mut log = std::fs::File::create(&log_file)
-        .map_err(|_| EnvTestError::FileOpError)?;
-    let mut latency = std::fs::File::create(&latency_file)
         .map_err(|_| EnvTestError::FileOpError)?;
     println!("This is envtest client#{} logging to {}.", args.idx, log_file);
     // Ask signal_hook to set the term variable to true
     // when the program receives a SIGTERM kill signal
     let term = Arc::new(AtomicBool::new(false));
-    flag::register(signal_hook::consts::SIGKILL, Arc::clone(&term))
+    flag::register(signal_hook::consts::SIGTERM, Arc::clone(&term))
         .map_err(|_| EnvTestError::SigTermHandlerError)?;
 
     while !term.load(Ordering::Relaxed) {
@@ -75,9 +73,42 @@ async fn main() -> Result<(), EnvTestError> {
     }
 
     // Client terminated by signal, print latency info
+    let latency_file = format!("{}latency{}.log", dir, args.idx);
+    let mut latency = std::fs::File::create(&latency_file)
+        .map_err(|_| EnvTestError::FileOpError)?;
+
     let row1 = format!("Write to file after terminated\n");
     latency.write_all(&row1.as_bytes())
         .map_err(|_| EnvTestError::FileOpError)?;
+
+    Ok(())
+}
+
+
+#[tokio::main]
+async fn _main() -> Result<(), EnvTestError> {
+
+    // Ask signal_hook to set the term variable to true
+    // when the program receives a SIGTERM kill signal
+    let term = Arc::new(AtomicBool::new(false));
+    flag::register(signal_hook::consts::SIGTERM, Arc::clone(&term))
+        .map_err(|_| EnvTestError::SigTermHandlerError)?;
+
+    println!("here1");
+
+    while !term.load(Ordering::Relaxed) {
+        thread::sleep(time::Duration::from_millis(100));
+    }
+
+    println!("here2");
+    let mut latency = std::fs::File::create("/home/yunhao/tmp.txt")
+        .map_err(|_| EnvTestError::FileOpError)?;
+
+    println!("here3");
+    let row1 = format!("Write to file after terminated\n");
+    latency.write_all(&row1.as_bytes())
+        .map_err(|_| EnvTestError::FileOpError)?;
+    println!("here4");
 
     Ok(())
 }
