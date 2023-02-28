@@ -20,14 +20,22 @@ async fn main() -> Result<(), OracleError> {
         Action::Kill { } => {
             killall(true).await?
         }
-        Action::Eval { target_arg } => {
+        Action::Eval { target_arg, duration } => {
+            let mut target = TargetType::Unknown;
             match target_arg.as_str() {
-                "envtest" => { evaluate(TargetType::EnvTest).await?; }
-                "hotstuff" => { evaluate(TargetType::HotStuff).await?; }
-                "pompe" => { evaluate(TargetType::Pompe).await?; }
+                "envtest" => { target = TargetType::EnvTest; }
+                "hotstuff" => { target = TargetType::HotStuff; }
+                "pompe" => { target = TargetType::Pompe; }
                 _ => { Err(OracleError::UnknownTarget)? }
             }
-            killall(false).await?
+
+            match evaluate(target, duration).await {
+                Ok(()) => { killall(false).await?; }
+                Err(err) => {
+                    killall(false).await.unwrap();
+                    Err(err)?
+                }
+            }
         }
     };
 

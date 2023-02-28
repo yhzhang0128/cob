@@ -14,9 +14,7 @@ use crate::config::{
 };
 use crate::prepare::prepare_files;
 
-const EXP_DURATION_MS: u64 = 5000;
-
-pub async fn evaluate(target: TargetType) -> Result<(), OracleError>{
+pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleError>{
     println!("Evaluation target: {:?}", target);
 
     // Start ssh connections
@@ -85,10 +83,10 @@ pub async fn evaluate(target: TargetType) -> Result<(), OracleError>{
     // Wait a duration and terminate the experiment
     let pb = ProgressBar::new_spinner();
     pb.enable_steady_tick(time::Duration::from_millis(120));
-    let msg = format!("Executing remote client/server for {}ms.", EXP_DURATION_MS);
+    let msg = format!("Executing remote client/server for {}ms.", duration);
     pb.set_message(msg);
-    thread::sleep(time::Duration::from_millis(EXP_DURATION_MS));
-    let finish_msg = format!("Terminate experiment after {}ms.", EXP_DURATION_MS);
+    thread::sleep(time::Duration::from_millis(duration));
+    let finish_msg = format!("Terminate experiment after {}ms.", duration);
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections

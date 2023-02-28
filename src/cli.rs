@@ -33,5 +33,11 @@ pub enum Action {
             help = "Specify the target system for evaluation."
         )]
         target_arg: String,
+        #[clap(
+            short = 'd', long = "duration",
+            default_value = "5000",
+            help = "Specify the duration of experiment in ms."
+        )]
+        duration: u64,
     },
 }
