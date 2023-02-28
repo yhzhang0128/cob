@@ -20,6 +20,7 @@ path = "target_systems/envtest/server/main.rs"
 
 [dependencies]
 config = "0.13.3"
+colored = "2.0.0"
 openssh = "0.9.9"
 indicatif = "0.17.3"
 tokio = { version = "1", features = ["full"] }

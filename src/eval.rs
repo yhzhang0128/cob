@@ -1,4 +1,6 @@
-use std::{thread, time};
+use std::time;
+use std::thread;
+use colored::Colorize;
 use indicatif::ProgressBar;
 
 use crate::cli::TargetType;
@@ -15,8 +17,8 @@ use crate::config::{
 use crate::prepare::prepare_files;
 
 pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleError>{
-    println!("Target: {:?}", target);
-    println!("Duration: {:?}ms", duration);
+    println!("{}", format!("Target: {:?}", target).yellow());
+    println!("{}", format!("Duration: {:?}ms", duration).yellow());
 
     // Start ssh connections
     let host_config = read_host_config()?;
