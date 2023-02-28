@@ -49,7 +49,7 @@ async fn main() -> Result<(), EnvTestError> {
     }
 
     // Client terminated by signal, print latency info
-    println!("This is terminate message from client{}!", args.idx);
+    println!("Client{} terminates.", args.idx);
     let dir = &host_config["log-dir"][0];
     let latency_file = format!("{}latency{}.log", dir, args.idx);
     let mut latency = std::fs::File::create(&latency_file)
