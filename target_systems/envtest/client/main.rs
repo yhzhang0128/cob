@@ -1,5 +1,6 @@
 pub mod error;
 use clap::Parser;
+use colored::Colorize;
 use config::{Config, File};
 use std::collections::HashMap;
 use crate::error::EnvTestError;
@@ -58,7 +59,7 @@ async fn main() -> Result<(), EnvTestError> {
     }
     let avg = sum as f32 / latencies.len() as f32;
 
-    println!("client{} -> server{} :: {}ms with {}samples", args.idx, args.serveridx, avg, latencies.len());
+    println!("client{} -> server{} :: {} with {}samples", args.idx, args.serveridx, format!("{}ms", avg).yellow(), latencies.len());
     // println!("Client{}: latency={:?}, count={:?}.", args.idx, average_latencies, count);
     Ok(())
 }
@@ -69,10 +70,9 @@ fn tcp_client(term: Arc<AtomicBool>,
 ) -> Result<(), EnvTestError> {
     let args = Args::parse();
     let dir = &host_config["log-dir"][0];
-    let log_file = format!("{}env_client{}_rtt.log", dir, args.idx);
+    let log_file = format!("{}env_client{}_{}_rtt.log", dir, args.idx, args.serveridx);
     let mut log = std::fs::File::create(&log_file)
         .map_err(|_| EnvTestError::FileOpError)?;
-    println!("This is envtest client#{} logging to {}.", args.idx, log_file);
 
     while !term.load(Ordering::Relaxed) {
         let idx = args.serveridx;
@@ -93,10 +93,11 @@ fn tcp_client(term: Arc<AtomicBool>,
 
         // Measure RTT
         let duration = sent.elapsed().unwrap();
+        latencies.push(duration.as_millis());
+
+        // Log RTT
         log.write_all(&format!("{:?}\n", duration).as_bytes())
             .map_err(|_| EnvTestError::FileOpError)?;
-
-        latencies.push(duration.as_millis());
 
         thread::sleep(time::Duration::from_millis(50));
     }
