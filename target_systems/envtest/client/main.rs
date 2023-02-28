@@ -12,9 +12,6 @@ struct Args {
    config: String,
 
    #[arg(short, long)]
-   log: String,
-
-   #[arg(short, long)]
    idx: u8,
 }
 
@@ -23,7 +20,7 @@ async fn main() -> Result<(), EnvTestError> {
     let args = Args::parse();
 
     let config_builder = Config::builder()
-        .add_source(File::with_name("config/host"))
+        .add_source(File::with_name(args.config.as_str()))
         .build()
         .map_err(|_| EnvTestError::ConfigError)?;
 
@@ -31,7 +28,9 @@ async fn main() -> Result<(), EnvTestError> {
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| EnvTestError::ConfigError)?;
 
-    let log_file = format!("{}env_client.log", &host_config["log-dir"][0]);
+    let log_file = format!("{}env_client{}.log",
+                           &host_config["log-dir"][0],
+                           args.idx);
     println!("This is envtest client#{} logging to {}.", args.idx, log_file);
 
     let mut file = std::fs::File::create(log_file)
