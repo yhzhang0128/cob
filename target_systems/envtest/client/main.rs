@@ -45,10 +45,11 @@ async fn main() -> Result<(), EnvTestError> {
     // Execute TCP client logic
     match tcp_client(term, &host_config) {
         Ok(()) => {}
-        Err(err) => {println!("An error occured{:?}", err);}
+        Err(_err) => { /*TCP error can occur when experiment terminates*/ }
     }
 
     // Client terminated by signal, print latency info
+    println!("This is terminate message from client{}!", args.idx);
     let dir = &host_config["log-dir"][0];
     let latency_file = format!("{}latency{}.log", dir, args.idx);
     let mut latency = std::fs::File::create(&latency_file)
