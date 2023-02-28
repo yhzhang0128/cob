@@ -22,7 +22,9 @@ struct Args {
     #[arg(long)]
     latency: u64,
     #[arg(long)]
-    idx: u8,
+    idx: u32,
+    #[arg(long)]
+    serveridx: usize,
 }
 
 #[tokio::main]
@@ -35,12 +37,6 @@ async fn main() -> Result<(), EnvTestError> {
     let host_config = config_builder
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| EnvTestError::ConfigError)?;
-    let mut latency_history = HashMap::<&String, Vec<u128>>::new();
-    for host in &host_config["server-hosts"] {
-        latency_history.insert(host, vec![]);
-    }
-
-    println!("Client{}, {}ms", args.idx, args.latency);
 
     // Ask signal_hook to set the term variable to true
     // when the program receives a SIGTERM kill signal
@@ -49,32 +45,27 @@ async fn main() -> Result<(), EnvTestError> {
         .map_err(|_| EnvTestError::SigTermHandlerError)?;
 
     // Execute TCP client logic
-    match tcp_client(term, &host_config, &mut latency_history) {
+    let mut latencies: Vec<u128> = vec![];
+    match tcp_client(term, &mut latencies, &host_config) {
         Ok(()) => {}
         Err(_err) => { /*TCP error can occur when experiment terminates*/ }
     }
 
     // Client terminated by signal, print latency info
-    let mut count = vec![];
-    let mut average_latencies = vec![];
-    for host in &host_config["server-hosts"] {
-        let mut sum: u128 = 0;
-        for x in &latency_history[host] {
-            sum = sum + x;
-        }
-
-        let avg = sum as f32 / latency_history[host].len() as f32;
-        average_latencies.push(avg);
-        count.push(latency_history[host].len());
+    let mut sum: u128 = 0;
+    for x in &latencies {
+        sum = sum + x;
     }
+    let avg = sum as f32 / latencies.len() as f32;
 
-    println!("Client{}: latency={:?}, count={:?}.", args.idx, average_latencies, count);
+    println!("client{} -> server{} :: {}ms with {}samples", args.idx, args.serveridx, avg, latencies.len());
+    // println!("Client{}: latency={:?}, count={:?}.", args.idx, average_latencies, count);
     Ok(())
 }
 
 fn tcp_client(term: Arc<AtomicBool>,
-              host_config: &HashMap<String, Vec<String>>,
-              latency_history: &mut HashMap<&String, Vec<u128>>
+              latencies: &mut Vec<u128>,
+              host_config: &HashMap<String, Vec<String>>
 ) -> Result<(), EnvTestError> {
     let args = Args::parse();
     let dir = &host_config["log-dir"][0];
@@ -84,30 +75,30 @@ fn tcp_client(term: Arc<AtomicBool>,
     println!("This is envtest client#{} logging to {}.", args.idx, log_file);
 
     while !term.load(Ordering::Relaxed) {
-        let num_servers = host_config["server-hosts"].len();
-        for idx in 0..num_servers {
-            let host = &host_config["server-hosts"][idx];
-            let port = &host_config["server-ports"][idx];
+        let idx = args.serveridx;
+        let host = &host_config["server-hosts"][idx];
+        let port = &host_config["server-ports"][idx];
 
-            let sent = SystemTime::now();
-            // Insert latency
-            thread::sleep(time::Duration::from_millis(args.latency));
-            
-            let addr = format!("{}:{}", host, port);
-            let mut stream = TcpStream::connect(addr)
-                .map_err(|_| EnvTestError::TcpConnError)?;
+        let sent = SystemTime::now();
+        //Insert latency
+        thread::sleep(time::Duration::from_millis(args.latency));
+        
+        let addr = format!("{}:{}", host, port);
+        let mut stream = TcpStream::connect(addr)
+            .map_err(|_| EnvTestError::TcpConnError)?;
 
-            let mut rx_bytes = [0u8; 64];
-            stream.read(&mut rx_bytes)
-                .map_err(|_| EnvTestError::TcpReadError)?;
+        let mut rx_bytes = [0u8; 64];
+        stream.read(&mut rx_bytes)
+            .map_err(|_| EnvTestError::TcpReadError)?;
 
-            let duration = sent.elapsed().unwrap();
-            latency_history.get_mut(host).map(|val| val.push(duration.as_millis()));
-            log.write_all(&format!("{:?}\n", duration).as_bytes())
-                .map_err(|_| EnvTestError::FileOpError)?;
+        // Measure RTT
+        let duration = sent.elapsed().unwrap();
+        log.write_all(&format!("{:?}\n", duration).as_bytes())
+            .map_err(|_| EnvTestError::FileOpError)?;
 
-            thread::sleep(time::Duration::from_millis(50));
-        }
+        latencies.push(duration.as_millis());
+
+        thread::sleep(time::Duration::from_millis(50));
     }
 
     Ok(())
