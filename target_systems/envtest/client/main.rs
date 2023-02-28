@@ -83,7 +83,7 @@ fn tcp_client(term: Arc<AtomicBool>,
 
     while !term.load(Ordering::Relaxed) {
         let num_servers = host_config["server-hosts"].len();
-        for idx in 1..num_servers {
+        for idx in 0..num_servers {
             let host = &host_config["server-hosts"][idx];
             let port = &host_config["server-ports"][idx];
 
