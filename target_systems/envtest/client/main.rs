@@ -107,32 +107,3 @@ fn tcp_client(term: Arc<AtomicBool>,
 
     Ok(())
 }
-
-
-#[tokio::main]
-async fn _main() -> Result<(), EnvTestError> {
-
-    // Ask signal_hook to set the term variable to true
-    // when the program receives a SIGTERM kill signal
-    let term = Arc::new(AtomicBool::new(false));
-    flag::register(signal_hook::consts::SIGTERM, Arc::clone(&term))
-        .map_err(|_| EnvTestError::SigTermHandlerError)?;
-
-    println!("here1");
-
-    while !term.load(Ordering::Relaxed) {
-        thread::sleep(time::Duration::from_millis(100));
-    }
-
-    println!("here2");
-    let mut latency = std::fs::File::create("/home/yunhao/tmp.txt")
-        .map_err(|_| EnvTestError::FileOpError)?;
-
-    println!("here3");
-    let row1 = format!("Write to file after terminated\n");
-    latency.write_all(&row1.as_bytes())
-        .map_err(|_| EnvTestError::FileOpError)?;
-    println!("here4");
-
-    Ok(())
-}
