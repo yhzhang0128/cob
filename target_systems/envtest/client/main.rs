@@ -90,6 +90,9 @@ fn tcp_client(term: Arc<AtomicBool>,
             let port = &host_config["server-ports"][idx];
 
             let sent = SystemTime::now();
+            // Insert latency
+            thread::sleep(time::Duration::from_millis(args.latency));
+            
             let addr = format!("{}:{}", host, port);
             let mut stream = TcpStream::connect(addr)
                 .map_err(|_| EnvTestError::TcpConnError)?;

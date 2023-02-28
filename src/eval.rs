@@ -82,22 +82,23 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
     let mut client_id = 0;
     for client in &host_config["client-hosts"] {
         for server in &host_config["server-hosts"] {
-            println!("From {} to {}: {}ms", client, server,
-            latency_config[&host_to_location[client]][host_to_lidx[server]]);
-        }
-        match ssh_conns.get(client) {
-            None => { Err(OracleError::InvalidClientHost)? }
-            Some(s) => {
-                clients.push(s.command(client_cmd.as_str())
-                             .args(&host_config["client-args"])
-                             .arg("--idx")
-                             .arg(client_id.to_string())
-                             .arg("--latency")
-                             .arg("20")
-                             .spawn()
-                             .await
-                             .map_err(|_| OracleError::SshCommandFailed)?
-                );
+            let latency = &latency_config[&host_to_location[client]]
+                                         [host_to_lidx[server]];
+            //println!("From {} to {}: {}ms", client, server, latency);
+            match ssh_conns.get(client) {
+                None => { Err(OracleError::InvalidClientHost)? }
+                Some(s) => {
+                    clients.push(s.command(client_cmd.as_str())
+                                 .args(&host_config["client-args"])
+                                 .arg("--idx")
+                                 .arg(client_id.to_string())
+                                 .arg("--latency")
+                                 .arg(latency.to_string())
+                                 .spawn()
+                                 .await
+                                 .map_err(|_| OracleError::SshCommandFailed)?
+                    );
+                }
             }
         }
         client_id += 1;
