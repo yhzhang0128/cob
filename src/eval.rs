@@ -15,7 +15,7 @@ use crate::config::{
     read_host_config,
     read_latency_config,
 };
-use crate::prepare::prepare_files;
+use crate::prep::prepare_files;
 
 pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleError>{
     println!("{}", format!("Target: {:?}", target).green().bold());
@@ -24,27 +24,21 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
     // Start ssh connections
     let host_config = read_host_config()?;
     let num_hosts = host_config["hostnames"].len();
-    println!("{} Start ssh connections to {} remote hosts.", "[1/7]".yellow(), num_hosts);
+    println!("{} Start ssh connections to {} remote hosts.", "[1/6]".yellow(), num_hosts);
     let ssh_conns = start_ssh_conns(&host_config["hostnames"]).await?;
-    
-    // Setup network latency emulation
-    let latency_matrix = read_latency_config()?;
-    println!("{} TODO: setup latency.", "[2/7]".yellow());
-    println!("  {:?}", latency_matrix);
 
     // Prepare the directories and binary files
     prepare_files(&ssh_conns, &host_config).await?;
 
-    // Execute servers and clients through the ssh connections
     let mut clients = vec![];
     let mut servers = vec![];
-
     let binary_dir = &host_config["remote-dir"][0];
     let client_bin = &host_config["binary-files"][0];
     let server_bin = &host_config["binary-files"][1];
     let client_cmd = format!("{}{}", binary_dir, client_bin);
     let server_cmd = format!("{}{}", binary_dir, server_bin);
 
+    // Spawn server processes
     let mut server_id = 0;
     for server in &host_config["server-hosts"] {
         match ssh_conns.get(server) {
@@ -62,9 +56,13 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
         }
         server_id += 1;
     }
-    println!("{} Execute {} servers on remote hosts.", "[5/7]".yellow(), server_id);
+    println!("{} Execute {} servers on remote hosts.", "[4/6]".yellow(), server_id);
     thread::sleep(time::Duration::from_millis(1000));
 
+    // Create geo-location latency mapping
+    let _latency_matrix = read_latency_config()?;    
+    
+    // Spawn client processes
     let mut client_id = 0;
     for client in &host_config["client-hosts"] {
         match ssh_conns.get(client) {
@@ -84,7 +82,7 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
         }
         client_id += 1;
     }
-    println!("{} Execute {} clients on remote hosts.", "[6/7]".yellow(), client_id);
+    println!("{} Execute {} clients on remote hosts.", "[5/6]".yellow(), client_id);
 
     // Wait a duration and terminate the experiment
     let pb = ProgressBar::new_spinner();
@@ -96,7 +94,7 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    println!("{} Close the ssh connections.", "[7/7]".yellow());
+    println!("{} Close the ssh connections.", "[6/6]".yellow());
     killall(false).await?;
     close_ssh_conns(ssh_conns).await?;
 
