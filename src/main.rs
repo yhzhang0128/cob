@@ -1,12 +1,14 @@
 pub mod cli;
 pub mod ssh;
 pub mod eval;
+pub mod kill;
 pub mod error;
 pub mod config;
 pub mod prepare;
 
 use cli::*;
 use clap::Parser;
+use kill::killall;
 use eval::evaluate;
 use crate::error::OracleError;
 
@@ -22,6 +24,9 @@ async fn main() -> Result<(), OracleError> {
                 "pompe" => { evaluate(TargetType::Pompe).await?; }
                 _ => { Err(OracleError::UnknownTarget)? }
             }
+        }
+        Action::Kill { } => {
+            killall().await?
         }
     };
 

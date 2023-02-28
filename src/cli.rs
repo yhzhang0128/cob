@@ -14,14 +14,17 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Action {
-    #[clap(about = "Evaluate a target system")]
+    #[clap(about = "Evaluate a target system.")]
     Eval {
         #[clap(
             short = 't', long = "target",
             default_value = "envtest",
-            help = "Specify the target system"
+            help = "Specify the target system for evaluation."
         )]
         target_arg: String,
+    },
+    #[clap(about = "Kill processes on remote hots.")]
+    Kill {
     },
 }
 
