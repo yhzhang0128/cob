@@ -9,21 +9,11 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
     let remote_bin_dir = &config["remote-dir"][0];
     let local_config_dir = &config["local-dir"][1];
     let remote_config_dir = &config["remote-dir"][1];
-    let log_dir = format!("{}*", &config["log-dir"][0]);
+    let remote_log_dir = &config["log-dir"][0];
 
     // Create directories for copying the client/server binaries
     println!("[3/7] Setup directories for log, binary and config files on remote hosts.");
     for (host, s) in ssh_conns {
-        // Cleanup directory for logs
-        let rm = s.command("rm")
-            .args([log_dir.as_str()])
-            .output()
-            .await
-            .map_err(|_| OracleError::SshCommandFailed)?;
-        if rm.stderr.len() > 0 {
-            println!("  [warning] stderr from {}: {:?}", host, String::from_utf8(rm.stderr).unwrap());
-        }
-
         // Make directory for executable binaries
         let mkdir1 = s.command("mkdir")
             .args(["-p", remote_bin_dir.as_str()])
@@ -45,6 +35,28 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
             println!("mkdir stderr on {}: {:?}", host, String::from_utf8(mkdir2.stderr).unwrap());
             Err(OracleError::SshCommandFailed)?
         }
+
+        // Cleanup directory for logs
+        let rm = s.command("rm")
+            .args(["-rf", remote_log_dir.as_str()])
+            .output()
+            .await
+            .map_err(|_| OracleError::SshCommandFailed)?;
+        if rm.stderr.len() > 0 {
+            println!("  [warning] stderr from {}: {:?}", host, String::from_utf8(rm.stderr).unwrap());
+        }
+
+        let mkdir3 = s.command("mkdir")
+            .args(["-p", remote_log_dir.as_str()])
+            .output()
+            .await
+            .map_err(|_| OracleError::SshCommandFailed)?;
+        if mkdir3.stderr.len() > 0 {
+            println!("mkdir stderr on {}: {:?}", host, String::from_utf8(mkdir3.stderr).unwrap());
+            Err(OracleError::SshCommandFailed)?
+        }
+
+
     }
 
     // Copy client and server binaries to remote hosts

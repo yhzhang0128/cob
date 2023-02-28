@@ -3,7 +3,7 @@ hostnames = ["host0",   "host1",   "host2",   "host3",   "host4",   "host5",   "
 locations = ["us-west", "us-west", "eu-west", "eu-west", "au",      "us-west", "eu-west", "au"]
 
 # Envtest files and directories
-log-dir = ["/users/Yunhao/"]
+log-dir = ["/users/Yunhao/log"]
 local-dir = ["/opt/chance/cob/target/debug/", "/opt/chance/cob/config/"]
 remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 
