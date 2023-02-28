@@ -1,7 +1,10 @@
 # All geo-locations involved
-locations = ["eu-west", "us-west", "au"]
+locations = ["eu-west", "us-east", "us-west", "au"]
 
-# Latencies in millisecond for Paris, San Francisco and Sydney
-eu-west = ["0", "144", "238"]
-us-west = ["144", "0", "136"]
-au      = ["238", "136", "0"]
+# Latencies in millisecond
+# source: https://wondernetwork.com/pings
+#          Munich, NYC,   SF,   Sydney
+eu-west = ["0",   "91",  "158", "269"] # Munich
+us-east = ["91",  "0",   "71",  "208"] # New York City
+us-west = ["158", "71",  "0",   "137"] # San Francisco
+au      = ["269", "208", 137"", "0"  ] # Sydney
