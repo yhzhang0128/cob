@@ -13,16 +13,15 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
 
     // Create directories for copying the client/server binaries
     println!("[3/7] Setup directories for log, binary and config files on remote hosts.");
-    for (_, s) in ssh_conns {
+    for (host, s) in ssh_conns {
         // Cleanup directory for logs
-        println!("rm -rf {}", log_dir);
         let rm = s.command("rm")
             .args([log_dir.as_str()])
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
         if rm.stderr.len() > 0 {
-            println!("rm stderr: {:?}", String::from_utf8(rm.stderr).unwrap());
+            println!("rm stderr on {}: {:?}", host, String::from_utf8(rm.stderr).unwrap());
             Err(OracleError::SshCommandFailed)?
         }
 
@@ -33,7 +32,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
         if mkdir1.stderr.len() > 0 {
-            println!("mkdir stderr: {:?}", String::from_utf8(mkdir1.stderr).unwrap());
+            println!("mkdir stderr on {}: {:?}", host, String::from_utf8(mkdir1.stderr).unwrap());
             Err(OracleError::SshCommandFailed)?
         }
 
@@ -44,7 +43,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
         if mkdir2.stderr.len() > 0 {
-            println!("mkdir stderr: {:?}", String::from_utf8(mkdir2.stderr).unwrap());
+            println!("mkdir stderr on {}: {:?}", host, String::from_utf8(mkdir2.stderr).unwrap());
             Err(OracleError::SshCommandFailed)?
         }
     }
@@ -61,11 +60,6 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
         for bin in &config["binary-files"] {
             let file = format!("{}{}", local_bin_dir, bin);
             let bin_dir = format!("{}:{}", host, remote_bin_dir);
-            Command::new("killall")
-                .arg(bin.as_str())
-                .output()
-                .map_err(|_| OracleError::BinaryCopyFailed)?;
-
             Command::new("scp")
                 .args([file.as_str(), bin_dir.as_str()])
                 .output()
