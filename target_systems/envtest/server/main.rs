@@ -35,8 +35,9 @@ async fn main() -> Result<(), EnvTestError> {
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| EnvTestError::ConfigError)?;
 
+    let host = &host_config["server-hosts"][idx];
     let port = &host_config["server-ports"][idx];
-    let bind = format!("127.0.0.1:{}", port);
+    let bind = format!("{}:{}", host, port);
     println!("This is envtest server#{}, port={}.", idx, port);
 
     let listener = TcpListener::bind(bind).unwrap();
