@@ -49,6 +49,8 @@ pub async fn evaluate(target: TargetType) -> Result<(), OracleError>{
             Some(s) => {
                 clients.push(s.command(client_cmd.as_str())
                              .args(&host_config["client-args"])
+                             .arg("--idx")
+                             .arg(client_id.to_string())
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?
@@ -66,6 +68,8 @@ pub async fn evaluate(target: TargetType) -> Result<(), OracleError>{
             Some(s) => {
                 servers.push(s.command(server_cmd.as_str())
                              .args(&host_config["server-args"])
+                             .arg("--idx")
+                             .arg(server_id.to_string())
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?

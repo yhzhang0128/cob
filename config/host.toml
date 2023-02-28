@@ -10,8 +10,8 @@ remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 config-files = ["host.toml"]
 binary-files = ["envtest_client", "envtest_server"]
 
-client-args = ["--config", "../target_config/host"]
-server-args = ["--config", "../target_config/host"]
+client-args = ["--config", "../target_config/host", "--log", "/users/Yunhao/log"]
+server-args = ["--config", "../target_config/host", "--log", "/users/Yunhao/log"]
 
 client-hosts = ["host5", "host6", "host7"]
 server-hosts = ["host0", "host1", "host2", "host3", "host4"]
