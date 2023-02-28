@@ -4,6 +4,7 @@ use config::{Config, File};
 use std::collections::HashMap;
 use crate::error::EnvTestError;
 
+use std::{thread, time};
 use std::io::prelude::*;
 use std::net::TcpStream;
 
@@ -45,7 +46,6 @@ async fn main() -> Result<(), EnvTestError> {
             let port = &host_config["server-ports"][idx];
 
             let addr = format!("{}:{}", host, port);
-            println!("Connect to addr {}", addr);
             let mut stream = TcpStream::connect(addr)
                 .map_err(|_| EnvTestError::TcpConnError)?;
 
@@ -55,6 +55,8 @@ async fn main() -> Result<(), EnvTestError> {
 
             file.write_all(&rx_bytes)
                 .map_err(|_| EnvTestError::FileOpError)?;
+
+            thread::sleep(time::Duration::from_millis(500));
         }
     };
 }
