@@ -22,7 +22,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
         if rm.stderr.len() > 0 {
-            println!("rm stderr: {:?}", rm.stderr);
+            println!("rm stderr: {:?}", String::from_utf8(rm.stderr).unwrap());
             Err(OracleError::SshCommandFailed)?
         }
 
@@ -33,7 +33,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
         if mkdir1.stderr.len() > 0 {
-            println!("mkdir stderr: {:?}", mkdir1.stderr);
+            println!("mkdir stderr: {:?}", String::from_utf8(mkdir1.stderr).unwrap());
             Err(OracleError::SshCommandFailed)?
         }
 
@@ -44,7 +44,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
         if mkdir2.stderr.len() > 0 {
-            println!("mkdir stderr: {:?}", mkdir2.stderr);
+            println!("mkdir stderr: {:?}", String::from_utf8(mkdir2.stderr).unwrap());
             Err(OracleError::SshCommandFailed)?
         }
     }
