@@ -28,26 +28,46 @@ struct Args {
 #[tokio::main]
 async fn main() -> Result<(), EnvTestError> {
     let args = Args::parse();
-
     let config_builder = Config::builder()
         .add_source(File::with_name(args.config.as_str()))
         .build()
         .map_err(|_| EnvTestError::ConfigError)?;
-
     let host_config = config_builder
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| EnvTestError::ConfigError)?;
 
-    let dir = &host_config["log-dir"][0];
-    let log_file = format!("{}env_client{}_rtt.log", dir, args.idx);
-    let mut log = std::fs::File::create(&log_file)
-        .map_err(|_| EnvTestError::FileOpError)?;
-    println!("This is envtest client#{} logging to {}.", args.idx, log_file);
     // Ask signal_hook to set the term variable to true
     // when the program receives a SIGTERM kill signal
     let term = Arc::new(AtomicBool::new(false));
     flag::register(signal_hook::consts::SIGTERM, Arc::clone(&term))
         .map_err(|_| EnvTestError::SigTermHandlerError)?;
+
+    // Execute TCP client logic
+    match tcp_client(term, &host_config) {
+        Ok(()) => {}
+        Err(err) => {println!("An error occured{:?}", err);}
+    }
+
+    // Client terminated by signal, print latency info
+    let dir = &host_config["log-dir"][0];
+    let latency_file = format!("{}latency{}.log", dir, args.idx);
+    let mut latency = std::fs::File::create(&latency_file)
+        .map_err(|_| EnvTestError::FileOpError)?;
+
+    let row1 = format!("This is a message.\n");
+    latency.write_all(&row1.as_bytes())
+        .map_err(|_| EnvTestError::FileOpError)?;
+
+    Ok(())
+}
+
+fn tcp_client(term: Arc<AtomicBool>, host_config: &HashMap<String, Vec<String>>) -> Result<(), EnvTestError> {
+    let args = Args::parse();
+    let dir = &host_config["log-dir"][0];
+    let log_file = format!("{}env_client{}_rtt.log", dir, args.idx);
+    let mut log = std::fs::File::create(&log_file)
+        .map_err(|_| EnvTestError::FileOpError)?;
+    println!("This is envtest client#{} logging to {}.", args.idx, log_file);
 
     while !term.load(Ordering::Relaxed) {
         let num_servers = host_config["server-hosts"].len();
@@ -72,7 +92,6 @@ async fn main() -> Result<(), EnvTestError> {
         }
     }
 
-    println!("Write to file after terminated\n");
     Ok(())
 }
 
