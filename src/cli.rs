@@ -5,6 +5,14 @@ use {
     },
 };
 
+#[derive(Debug)]
+pub enum TargetType {
+    EnvTest,
+    HotStuff,
+    Pompe,
+    Unknown,
+}
+
 #[derive(Parser, Debug)]
 #[clap(about = "A cli for the chance oracle benchmark")]
 pub struct Cli {
@@ -26,12 +34,4 @@ pub enum Action {
         )]
         target_arg: String,
     },
-}
-
-#[derive(Debug)]
-pub enum TargetType {
-    EnvTest,
-    HotStuff,
-    Pompe,
-    Unknown,
 }
