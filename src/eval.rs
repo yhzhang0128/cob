@@ -15,7 +15,8 @@ use crate::config::{
 use crate::prepare::prepare_files;
 
 pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleError>{
-    println!("Evaluation target: {:?}", target);
+    println!("Target: {:?}", target);
+    println!("Duration: {:?}ms", duration);
 
     // Start ssh connections
     let host_config = read_host_config()?;
