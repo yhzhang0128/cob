@@ -63,7 +63,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
     println!("[4/7] Copy binary and config files to remote hosts.");
 
     let hosts = &config["hostnames"];
-    let file_per_host = config["binary-files"].len() * config["config-files"].len();
+    let file_per_host = config["binary-files"].len() + config["config-files"].len();
     let bar = ProgressBar::new((hosts.len() * file_per_host).try_into().unwrap());
 
     for host in hosts {
