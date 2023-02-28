@@ -47,6 +47,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
         for bin in &config["binary-files"] {
             let file = format!("{}{}", local_bin_dir, bin);
             let bin_dir = format!("{}:{}", host, remote_bin_dir);
+            println!("scp {} {}", file.as_str(), bin_dir.as_str());
             Command::new("scp")
                 .args([file.as_str(), bin_dir.as_str()])
                 .output()
@@ -56,6 +57,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
         for con in &config["config-files"] {
             let file = format!("{}{}", local_config_dir, con);
             let config_dir = format!("{}:{}", host, remote_config_dir);
+            println!("scp {} {}", file.as_str(), config_dir.as_str());
             Command::new("scp")
                 .args([file.as_str(), config_dir.as_str()])
                 .output()
