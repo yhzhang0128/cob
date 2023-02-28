@@ -17,19 +17,19 @@ use std::sync::atomic::{AtomicBool, Ordering};
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-   #[arg(short, long)]
-   config: String,
-
-   #[arg(short, long)]
-   idx: u8,
+    #[arg(short, long)]
+    host: String,
+    #[arg(short, long)]
+    latency: u64,
+    #[arg(short, long)]
+    idx: u8,
 }
-
 
 #[tokio::main]
 async fn main() -> Result<(), EnvTestError> {
     let args = Args::parse();
     let config_builder = Config::builder()
-        .add_source(File::with_name(args.config.as_str()))
+        .add_source(File::with_name(args.host.as_str()))
         .build()
         .map_err(|_| EnvTestError::ConfigError)?;
     let host_config = config_builder
@@ -39,6 +39,8 @@ async fn main() -> Result<(), EnvTestError> {
     for host in &host_config["server-hosts"] {
         latency_history.insert(host, vec![]);
     }
+
+    println!("Client{}, {}ms", args.idx, args.latency);
 
     // Ask signal_hook to set the term variable to true
     // when the program receives a SIGTERM kill signal

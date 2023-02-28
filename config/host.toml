@@ -7,11 +7,11 @@ log-dir = ["/users/Yunhao/log/"]
 local-dir = ["/opt/chance/cob/target/debug/", "/opt/chance/cob/config/"]
 remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 
-config-files = ["host.toml"]
+config-files = ["host.toml", "latency.toml"]
 binary-files = ["envtest_client", "envtest_server"]
 
-client-args = ["--config", "/opt/chance/target_config/host"]
-server-args = ["--config", "/opt/chance/target_config/host"]
+client-args = ["--host", "/opt/chance/target_config/host"]
+server-args = ["--host", "/opt/chance/target_config/host"]
 
 client-hosts = ["host4", "host5", "host6", "host7"]
 server-hosts = ["host0", "host1", "host2", "host3"]

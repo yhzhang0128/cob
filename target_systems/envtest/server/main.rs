@@ -14,11 +14,11 @@ use std::{
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-   #[arg(short, long)]
-   config: String,
+    #[arg(short, long)]
+    host: String,
 
-   #[arg(short, long)]
-   idx: usize,
+    #[arg(short, long)]
+    idx: usize,
 }
 
 #[tokio::main]
@@ -27,7 +27,7 @@ async fn main() -> Result<(), EnvTestError> {
     let idx = args.idx;
 
     let config_builder = Config::builder()
-        .add_source(File::with_name(args.config.as_str()))
+        .add_source(File::with_name(args.host.as_str()))
         .build()
         .map_err(|_| EnvTestError::ConfigError)?;
 
