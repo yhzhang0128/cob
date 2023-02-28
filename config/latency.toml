@@ -7,4 +7,4 @@ locations = ["eu-west", "us-east", "us-west", "au"]
 eu-west = ["0",   "91",  "158", "269"] # Munich
 us-east = ["91",  "0",   "71",  "208"] # New York City
 us-west = ["158", "71",  "0",   "137"] # San Francisco
-au      = ["269", "208", 137"", "0"  ] # Sydney
+au      = ["269", "208", "137", "0"  ] # Sydney
