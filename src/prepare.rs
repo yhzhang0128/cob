@@ -17,25 +17,36 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
         // Cleanup directory for logs
         println!("rm -rf {}", log_dir);
         let rm = s.command("rm")
-            .args(["-rf", log_dir.as_str()])
+            .args([log_dir.as_str()])
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
-        println!("rm stdout: {:?}", rm.stdout);
-        println!("rm stderr: {:?}", rm.stderr);
+        if rm.stderr.len() > 0 {
+            println!("rm stderr: {:?}", rm.stderr);
+            Err(OracleError::SshCommandFailed)?
+        }
 
         // Make directory for executable binaries
-        s.command("mkdir")
+        let mkdir1 = s.command("mkdir")
             .args(["-p", remote_bin_dir.as_str()])
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
+        if mkdir1.stderr.len() > 0 {
+            println!("mkdir stderr: {:?}", mkdir1.stderr);
+            Err(OracleError::SshCommandFailed)?
+        }
+
         // Make directory for config files
-        s.command("mkdir")
+        let mkdir2 = s.command("mkdir")
             .args(["-p", remote_config_dir.as_str()])
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
+        if mkdir2.stderr.len() > 0 {
+            println!("mkdir stderr: {:?}", mkdir2.stderr);
+            Err(OracleError::SshCommandFailed)?
+        }
     }
 
     // Copy client and server binaries to remote hosts
