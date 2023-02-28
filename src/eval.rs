@@ -23,12 +23,12 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
     // Start ssh connections
     let host_config = read_host_config()?;
     let num_hosts = host_config["hostnames"].len();
-    println!("[1/7] Start ssh connections to {} remote hosts.", num_hosts);
+    println!("{} Start ssh connections to {} remote hosts.", "[1/7]".green(), num_hosts);
     let ssh_conns = start_ssh_conns(&host_config["hostnames"]).await?;
     
     // Setup network latency emulation
     let latency_matrix = read_latency_config()?;
-    println!("[2/7] TODO: setup latency.");
+    println!("{} TODO: setup latency.", "[2/7]".green());
     println!("  {:?}", latency_matrix);
 
     // Prepare the directories and binary files
@@ -61,7 +61,7 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
         }
         server_id += 1;
     }
-    println!("[5/7] Execute {} servers on remote hosts.", server_id);
+    println!("{} Execute {} servers on remote hosts.", "[5/7]".green(), server_id);
     thread::sleep(time::Duration::from_millis(1000));
 
     let mut client_id = 0;
@@ -81,7 +81,7 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
         }
         client_id += 1;
     }
-    println!("[6/7] Execute {} clients on remote hosts.", client_id);
+    println!("{} Execute {} clients on remote hosts.", "[6/7]".green(), client_id);
 
     // Wait a duration and terminate the experiment
     let pb = ProgressBar::new_spinner();
@@ -93,7 +93,7 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    println!("[7/7] Close the ssh connections.");
+    println!("{} Close the ssh connections.", "[7/7]".green());
     close_ssh_conns(ssh_conns).await?;
 
     Ok(())

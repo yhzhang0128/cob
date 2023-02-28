@@ -1,7 +1,9 @@
 use openssh::*;
+use colored::Colorize;
 use std::process::Command;
 use indicatif::ProgressBar;
 use std::collections::HashMap;
+
 use crate::error::OracleError;
 
 pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMap<String, Vec<String>>) -> Result<(), OracleError> {
@@ -12,7 +14,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
     let remote_log_dir = &config["log-dir"][0];
 
     // Create directories for copying the client/server binaries
-    println!("[3/7] Setup directories for log, binary and config files on remote hosts.");
+    println!("{} Setup directories for log, binary and config files on remote hosts.", "[3/7]".green());
     for (host, s) in ssh_conns {
         // Make directory for executable binaries
         let mkdir1 = s.command("mkdir")
@@ -60,7 +62,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
     }
 
     // Copy client and server binaries to remote hosts
-    println!("[4/7] Copy binary and config files to remote hosts.");
+    println!("{} Copy binary and config files to remote hosts.", "[4/7]".green());
 
     let hosts = &config["hostnames"];
     let file_per_host = config["binary-files"].len() + config["config-files"].len();
