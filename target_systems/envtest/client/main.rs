@@ -35,6 +35,10 @@ async fn main() -> Result<(), EnvTestError> {
     let host_config = config_builder
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| EnvTestError::ConfigError)?;
+    let mut latency_history = HashMap::<&String, Vec<u128>>::new();
+    for host in &host_config["server-hosts"] {
+        latency_history.insert(host, vec![]);
+    }
 
     // Ask signal_hook to set the term variable to true
     // when the program receives a SIGTERM kill signal
@@ -43,26 +47,31 @@ async fn main() -> Result<(), EnvTestError> {
         .map_err(|_| EnvTestError::SigTermHandlerError)?;
 
     // Execute TCP client logic
-    match tcp_client(term, &host_config) {
+    match tcp_client(term, &host_config, &mut latency_history) {
         Ok(()) => {}
         Err(_err) => { /*TCP error can occur when experiment terminates*/ }
     }
 
     // Client terminated by signal, print latency info
-    println!("Client{} terminates.", args.idx);
-    let dir = &host_config["log-dir"][0];
-    let latency_file = format!("{}latency{}.log", dir, args.idx);
-    let mut latency = std::fs::File::create(&latency_file)
-        .map_err(|_| EnvTestError::FileOpError)?;
+    let mut average_latencies = vec![];
+    for host in &host_config["server-hosts"] {
+        let mut sum: u128 = 0;
+        for x in &latency_history[host] {
+            sum = sum + x;
+        }
 
-    let row1 = format!("This is a message.\n");
-    latency.write_all(&row1.as_bytes())
-        .map_err(|_| EnvTestError::FileOpError)?;
-
+        let avg = sum as f32 / latency_history[host].len() as f32;
+        average_latencies.push(avg);
+    }
+    
+    println!("Client{}: {:?}.", args.idx, average_latencies);
     Ok(())
 }
 
-fn tcp_client(term: Arc<AtomicBool>, host_config: &HashMap<String, Vec<String>>) -> Result<(), EnvTestError> {
+fn tcp_client(term: Arc<AtomicBool>,
+              host_config: &HashMap<String, Vec<String>>,
+              latency_history: &mut HashMap<&String, Vec<u128>>
+) -> Result<(), EnvTestError> {
     let args = Args::parse();
     let dir = &host_config["log-dir"][0];
     let log_file = format!("{}env_client{}_rtt.log", dir, args.idx);
@@ -85,8 +94,9 @@ fn tcp_client(term: Arc<AtomicBool>, host_config: &HashMap<String, Vec<String>>)
             stream.read(&mut rx_bytes)
                 .map_err(|_| EnvTestError::TcpReadError)?;
 
-            let entry = format!("{:?}\n", sent.elapsed().unwrap());
-            log.write_all(&entry.as_bytes())
+            let duration = sent.elapsed().unwrap();
+            latency_history.get_mut(host).map(|val| val.push(duration.as_millis()));
+            log.write_all(&format!("{:?}\n", duration).as_bytes())
                 .map_err(|_| EnvTestError::FileOpError)?;
 
             thread::sleep(time::Duration::from_millis(50));
