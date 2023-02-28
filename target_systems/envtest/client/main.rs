@@ -22,8 +22,6 @@ struct Args {
 async fn main() -> Result<(), EnvTestError> {
     let args = Args::parse();
 
-    println!("This is envtest client#{}.", args.idx);
-
     let config_builder = Config::builder()
         .add_source(File::with_name("config/host"))
         .build()
@@ -34,6 +32,8 @@ async fn main() -> Result<(), EnvTestError> {
         .map_err(|_| EnvTestError::ConfigError)?;
 
     let log_file = format!("{}env_client.log", &host_config["log-dir"][0]);
+    println!("This is envtest client#{} logging to {}.", args.idx, log_file);
+
     let mut file = std::fs::File::create(log_file)
         .map_err(|_| EnvTestError::FileOpError)?;
     file.write_all(b"This is the log of an envtest client.\n")
