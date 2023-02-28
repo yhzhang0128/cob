@@ -10,6 +10,10 @@ use std::io::prelude::*;
 use std::net::TcpStream;
 use std::time::SystemTime;
 
+use std::sync::Arc;
+use signal_hook::flag;
+use std::sync::atomic::{AtomicBool, Ordering};
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
@@ -33,15 +37,21 @@ async fn main() -> Result<(), EnvTestError> {
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| EnvTestError::ConfigError)?;
 
-    let log_file = format!("{}env_client{}_rtt.log",
-                           &host_config["log-dir"][0],
-                           args.idx);
-    println!("This is envtest client#{} logging to {}.", args.idx, log_file);
-
-    let mut log = std::fs::File::create(log_file)
+    let dir = &host_config["log-dir"][0];
+    let log_file = format!("{}env_client{}_rtt.log", dir, args.idx);
+    let latency_file = format!("{}latency{}.log", dir, args.idx);
+    let mut log = std::fs::File::create(&log_file)
         .map_err(|_| EnvTestError::FileOpError)?;
+    let mut latency = std::fs::File::create(&latency_file)
+        .map_err(|_| EnvTestError::FileOpError)?;
+    println!("This is envtest client#{} logging to {}.", args.idx, log_file);
+    // Ask signal_hook to set the term variable to true
+    // when the program receives a SIGTERM kill signal
+    let term = Arc::new(AtomicBool::new(false));
+    flag::register(signal_hook::consts::SIGTERM, Arc::clone(&term))
+        .map_err(|_| EnvTestError::SigTermHandlerError)?;
 
-    loop {
+    while !term.load(Ordering::Relaxed) {
         let num_servers = host_config["server-hosts"].len();
         for idx in 1..num_servers {
             let host = &host_config["server-hosts"][idx];
@@ -62,5 +72,12 @@ async fn main() -> Result<(), EnvTestError> {
 
             thread::sleep(time::Duration::from_millis(50));
         }
-    };
+    }
+
+    // Client terminated by signal, print latency info
+    let row1 = format!("Write to file after terminated\n");
+    latency.write_all(&row1.as_bytes())
+        .map_err(|_| EnvTestError::FileOpError)?;
+
+    Ok(())
 }
