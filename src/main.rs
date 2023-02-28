@@ -17,6 +17,9 @@ async fn main() -> Result<(), OracleError> {
     let cli = Cli::parse();
 
     match cli.action {
+        Action::Kill { } => {
+            killall(true).await?
+        }
         Action::Eval { target_arg } => {
             match target_arg.as_str() {
                 "envtest" => { evaluate(TargetType::EnvTest).await?; }
@@ -25,9 +28,6 @@ async fn main() -> Result<(), OracleError> {
                 _ => { Err(OracleError::UnknownTarget)? }
             }
             killall(false).await?
-        }
-        Action::Kill { } => {
-            killall(true).await?
         }
     };
 
