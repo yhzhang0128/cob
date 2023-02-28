@@ -53,6 +53,7 @@ async fn main() -> Result<(), EnvTestError> {
     }
 
     // Client terminated by signal, print latency info
+    let mut count = vec![];
     let mut average_latencies = vec![];
     for host in &host_config["server-hosts"] {
         let mut sum: u128 = 0;
@@ -62,9 +63,10 @@ async fn main() -> Result<(), EnvTestError> {
 
         let avg = sum as f32 / latency_history[host].len() as f32;
         average_latencies.push(avg);
+        count.push(latency_history[host].len());
     }
     
-    println!("Client{}: {:?}.", args.idx, average_latencies);
+    println!("Client{}: latency={:?}, count={:?}.", args.idx, average_latencies, count);
     Ok(())
 }
 
