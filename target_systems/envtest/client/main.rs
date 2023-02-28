@@ -1,6 +1,5 @@
 pub mod error;
 use clap::Parser;
-use colored::Colorize;
 use config::{Config, File};
 use std::collections::HashMap;
 use crate::error::EnvTestError;
@@ -59,7 +58,7 @@ async fn main() -> Result<(), EnvTestError> {
     }
     let avg = sum as f32 / latencies.len() as f32;
 
-    println!("client{} -> server{} :: {} with {}samples", args.idx, args.serveridx, format!("{}ms", avg).yellow(), latencies.len());
+    println!("client -> server [{}, {}] = {}ms \twith {}samples", args.idx, args.serveridx, avg, latencies.len());
     // println!("Client{}: latency={:?}, count={:?}.", args.idx, average_latencies, count);
     Ok(())
 }
