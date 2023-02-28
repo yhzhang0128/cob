@@ -13,9 +13,9 @@ binary-files = ["envtest_client", "envtest_server"]
 client-args = ["--config", "/opt/chance/target_config/host"]
 server-args = ["--config", "/opt/chance/target_config/host"]
 
-client-hosts = ["host5", "host6", "host7"]
-server-hosts = ["host0", "host1", "host2", "host3", "host4"]
-server-ports = ["10000", "10000", "10000", "10000", "10000"]
+client-hosts = ["host4", "host5", "host6", "host7"]
+server-hosts = ["host0", "host1", "host2", "host3"]
+server-ports = ["10000", "10000", "10000", "10000"]
 
 # client-args = ["--config", "/opt/chance/target_config/host.toml"]
 # server-args = ["--config", "/opt/chance/target_config/host.toml"]
