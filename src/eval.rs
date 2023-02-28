@@ -54,8 +54,6 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
                              .args(&host_config["server-args"])
                              .arg("--idx")
                              .arg(server_id.to_string())
-                             .arg("--latency")
-                             .arg("20")
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?
@@ -76,6 +74,8 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
                              .args(&host_config["client-args"])
                              .arg("--idx")
                              .arg(client_id.to_string())
+                             .arg("--latency")
+                             .arg("20")
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?
