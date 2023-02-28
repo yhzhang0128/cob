@@ -65,7 +65,7 @@ async fn main() -> Result<(), EnvTestError> {
         average_latencies.push(avg);
         count.push(latency_history[host].len());
     }
-    
+
     println!("Client{}: latency={:?}, count={:?}.", args.idx, average_latencies, count);
     Ok(())
 }
