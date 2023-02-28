@@ -24,9 +24,10 @@ async fn main() -> Result<(), OracleError> {
                 "pompe" => { evaluate(TargetType::Pompe).await?; }
                 _ => { Err(OracleError::UnknownTarget)? }
             }
+            killall(false).await?
         }
         Action::Kill { } => {
-            killall().await?
+            killall(true).await?
         }
     };
 
