@@ -16,11 +16,13 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
     for (_, s) in ssh_conns {
         // Cleanup directory for logs
         println!("rm -rf {}", log_dir);
-        s.command("rm")
+        let rm = s.command("rm")
             .args(["-rf", log_dir.as_str()])
             .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
+        println!("rm stdout: {:?}", rm.stdout);
+        println!("rm stderr: {:?}", rm.stderr);
 
         // Make directory for executable binaries
         s.command("mkdir")
