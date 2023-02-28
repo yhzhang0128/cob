@@ -72,15 +72,7 @@ async fn main() -> Result<(), EnvTestError> {
         }
     }
 
-    // Client terminated by signal, print latency info
-    let latency_file = format!("{}latency{}.log", dir, args.idx);
-    let mut latency = std::fs::File::create(&latency_file)
-        .map_err(|_| EnvTestError::FileOpError)?;
-
-    let row1 = format!("Write to file after terminated\n");
-    latency.write_all(&row1.as_bytes())
-        .map_err(|_| EnvTestError::FileOpError)?;
-
+    println!("Write to file after terminated\n");
     Ok(())
 }
 

@@ -3,6 +3,7 @@ use std::thread;
 use colored::Colorize;
 use indicatif::ProgressBar;
 
+use crate::kill::killall;
 use crate::cli::TargetType;
 use crate::error::OracleError;
 
@@ -94,6 +95,7 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
 
     // Collect output and close connections
     println!("{} Close the ssh connections.", "[7/7]".yellow());
+    killall(false).await?;
     close_ssh_conns(ssh_conns).await?;
 
     Ok(())
