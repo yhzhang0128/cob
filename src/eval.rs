@@ -60,7 +60,8 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
     thread::sleep(time::Duration::from_millis(1000));
 
     // Create geo-location latency mapping
-    let _latency_matrix = read_latency_config()?;    
+    let _latency_matrix = read_latency_config()?;
+    
     
     // Spawn client processes
     let mut client_id = 0;
@@ -94,7 +95,7 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    println!("{} Close the ssh connections.", "[6/6]".yellow());
+    println!("{} Collect output and close ssh connections.", "[6/6]".yellow());
     killall(false).await?;
     close_ssh_conns(ssh_conns).await?;
 
