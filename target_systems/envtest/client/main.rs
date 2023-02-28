@@ -48,7 +48,7 @@ async fn main() -> Result<(), EnvTestError> {
     // Ask signal_hook to set the term variable to true
     // when the program receives a SIGTERM kill signal
     let term = Arc::new(AtomicBool::new(false));
-    flag::register(signal_hook::consts::SIGTERM, Arc::clone(&term))
+    flag::register(signal_hook::consts::SIGKILL, Arc::clone(&term))
         .map_err(|_| EnvTestError::SigTermHandlerError)?;
 
     while !term.load(Ordering::Relaxed) {
