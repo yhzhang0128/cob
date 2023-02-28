@@ -21,8 +21,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
         if rm.stderr.len() > 0 {
-            println!("rm stderr on {}: {:?}", host, String::from_utf8(rm.stderr).unwrap());
-            Err(OracleError::SshCommandFailed)?
+            println!("  [warning] stderr from {}: {:?}", host, String::from_utf8(rm.stderr).unwrap());
         }
 
         // Make directory for executable binaries
