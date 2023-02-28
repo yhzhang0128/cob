@@ -33,17 +33,12 @@ async fn main() -> Result<(), EnvTestError> {
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| EnvTestError::ConfigError)?;
 
-    let log_file = format!("{}env_client{}.log",
+    let log_file = format!("{}env_client{}_rtt.log",
                            &host_config["log-dir"][0],
                            args.idx);
-    let raw_log_file = format!("{}env_client{}.log.raw",
-                               &host_config["log-dir"][0],
-                               args.idx);
     println!("This is envtest client#{} logging to {}.", args.idx, log_file);
 
     let mut log = std::fs::File::create(log_file)
-        .map_err(|_| EnvTestError::FileOpError)?;
-    let mut raw_log = std::fs::File::create(raw_log_file)
         .map_err(|_| EnvTestError::FileOpError)?;
 
     loop {
@@ -60,9 +55,6 @@ async fn main() -> Result<(), EnvTestError> {
             let mut rx_bytes = [0u8; 64];
             stream.read(&mut rx_bytes)
                 .map_err(|_| EnvTestError::TcpReadError)?;
-
-            raw_log.write_all(&rx_bytes)
-                .map_err(|_| EnvTestError::FileOpError)?;
 
             let entry = format!("{:?}\n", sent.elapsed().unwrap());
             log.write_all(&entry.as_bytes())
