@@ -45,6 +45,7 @@ async fn main() -> Result<(), EnvTestError> {
             let port = &host_config["server-ports"][idx];
 
             let addr = format!("{}:{}", host, port);
+            println!("Connect to addr {}", addr);
             let mut stream = TcpStream::connect(addr)
                 .map_err(|_| EnvTestError::TcpConnError)?;
 
