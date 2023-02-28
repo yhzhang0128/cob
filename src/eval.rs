@@ -2,6 +2,7 @@ use std::time;
 use std::thread;
 use colored::Colorize;
 use indicatif::ProgressBar;
+use std::collections::HashMap;
 
 use crate::kill::killall;
 use crate::cli::TargetType;
@@ -60,12 +61,30 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
     thread::sleep(time::Duration::from_millis(1000));
 
     // Create geo-location latency mapping
-    let _latency_matrix = read_latency_config()?;
-    
+    let latency_config = read_latency_config()?;
+    let mut idx : usize = 0;
+    let mut location_to_idx = HashMap::<String, usize>::new();
+    for l in &latency_config["locations"] {
+        location_to_idx.insert(l.to_string(), idx);
+        idx += 1;
+    }
+    idx = 0;
+    let mut host_to_lidx = HashMap::<String, usize>::new();
+    let mut host_to_location = HashMap::<String, String>::new();
+    for h in &host_config["hostnames"] {
+        let l = &host_config["locations"][idx];
+        host_to_location.insert(h.to_string(), l.to_string());
+        host_to_lidx.insert(h.to_string(), location_to_idx[l]);
+        idx += 1;
+    }
     
     // Spawn client processes
     let mut client_id = 0;
     for client in &host_config["client-hosts"] {
+        for server in &host_config["server-hosts"] {
+            println!("From {} to {}: {}ms", client, server,
+            latency_config[&host_to_location[client]][host_to_lidx[server]]);
+        }
         match ssh_conns.get(client) {
             None => { Err(OracleError::InvalidClientHost)? }
             Some(s) => {

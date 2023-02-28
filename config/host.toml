@@ -1,6 +1,6 @@
 # Hostname and geo-locationof all machines
-hostnames = ["host0",   "host1",   "host2",   "host3",   "host4",   "host5",   "host6",   "host7", ]
-locations = ["us-west", "us-west", "eu-west", "eu-west", "au",      "us-west", "eu-west", "au"]
+hostnames = ["host0",   "host1",   "host2",   "host3", "host4",   "host5",   "host6",   "host7", ]
+locations = ["eu-west", "us-east", "us-west", "au"   , "eu-west", "us-east", "us-west", "au"]
 
 # Envtest files and directories
 log-dir = ["/users/Yunhao/log/"]
