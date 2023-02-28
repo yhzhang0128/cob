@@ -14,6 +14,9 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Action {
+    #[clap(about = "Kill processes on remote hots.")]
+    Kill {
+    },
     #[clap(about = "Evaluate a target system.")]
     Eval {
         #[clap(
@@ -22,9 +25,6 @@ pub enum Action {
             help = "Specify the target system for evaluation."
         )]
         target_arg: String,
-    },
-    #[clap(about = "Kill processes on remote hots.")]
-    Kill {
     },
 }
 
