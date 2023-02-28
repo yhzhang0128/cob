@@ -2,5 +2,7 @@
 pub enum EnvTestError {
     ConfigError,
     FileOpError,
+    TcpConnError,
+    TcpReadError,
 }
 

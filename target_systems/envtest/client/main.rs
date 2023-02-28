@@ -3,7 +3,9 @@ use clap::Parser;
 use config::{Config, File};
 use std::collections::HashMap;
 use crate::error::EnvTestError;
+
 use std::io::prelude::*;
+use std::net::TcpStream;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -35,8 +37,23 @@ async fn main() -> Result<(), EnvTestError> {
 
     let mut file = std::fs::File::create(log_file)
         .map_err(|_| EnvTestError::FileOpError)?;
-    file.write_all(b"This is the log of an envtest client.\n")
-        .map_err(|_| EnvTestError::FileOpError)?;
 
-    loop {};
+    loop {
+        let num_servers = host_config["server-hosts"].len();
+        for idx in 1..num_servers {
+            let host = &host_config["server-hosts"][idx];
+            let port = &host_config["server-ports"][idx];
+
+            let addr = format!("{}:{}", host, port);
+            let mut stream = TcpStream::connect(addr)
+                .map_err(|_| EnvTestError::TcpConnError)?;
+
+            let mut rx_bytes = [0u8; 64];
+            stream.read(&mut rx_bytes)
+                .map_err(|_| EnvTestError::TcpReadError)?;
+
+            file.write_all(&rx_bytes)
+                .map_err(|_| EnvTestError::FileOpError)?;
+        }
+    };
 }
