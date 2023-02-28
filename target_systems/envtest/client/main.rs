@@ -4,9 +4,11 @@ use config::{Config, File};
 use std::collections::HashMap;
 use crate::error::EnvTestError;
 
-use std::{thread, time};
+use std::time;
+use std::thread;
 use std::io::prelude::*;
 use std::net::TcpStream;
+use std::str::from_utf8;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -34,9 +36,14 @@ async fn main() -> Result<(), EnvTestError> {
     let log_file = format!("{}env_client{}.log",
                            &host_config["log-dir"][0],
                            args.idx);
+    let raw_log_file = format!("{}env_client{}.log.raw",
+                               &host_config["log-dir"][0],
+                               args.idx);
     println!("This is envtest client#{} logging to {}.", args.idx, log_file);
 
-    let mut file = std::fs::File::create(log_file)
+    let mut log = std::fs::File::create(log_file)
+        .map_err(|_| EnvTestError::FileOpError)?;
+    let mut raw_log = std::fs::File::create(raw_log_file)
         .map_err(|_| EnvTestError::FileOpError)?;
 
     loop {
@@ -53,10 +60,17 @@ async fn main() -> Result<(), EnvTestError> {
             stream.read(&mut rx_bytes)
                 .map_err(|_| EnvTestError::TcpReadError)?;
 
-            file.write_all(&rx_bytes)
+            raw_log.write_all(&rx_bytes)
                 .map_err(|_| EnvTestError::FileOpError)?;
 
-            thread::sleep(time::Duration::from_millis(500));
+            let tv_sec  = from_utf8(&rx_bytes[21..31]).unwrap();
+            let tv_nsec = from_utf8(&rx_bytes[42..51]).unwrap();
+
+            let entry = format!("{}:{}\n", tv_sec, tv_nsec);
+            log.write_all(&entry.as_bytes())
+                .map_err(|_| EnvTestError::FileOpError)?;
+
+            thread::sleep(time::Duration::from_millis(50));
         }
     };
 }
