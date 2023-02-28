@@ -1,6 +1,9 @@
+pub mod error;
 use clap::Parser;
-// use std::fs::File;
-// use std::io::prelude::*;
+use config::{Config, File};
+use std::collections::HashMap;
+use crate::error::EnvTestError;
+use std::io::prelude::*;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -15,12 +18,26 @@ struct Args {
    idx: u8,
 }
 
-
-fn main() -> std::io::Result<()> {
-    // let mut file = File::create("/users/Yunhao/client_log.txt")?;
-    // file.write_all(b"This is envtest client.\n")?;
+#[tokio::main]
+async fn main() -> Result<(), EnvTestError> {
     let args = Args::parse();
 
     println!("This is envtest client#{}.", args.idx);
+
+    let config_builder = Config::builder()
+        .add_source(File::with_name("config/host"))
+        .build()
+        .map_err(|_| EnvTestError::ConfigError)?;
+
+    let host_config = config_builder
+        .try_deserialize::<HashMap<String, Vec<String>>>()
+        .map_err(|_| EnvTestError::ConfigError)?;
+
+    let log_file = format!("{}env_client.log", &host_config["log-dir"][0]);
+    let mut file = std::fs::File::create(log_file)
+        .map_err(|_| EnvTestError::FileOpError)?;
+    file.write_all(b"This is the log of an envtest client.\n")
+        .map_err(|_| EnvTestError::FileOpError)?;
+
     loop {};
 }
