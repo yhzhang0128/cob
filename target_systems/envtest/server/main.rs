@@ -46,7 +46,7 @@ async fn main() -> Result<(), EnvTestError> {
         let mut stream = stream.unwrap();
 
         let sys_time = SystemTime::now();
-        let response = format!("server{}: {:?}\n", idx, sys_time);
+        let response = format!("{:?}, server{}\n", sys_time, idx);
 
         stream.write_all(response.as_bytes()).unwrap();
     }
