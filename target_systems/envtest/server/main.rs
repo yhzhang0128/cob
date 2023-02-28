@@ -14,10 +14,9 @@ use std::{
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    #[arg(short, long)]
+    #[arg(long)]
     host: String,
-
-    #[arg(short, long)]
+    #[arg(long)]
     idx: usize,
 }
 

@@ -17,11 +17,11 @@ use std::sync::atomic::{AtomicBool, Ordering};
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    #[arg(short, long)]
+    #[arg(long)]
     host: String,
-    #[arg(short, long)]
+    #[arg(long)]
     latency: u64,
-    #[arg(short, long)]
+    #[arg(long)]
     idx: u8,
 }
 
