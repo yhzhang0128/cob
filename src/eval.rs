@@ -20,6 +20,8 @@ pub async fn evaluate(target: TargetType) -> Result<(), OracleError>{
 
     // Start ssh connections
     let host_config = read_host_config()?;
+    let num_hosts = host_config["hostnames"].len();
+    println!("[1/7] Start ssh connections to {} remote hosts.", num_hosts);
     let ssh_conns = start_ssh_conns(&host_config["hostnames"]).await?;
     
     // Setup network latency emulation
