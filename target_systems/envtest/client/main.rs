@@ -30,8 +30,6 @@ struct Args {
 #[tokio::main]
 async fn main() -> Result<(), EnvTestError> {
     let args = Args::parse();
-    println!("Enter client{}!", args.idx);
-
     let config_builder = Config::builder()
         .add_source(File::with_name(args.config.as_str()))
         .build()
@@ -77,7 +75,7 @@ fn tcp_client(term: Arc<AtomicBool>,
 
     let host = &config["server-hosts"][args.serveridx];
     let port = &config["server-ports"][args.serveridx];
-    println!("Client{} listens to host {} port {}", args.idx, host, port);
+    //println!("Client{} listens to host {} port {}", args.idx, host, port);
     
     while !term.load(Ordering::Relaxed) {
         let sent = SystemTime::now();
