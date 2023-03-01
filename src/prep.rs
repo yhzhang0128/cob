@@ -14,7 +14,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
     let remote_log_dir = &config["log-dir"][0];
 
     // Create directories for copying the client/server binaries
-    println!("{} Setup directories for log, binary and config files on remote hosts.", "[2/6]".yellow());
+    println!("{} Setup directories for log, binary and config files on remote hosts.", "[3/7]".yellow());
     for (host, s) in ssh_conns {
         // Make directory for executable binaries
         let mkdir1 = s.command("mkdir")
@@ -62,7 +62,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
     }
 
     // Copy client and server binaries to remote hosts
-    println!("{} Copy binary and config files to remote hosts.", "[3/6]".yellow());
+    println!("{} Copy binary and config files to remote hosts.", "[4/7]".yellow());
 
     let hosts = &config["hostnames"];
     let file_per_host = config["binary-files"].len() + config["config-files"].len();

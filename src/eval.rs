@@ -1,6 +1,7 @@
 use std::time;
 use std::thread;
 use colored::Colorize;
+use std::process::Command;
 use indicatif::ProgressBar;
 
 use crate::kill::killall;
@@ -19,9 +20,15 @@ pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleEr
     println!("{}", format!("Target: {:?}", target).green().bold());
     println!("{}", format!("Duration: {:?}ms", duration).green().bold());
 
-    // Start ssh connections
     let host_config = read_host_config(&target)?;
-    println!("{} Start ssh connections to {} remote hosts.", "[1/6]".yellow(), host_config["hostnames"].len());
+    // Build the target
+    println!("{} Build target {:?}.", "[1/7]".yellow(), target);
+    Command::new(&host_config["build"][0])
+        .output()
+        .map_err(|_| OracleError::BuildFailed)?;
+    
+    // Start ssh connections
+    println!("{} Start ssh connections to {} remote hosts.", "[2/7]".yellow(), host_config["hostnames"].len());
     let ssh_conns = start_ssh_conns(&host_config["hostnames"]).await?;
 
     // Prepare the directories and binary files
@@ -40,7 +47,7 @@ pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleEr
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    println!("{} Collect output from {} processes and close ssh connections.", "[6/6]".yellow(), processes.len());
+    println!("{} Collect output from {} processes and close ssh connections.", "[7/7]".yellow(), processes.len());
     killall(&target, false).await?;
     close_ssh_conns(ssh_conns).await?;
 

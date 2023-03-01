@@ -2,6 +2,7 @@
 pub enum OracleError {
     UnknownTarget,
     ConfigError,
+    BuildFailed,
     SshConnFailed,
     SshCloseFailed,
     SshCommandFailed,

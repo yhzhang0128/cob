@@ -54,7 +54,7 @@ pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
         }
         server_id += 1;
     }
-    println!("{} Execute {} server processes on remote hosts.", "[4/6]".yellow(), server_id);
+    println!("{} Execute {} server processes on remote hosts.", "[5/7]".yellow(), server_id);
     thread::sleep(time::Duration::from_millis(1000));
 
     // Create geo-location latency mapping
@@ -106,7 +106,7 @@ pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
         }
         client_id += 1;
     }
-    println!("{} Execute {} client processes on remote hosts.", "[5/6]".yellow(), host_config["client-hosts"].len() * host_config["server-hosts"].len());
+    println!("{} Execute {} client processes on remote hosts.", "[6/7]".yellow(), host_config["client-hosts"].len() * host_config["server-hosts"].len());
 
     Ok(process)
 }
