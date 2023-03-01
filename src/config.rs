@@ -5,12 +5,12 @@ use crate::error::OracleError;
 
 pub fn read_host_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, OracleError> {
     let target_config = match target {
-        TargetType::EnvTest => "envtest",
-        TargetType::HotStuff => "hotstuff",
-        TargetType::Pompe => "pompe",
+        TargetType::EnvTest => "config/envtest",
+        TargetType::HotStuff => "config/hotstuff",
+        TargetType::Pompe => "config/pompe",
         _ => "unknown"
     };
-    
+
     let host_config = Config::builder()
         .add_source(File::with_name("config/host"))
         .add_source(File::with_name(target_config))
