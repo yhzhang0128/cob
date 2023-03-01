@@ -3,7 +3,7 @@ use crate::cli::TargetType;
 use std::collections::HashMap;
 use crate::error::OracleError;
 
-pub fn read_host_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, OracleError> {
+pub fn read_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, OracleError> {
     let target_config = match target {
         TargetType::EnvTest => "config/envtest",
         TargetType::HotStuff => "config/hotstuff",
@@ -11,13 +11,13 @@ pub fn read_host_config(target: &TargetType) -> Result<HashMap<String, Vec<Strin
         _ => Err( OracleError::ConfigError )?
     };
 
-    let host_config = Config::builder()
+    let config = Config::builder()
         .add_source(File::with_name("config/host"))
         .add_source(File::with_name(target_config))
         .build()
         .map_err(|_| OracleError::ConfigError)?;
 
-    return host_config
+    return config
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| OracleError::ConfigError);
 }
