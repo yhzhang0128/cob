@@ -4,6 +4,7 @@ pub mod eval;
 pub mod kill;
 pub mod prep;
 pub mod error;
+pub mod spawn;
 pub mod config;
 
 use cli::*;

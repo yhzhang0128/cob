@@ -2,7 +2,6 @@ use std::time;
 use std::thread;
 use colored::Colorize;
 use indicatif::ProgressBar;
-use std::collections::HashMap;
 
 use crate::kill::killall;
 use crate::cli::TargetType;
@@ -12,11 +11,9 @@ use crate::ssh::{
     start_ssh_conns,
     close_ssh_conns,
 };
-use crate::config::{
-    read_host_config,
-    read_latency_config,
-};
 use crate::prep::prepare_files;
+use crate::spawn::spawn_target;
+use crate::config::read_host_config;
 
 pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleError>{
     println!("{}", format!("Target: {:?}", target).green().bold());
@@ -24,90 +21,14 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
 
     // Start ssh connections
     let host_config = read_host_config()?;
-    let num_hosts = host_config["hostnames"].len();
-    println!("{} Start ssh connections to {} remote hosts.", "[1/6]".yellow(), num_hosts);
+    println!("{} Start ssh connections to {} remote hosts.", "[1/6]".yellow(), host_config["hostnames"].len());
     let ssh_conns = start_ssh_conns(&host_config["hostnames"]).await?;
 
     // Prepare the directories and binary files
     prepare_files(&ssh_conns, &host_config).await?;
 
-    let mut clients = vec![];
-    let mut servers = vec![];
-    let binary_dir = &host_config["remote-dir"][0];
-    let client_bin = &host_config["binary-files"][0];
-    let server_bin = &host_config["binary-files"][1];
-    let client_cmd = format!("{}{}", binary_dir, client_bin);
-    let server_cmd = format!("{}{}", binary_dir, server_bin);
-
-    // Spawn server processes
-    let mut server_id = 0;
-    for server in &host_config["server-hosts"] {
-        match ssh_conns.get(server) {
-            None => { Err(OracleError::InvalidServerHost)? }
-            Some(s) => {
-                servers.push(s.command(server_cmd.as_str())
-                             .args(&host_config["server-args"])
-                             .arg("--idx")
-                             .arg(server_id.to_string())
-                             .spawn()
-                             .await
-                             .map_err(|_| OracleError::SshCommandFailed)?
-                );
-            }
-        }
-        server_id += 1;
-    }
-    println!("{} Execute {} servers on remote hosts.", "[4/6]".yellow(), server_id);
-    thread::sleep(time::Duration::from_millis(1000));
-
-    // Create geo-location latency mapping
-    let latency_config = read_latency_config()?;
-    let mut idx : usize = 0;
-    let mut location_to_idx = HashMap::<String, usize>::new();
-    for l in &latency_config["locations"] {
-        location_to_idx.insert(l.to_string(), idx);
-        idx += 1;
-    }
-    idx = 0;
-    let mut host_to_lidx = HashMap::<String, usize>::new();
-    let mut host_to_location = HashMap::<String, String>::new();
-    for h in &host_config["hostnames"] {
-        let l = &host_config["locations"][idx];
-        host_to_location.insert(h.to_string(), l.to_string());
-        host_to_lidx.insert(h.to_string(), location_to_idx[l]);
-        idx += 1;
-    }
-    
-    // Spawn client processes
-    let mut client_id = 0;
-    for client in &host_config["client-hosts"] {
-        let mut server_id = 0;
-        for server in &host_config["server-hosts"] {
-            let latency = &latency_config[&host_to_location[client]]
-                                         [host_to_lidx[server]];
-            //println!("From {} to {}: {}ms", client, server, latency);
-            match ssh_conns.get(client) {
-                None => { Err(OracleError::InvalidClientHost)? }
-                Some(s) => {
-                    clients.push(s.command(client_cmd.as_str())
-                                 .args(&host_config["client-args"])
-                                 .arg("--idx")
-                                 .arg(client_id.to_string())
-                                 .arg("--serveridx")
-                                 .arg(server_id.to_string())
-                                 .arg("--latency")
-                                 .arg(latency.to_string())
-                                 .spawn()
-                                 .await
-                                 .map_err(|_| OracleError::SshCommandFailed)?
-                    );
-                }
-            }
-            server_id += 1;
-        }
-        client_id += 1;
-    }
-    println!("{} Execute {} clients on remote hosts.", "[5/6]".yellow(), client_id);
+    // Spawn server and client processes on remote machines
+    spawn_target(target, &ssh_conns, &host_config).await?;
 
     // Wait a duration and terminate the experiment
     let pb = ProgressBar::new_spinner();
