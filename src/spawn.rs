@@ -104,6 +104,7 @@ pub async fn spawn_envtest(ssh_conns: &HashMap<String, Session>,
         client_id += 1;
     }
     println!("{} Execute {} clients on remote hosts.", "[5/6]".yellow(), client_id);
+    thread::sleep(time::Duration::from_millis(1000));
 
     Ok(())
 }
