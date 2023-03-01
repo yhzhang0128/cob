@@ -3,6 +3,7 @@ hostnames = ["host0",   "host1",   "host2",   "host3", "host4",   "host5",   "ho
 locations = ["eu-west", "us-east", "us-west", "au"   , "eu-west", "us-east", "us-west", "au"]
 
 # Envtest files and directories
+build = ["script/build_envtest.sh"]
 log-dir = ["/users/Yunhao/log/"]
 local-dir = ["/opt/chance/cob/target/debug/", "/opt/chance/cob/config/"]
 remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
