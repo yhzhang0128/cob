@@ -1,7 +1,8 @@
 [submodule "target_systems/libhotstuff"]
 	path = target_systems/hotstuff
-	url = git@github.com:hot-stuff/libhotstuff.git
+	url = git@github.com:Pompe-org/libhotstuff.git
+	branch = cob-hotstuff
 [submodule "target_systems/pompe"]
 	path = target_systems/pompe
 	url = git@github.com:Pompe-org/libhotstuff.git
-	branch = pompe
+	branch = cob-pompe
