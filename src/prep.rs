@@ -74,6 +74,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
             let file = format!("{}{}", local_bin_dir, bin);
             let bin_dir = format!("{}:{}", host, remote_bin_dir);
             Command::new("scp")
+                .arg("-r")
                 .args([file.as_str(), bin_dir.as_str()])
                 .output()
                 .map_err(|_| OracleError::BinaryCopyFailed)?;
@@ -85,6 +86,7 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
             let file = format!("{}{}", local_config_dir, con);
             let config_dir = format!("{}:{}", host, remote_config_dir);
             Command::new("scp")
+                .arg("-r")
                 .args([file.as_str(), config_dir.as_str()])
                 .output()
                 .map_err(|_| OracleError::BinaryCopyFailed)?;
