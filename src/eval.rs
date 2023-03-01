@@ -40,7 +40,7 @@ pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleEr
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    println!("{} Collect output from {} processes and close ssh connections.", processes.len(), "[6/6]".yellow());
+    println!("{} Collect output from {} processes and close ssh connections.", "[6/6]".yellow(), processes.len());
     killall(&target, false).await?;
     close_ssh_conns(ssh_conns).await?;
 

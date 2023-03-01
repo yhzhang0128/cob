@@ -106,7 +106,7 @@ pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
         }
         client_id += 1;
     }
-    println!("{} Execute {} client processes on remote hosts.", "[5/6]".yellow(), client_id * server_id);
+    println!("{} Execute {} client processes on remote hosts.", "[5/6]".yellow(), host_config["client-hosts"].len() * host_config["server-hosts"].len());
 
     Ok(process)
 }
