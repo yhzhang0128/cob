@@ -12,6 +12,7 @@ pub async fn killall(target: &TargetType, print: bool) -> Result<(), OracleError
     let server_bin = &host_config["binary-files"][1];
 
     for (host, s) in ssh_conns {
+        println!("Kill {} and {} on host {}", client_bin, server_bin, host);
         let kill1 = s.command("killall")
             .args([client_bin.as_str()])
             .output()

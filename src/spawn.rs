@@ -84,7 +84,7 @@ pub async fn spawn_envtest(ssh_conns: &HashMap<String, Session>,
             match ssh_conns.get(client) {
                 None => { Err(OracleError::InvalidClientHost)? }
                 Some(s) => {
-                    println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &host_config["client-args"], client_id, server_id, latency);
+                    //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &host_config["client-args"], client_id, server_id, latency);
                     clients.push(s.command(client_cmd.as_str())
                                  .args(&host_config["client-args"])
                                  .arg("--idx")
