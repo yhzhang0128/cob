@@ -30,6 +30,8 @@ struct Args {
 #[tokio::main]
 async fn main() -> Result<(), EnvTestError> {
     let args = Args::parse();
+    println!("Enter client{}!", args.idx);
+
     let config_builder = Config::builder()
         .add_source(File::with_name(args.config.as_str()))
         .build()
