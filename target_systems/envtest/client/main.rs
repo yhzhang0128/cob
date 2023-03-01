@@ -73,11 +73,11 @@ fn tcp_client(term: Arc<AtomicBool>,
     let mut log = std::fs::File::create(&log_file)
         .map_err(|_| EnvTestError::FileOpError)?;
 
+    let host = &config["server-hosts"][args.serveridx];
+    let port = &config["server-ports"][args.serveridx];
+    println!("Client{} listens to host {} port {}", args.idx, host, port);
+    
     while !term.load(Ordering::Relaxed) {
-        let idx = args.serveridx;
-        let host = &config["server-hosts"][idx];
-        let port = &config["server-ports"][idx];
-
         let sent = SystemTime::now();
         //Insert latency
         thread::sleep(time::Duration::from_millis(args.latency));
