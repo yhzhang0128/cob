@@ -1,0 +1,16 @@
+# Envtest files and directories
+build = ["script/build_hotstuff.sh"]
+
+log-dir = ["/users/Yunhao/log/"]
+local-dir = ["/opt/chance/cob/target_systems/hotstuff/examples/", "/opt/chance/cob/target_systems/hotstuff/"]
+remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
+
+config-files = ["hotstuff.toml"]
+binary-files = ["hotstuff-client", "hotstuff-app"]
+
+client-args = ["--config", "/opt/chance/target_config/"]
+server-args = ["--config", "/opt/chance/target_config/"]
+
+client-hosts = ["host4", "host5", "host6", "host7"]
+server-hosts = ["host0", "host1", "host2", "host3"]
+server-ports = ["10000", "10000", "10000", "10000"]
