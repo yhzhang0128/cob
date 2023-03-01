@@ -24,6 +24,12 @@ pub struct Cli {
 pub enum Action {
     #[clap(about = "Kill processes on remote hots.")]
     Kill {
+        #[clap(
+            short = 't', long = "target",
+            default_value = "envtest",
+            help = "Specify the target system to kill."
+        )]
+        target_str: String,
     },
     #[clap(about = "Evaluate a target system.")]
     Eval {
@@ -32,7 +38,7 @@ pub enum Action {
             default_value = "envtest",
             help = "Specify the target system for evaluation."
         )]
-        target_arg: String,
+        target_str: String,
         #[clap(
             short = 'd', long = "duration",
             default_value = "5000",

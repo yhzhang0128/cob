@@ -8,7 +8,7 @@ use crate::cli::TargetType;
 use crate::error::OracleError;
 use crate::config::read_latency_config;
 
-pub async fn spawn_target(target: TargetType,
+pub async fn spawn_target(target: &TargetType,
                           ssh_conns: &HashMap<String, Session>,
                           host_config: &HashMap<String, Vec<String>>
 ) -> Result<(), OracleError> {

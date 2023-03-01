@@ -18,7 +18,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 #[command(author, version, about, long_about = None)]
 struct Args {
     #[arg(long)]
-    host: String,
+    config: String,
     #[arg(long)]
     latency: u64,
     #[arg(long)]
@@ -31,10 +31,10 @@ struct Args {
 async fn main() -> Result<(), EnvTestError> {
     let args = Args::parse();
     let config_builder = Config::builder()
-        .add_source(File::with_name(args.host.as_str()))
+        .add_source(File::with_name(args.config.as_str()))
         .build()
         .map_err(|_| EnvTestError::ConfigError)?;
-    let host_config = config_builder
+    let config = config_builder
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| EnvTestError::ConfigError)?;
 
@@ -46,7 +46,7 @@ async fn main() -> Result<(), EnvTestError> {
 
     // Execute TCP client logic
     let mut latencies: Vec<u128> = vec![];
-    match tcp_client(term, &mut latencies, &host_config) {
+    match tcp_client(term, &mut latencies, &config) {
         Ok(()) => {}
         Err(_err) => { /*TCP error can occur when experiment terminates*/ }
     }
@@ -65,18 +65,18 @@ async fn main() -> Result<(), EnvTestError> {
 
 fn tcp_client(term: Arc<AtomicBool>,
               latencies: &mut Vec<u128>,
-              host_config: &HashMap<String, Vec<String>>
+              config: &HashMap<String, Vec<String>>
 ) -> Result<(), EnvTestError> {
     let args = Args::parse();
-    let dir = &host_config["log-dir"][0];
+    let dir = &config["log-dir"][0];
     let log_file = format!("{}env_client{}_{}_rtt.log", dir, args.idx, args.serveridx);
     let mut log = std::fs::File::create(&log_file)
         .map_err(|_| EnvTestError::FileOpError)?;
 
     while !term.load(Ordering::Relaxed) {
         let idx = args.serveridx;
-        let host = &host_config["server-hosts"][idx];
-        let port = &host_config["server-ports"][idx];
+        let host = &config["server-hosts"][idx];
+        let port = &config["server-ports"][idx];
 
         let sent = SystemTime::now();
         //Insert latency

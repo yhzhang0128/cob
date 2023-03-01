@@ -15,12 +15,12 @@ use crate::prep::prepare_files;
 use crate::spawn::spawn_target;
 use crate::config::read_host_config;
 
-pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleError>{
+pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleError>{
     println!("{}", format!("Target: {:?}", target).green().bold());
     println!("{}", format!("Duration: {:?}ms", duration).green().bold());
 
     // Start ssh connections
-    let host_config = read_host_config()?;
+    let host_config = read_host_config(&target)?;
     println!("{} Start ssh connections to {} remote hosts.", "[1/6]".yellow(), host_config["hostnames"].len());
     let ssh_conns = start_ssh_conns(&host_config["hostnames"]).await?;
 
@@ -41,7 +41,7 @@ pub async fn evaluate(target: TargetType, duration: u64) -> Result<(), OracleErr
 
     // Collect output and close connections
     println!("{} Collect output and close ssh connections.", "[6/6]".yellow());
-    killall(false).await?;
+    killall(&target, false).await?;
     close_ssh_conns(ssh_conns).await?;
 
     Ok(())

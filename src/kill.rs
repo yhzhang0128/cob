@@ -1,10 +1,11 @@
+use crate::TargetType;
 use crate::error::OracleError;
 use crate::ssh::start_ssh_conns;
 use crate::config::read_host_config;
 
-pub async fn killall(print: bool) -> Result<(), OracleError>{
+pub async fn killall(target: &TargetType, print: bool) -> Result<(), OracleError>{
     // Start ssh connections
-    let host_config = read_host_config()?;
+    let host_config = read_host_config(target)?;
     let ssh_conns = start_ssh_conns(&host_config["hostnames"]).await?;
 
     let client_bin = &host_config["binary-files"][0];

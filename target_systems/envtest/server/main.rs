@@ -15,9 +15,9 @@ use std::{
 #[command(author, version, about, long_about = None)]
 struct Args {
     #[arg(long)]
-    host: String,
-    #[arg(long)]
     idx: usize,
+    #[arg(long)]
+    config: String,
 }
 
 #[tokio::main]
@@ -26,16 +26,16 @@ async fn main() -> Result<(), EnvTestError> {
     let idx = args.idx;
 
     let config_builder = Config::builder()
-        .add_source(File::with_name(args.host.as_str()))
+        .add_source(File::with_name(args.config.as_str()))
         .build()
         .map_err(|_| EnvTestError::ConfigError)?;
 
-    let host_config = config_builder
+    let config = config_builder
         .try_deserialize::<HashMap<String, Vec<String>>>()
         .map_err(|_| EnvTestError::ConfigError)?;
 
-    let host = &host_config["server-hosts"][idx];
-    let port = &host_config["server-ports"][idx];
+    let host = &config["server-hosts"][idx];
+    let port = &config["server-ports"][idx];
     let bind = format!("{}:{}", host, port);
     println!("This is envtest server#{}, port={}.", idx, port);
 

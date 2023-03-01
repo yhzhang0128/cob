@@ -18,22 +18,17 @@ async fn main() -> Result<(), OracleError> {
     let cli = Cli::parse();
 
     match cli.action {
-        Action::Kill { } => {
-            killall(true).await?
+        Action::Kill { target_str } => {
+            let target = target_type(&target_str)?;
+            killall(&target, true).await?
         }
-        Action::Eval { target_arg, duration } => {
-            let mut target = TargetType::Unknown;
-            match target_arg.as_str() {
-                "envtest" => { target = TargetType::EnvTest; }
-                "hotstuff" => { target = TargetType::HotStuff; }
-                "pompe" => { target = TargetType::Pompe; }
-                _ => { Err(OracleError::UnknownTarget)? }
-            }
 
-            match evaluate(target, duration).await {
-                Ok(()) => { killall(false).await?; }
+        Action::Eval { target_str, duration } => {
+            let target = target_type(&target_str)?;
+            match evaluate(&target, duration).await {
+                Ok(()) => { killall(&target, false).await?; }
                 Err(err) => {
-                    killall(false).await.unwrap();
+                    killall(&target, false).await.unwrap();
                     Err(err)?
                 }
             }
@@ -41,4 +36,14 @@ async fn main() -> Result<(), OracleError> {
     };
 
     Ok(())
+}
+
+fn target_type(target_str: &String) -> Result<TargetType, OracleError> {
+    match target_str.as_str() {
+        "envtest" => { return Ok(TargetType::EnvTest); }
+        "hotstuff" => { return Ok(TargetType::HotStuff); }
+        "pompe" => { return Ok(TargetType::Pompe); }
+        _ => { Err(OracleError::UnknownTarget)? }
+    }
+
 }
