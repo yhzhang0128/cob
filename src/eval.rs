@@ -28,7 +28,7 @@ pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleEr
     prepare_files(&ssh_conns, &host_config).await?;
 
     // Spawn server and client processes on remote machines
-    spawn_target(target, &ssh_conns, &host_config).await?;
+    let processes = spawn_target(target, &ssh_conns, &host_config).await?;
 
     // Wait a duration and terminate the experiment
     let pb = ProgressBar::new_spinner();
@@ -40,7 +40,7 @@ pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleEr
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    println!("{} Collect output and close ssh connections.", "[6/6]".yellow());
+    println!("{} Collect output from {} processes and close ssh connections.", processes.len(), "[6/6]".yellow());
     killall(&target, false).await?;
     close_ssh_conns(ssh_conns).await?;
 

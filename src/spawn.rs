@@ -1,6 +1,7 @@
 use std::time;
 use std::thread;
 use std::collections::HashMap;
+use openssh::process::RemoteChild;
 
 use openssh::Session;
 use colored::Colorize;
@@ -8,25 +9,27 @@ use crate::cli::TargetType;
 use crate::error::OracleError;
 use crate::config::read_latency_config;
 
-pub async fn spawn_target(target: &TargetType,
-                          ssh_conns: &HashMap<String, Session>,
-                          host_config: &HashMap<String, Vec<String>>
-) -> Result<(), OracleError> {
+pub async fn spawn_target<'a>(target: &TargetType,
+                              ssh_conns: &'a HashMap<String, Session>,
+                              host_config: &'a HashMap<String, Vec<String>>
+) -> Result<Vec<RemoteChild<'a>>, OracleError> {
     match target {
-        TargetType::EnvTest => { spawn_envtest(ssh_conns, host_config).await?; }
+        TargetType::EnvTest => { return spawn_envtest(ssh_conns, host_config).await; }
         TargetType::HotStuff => { Err( OracleError::NotImplemented )?; }
         TargetType::Pompe => { Err( OracleError::NotImplemented )?; }
         _ => { Err(OracleError::UnknownTarget)?; }
     }
 
-    Ok(())
+    Err(OracleError::UnknownTarget)?
 }
 
-pub async fn spawn_envtest(ssh_conns: &HashMap<String, Session>,
-                           host_config: &HashMap<String, Vec<String>>
-) -> Result<(), OracleError> {
-    let mut clients = vec![];
-    let mut servers = vec![];
+pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
+                               host_config: &'a HashMap<String, Vec<String>>
+) -> Result<Vec<RemoteChild<'a>>, OracleError> {
+    let mut process = vec![];
+    // process will be returned and its lifetime (e.g., the lifetime of
+    // the remote processes) should continue after this function returns
+
     let binary_dir = &host_config["remote-dir"][0];
     let client_bin = &host_config["binary-files"][0];
     let server_bin = &host_config["binary-files"][1];
@@ -39,7 +42,7 @@ pub async fn spawn_envtest(ssh_conns: &HashMap<String, Session>,
         match ssh_conns.get(server) {
             None => { Err(OracleError::InvalidServerHost)? }
             Some(s) => {
-                servers.push(s.command(server_cmd.as_str())
+                process.push(s.command(server_cmd.as_str())
                              .args(&host_config["server-args"])
                              .arg("--idx")
                              .arg(server_id.to_string())
@@ -85,7 +88,7 @@ pub async fn spawn_envtest(ssh_conns: &HashMap<String, Session>,
                 None => { Err(OracleError::InvalidClientHost)? }
                 Some(s) => {
                     //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &host_config["client-args"], client_id, server_id, latency);
-                    clients.push(s.command(client_cmd.as_str())
+                    process.push(s.command(client_cmd.as_str())
                                  .args(&host_config["client-args"])
                                  .arg("--idx")
                                  .arg(client_id.to_string())
@@ -104,7 +107,6 @@ pub async fn spawn_envtest(ssh_conns: &HashMap<String, Session>,
         client_id += 1;
     }
     println!("{} Execute {} clients on remote hosts.", "[5/6]".yellow(), client_id);
-    thread::sleep(time::Duration::from_millis(1000));
 
-    Ok(())
+    Ok(process)
 }
