@@ -73,6 +73,7 @@ pub async fn spawn_envtest(ssh_conns: &HashMap<String, Session>,
     }
     
     // Spawn client processes
+    println!("Here: {:?} || {:?}", &host_config["client-hosts"], &host_config["server-hosts"]);
     let mut client_id = 0;
     for client in &host_config["client-hosts"] {
         let mut server_id = 0;
