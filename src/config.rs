@@ -8,7 +8,7 @@ pub fn read_host_config(target: &TargetType) -> Result<HashMap<String, Vec<Strin
         TargetType::EnvTest => "config/envtest",
         TargetType::HotStuff => "config/hotstuff",
         TargetType::Pompe => "config/pompe",
-        _ => "unknown"
+        _ => Err( OracleError::ConfigError )?
     };
 
     let host_config = Config::builder()
