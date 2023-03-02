@@ -1,5 +1,5 @@
 # Envtest files and directories
-client-hosts = ["host4"]
+client-hosts = ["host4", "host5", "host6", "host7"]
 server-hosts = ["host0", "host1", "host2", "host3"]
 
 build = ["script/build_pompe.sh"]
