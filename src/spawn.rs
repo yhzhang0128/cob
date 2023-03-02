@@ -16,7 +16,7 @@ pub async fn spawn_target<'a>(target: &TargetType,
     return match target {
         TargetType::EnvTest => spawn_envtest(ssh_conns, config).await,
         TargetType::HotStuff => spawn_hotstuff(ssh_conns, config).await,
-        TargetType::Pompe => Err( OracleError::NotImplemented )?,
+        TargetType::Pompe => spawn_pompe(ssh_conns, config).await,
         _ => Err(OracleError::UnknownTarget)?
     }
 }
@@ -39,7 +39,6 @@ pub async fn spawn_hotstuff<'a>(ssh_conns: &'a HashMap<String, Session>,
     let mut server_id = 0;
     for server in &config["server-hosts"] {
         let idx_arg = format!("{}{}{}", &config["server-idx-arg"][0], server_id, &config["server-idx-arg"][1]);
-        println!("idx_arg: {}", idx_arg);
 
         match ssh_conns.get(server) {
             None => { Err(OracleError::InvalidServerHost)? }
@@ -57,24 +56,6 @@ pub async fn spawn_hotstuff<'a>(ssh_conns: &'a HashMap<String, Session>,
     }
     thread::sleep(time::Duration::from_millis(1000));
 
-    // Create geo-location latency mapping
-    // let latency_config = read_latency_config()?;
-    // let mut idx : usize = 0;
-    // let mut location_to_idx = HashMap::<String, usize>::new();
-    // for l in &latency_config["locations"] {
-    //     location_to_idx.insert(l.to_string(), idx);
-    //     idx += 1;
-    // }
-    // idx = 0;
-    // let mut host_to_lidx = HashMap::<String, usize>::new();
-    // let mut host_to_location = HashMap::<String, String>::new();
-    // for h in &config["hostnames"] {
-    //     let l = &config["locations"][idx];
-    //     host_to_location.insert(h.to_string(), l.to_string());
-    //     host_to_lidx.insert(h.to_string(), location_to_idx[l]);
-    //     idx += 1;
-    // }
-    
     // Spawn client processes
     println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len());
     let mut client_id = 0;
@@ -104,6 +85,80 @@ pub async fn spawn_hotstuff<'a>(ssh_conns: &'a HashMap<String, Session>,
 
     Ok(process)
 }
+
+pub async fn spawn_pompe<'a>(ssh_conns: &'a HashMap<String, Session>,
+                             config: &'a HashMap<String, Vec<String>>
+) -> Result<Vec<RemoteChild<'a>>, OracleError> {
+    let mut process = vec![];
+    // process will be returned and its lifetime (e.g., the lifetime of
+    // the remote processes) should continue after this function returns
+
+    let log_dir = &config["log-dir"][0];
+    let binary_dir = &config["remote-dir"][0];
+    let client_bin = &config["binary-files"][0];
+    let server_bin = &config["binary-files"][1];
+    let client_cmd = format!("{}{}", binary_dir, client_bin);
+    let server_cmd = format!("{}{}", binary_dir, server_bin);
+
+    // Spawn server processes
+    println!("{} Spawn {} server processes on remote hosts.", "[5/7]".yellow(), &config["server-hosts"].len());
+    let mut server_id = 0;
+    for server in &config["server-hosts"] {
+        let log_arg = format!("{}server{}.log", log_dir, server_id);
+        let idx_arg = format!("{}{}{}", &config["server-idx-arg"][0], server_id, &config["server-idx-arg"][1]);
+
+        match ssh_conns.get(server) {
+            None => { Err(OracleError::InvalidServerHost)? }
+            Some(s) => {
+                process.push(s.command(server_cmd.as_str())
+                             .args(&config["server-args"])
+                             .arg(log_arg)
+                             .arg("--conf")
+                             .arg(idx_arg)
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+        server_id += 1;
+    }
+    thread::sleep(time::Duration::from_millis(1000));
+
+    // Spawn client processes
+    println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len());
+    let mut client_id = 0;
+    for client in &config["client-hosts"] {
+        let orderlog_arg = format!("{}client{}.order.log", log_dir, server_id);
+        let execlog_arg = format!("{}client{}.exec.log", log_dir, server_id);
+        // let latency = &latency_config[&host_to_location[client]]
+        //                              [host_to_lidx[server]];
+        //println!("From {} to {}: {}ms", client, server, latency);
+        match ssh_conns.get(client) {
+            None => { Err(OracleError::InvalidClientHost)? }
+            Some(s) => {
+                //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
+                //
+                process.push(s.command(client_cmd.as_str())
+                             .args(&config["client-args"])
+                             .arg(orderlog_arg)
+                             .arg(execlog_arg)
+                             .arg("--cid")
+                             .arg(client_id.to_string())
+                             // .arg("--latency")
+                             // .arg(latency.to_string())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+        client_id += 1;
+    }
+
+    Ok(process)
+}
+
 
 pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
                                config: &'a HashMap<String, Vec<String>>
