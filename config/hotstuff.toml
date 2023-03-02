@@ -1,9 +1,12 @@
 # Envtest files and directories
+client-hosts = ["host4"]
+server-hosts = ["host0", "host1", "host2", "host3"]
+
 build = ["script/build_hotstuff.sh"]
 
-log-dir = ["/users/Yunhao/log/"]
 local-dir = ["/opt/chance/cob/target_systems/hotstuff/examples/", "/opt/chance/cob/target_systems/hotstuff/examples/"]
 remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
+log-dir = ["/users/Yunhao/log/"]
 
 config-files = ["conf-hotstuff"]
 binary-files = ["hotstuff-client", "hotstuff-app"]
@@ -14,6 +17,3 @@ client-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
 server-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
                "--conf"]
 server-idx-arg = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen-sec", ".conf"]
-
-client-hosts = ["host4"]
-server-hosts = ["host0", "host1", "host2", "host3"]
