@@ -8,5 +8,5 @@ pub enum OracleError {
     BinaryCopyFailed,
     InvalidClientHost,
     InvalidServerHost,
-    NotImplemented,
+    SpawnNotImplemented,
 }

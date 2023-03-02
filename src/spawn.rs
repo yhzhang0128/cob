@@ -16,7 +16,7 @@ pub async fn spawn_target<'a>(target: &TargetType,
     return match target {
         TargetType::EnvTest => spawn_envtest(ssh_conns, config).await,
         TargetType::HotStuff => spawn_hotstuff(ssh_conns, config).await,
-        TargetType::Pompe => spawn_pompe(ssh_conns, config).await,
+        TargetType::Pompe => Err(OracleError::SpawnNotImplemented)?,
         _ => Err(OracleError::UnknownTarget)?
     }
 }
