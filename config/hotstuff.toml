@@ -9,8 +9,11 @@ config-files = ["conf-hotstuff"]
 binary-files = ["hotstuff-client", "hotstuff-app"]
 
 client-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
-               "/users/Yunhao/log/log/client$1.log"]
+               "--iter", "-1", "--max-async", "4"]
 # Note that the last parameter needs an index to fill up the {}
 server-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
-               "--conf",
-               "/opt/chance/target_config/conf-hotstuff/hotstuff.gen-sec{}.conf"]
+               "--conf"]
+server-idx-arg = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen-sec", ".conf"]
+
+client-hosts = ["host4"]
+server-hosts = ["host0", "host1", "host2", "host3"]
