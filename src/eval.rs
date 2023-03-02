@@ -52,5 +52,6 @@ pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleEr
     killall(&target, false).await?;
     close_ssh_conns(ssh_conns).await?;
 
+    println!("{}", "Finish the experiments.".green().bold());
     Ok(())
 }
