@@ -38,7 +38,7 @@ pub async fn spawn_hotstuff<'a>(ssh_conns: &'a HashMap<String, Session>,
     println!("{} Spawn {} server processes on remote hosts.", "[5/7]".yellow(), &config["server-hosts"].len());
     let mut server_id = 0;
     for server in &config["server-hosts"] {
-        let idx_arg = format!("{}{}{}", &config["server-idx-arg"][0], server_id, &config["server-idx-arg"][0]);
+        let idx_arg = format!("{}{}{}", &config["server-idx-arg"][0], server_id, &config["server-idx-arg"][1]);
         println!("idx_arg: {}", idx_arg);
 
         match ssh_conns.get(server) {
