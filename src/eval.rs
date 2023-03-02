@@ -23,10 +23,11 @@ pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleEr
     let config = read_config(&target)?;
     // Build the target
     println!("{} Build target {:?} with {}.", "[1/7]".yellow(), target, config["build"][0]);
-    Command::new("bash")
+    let status = Command::new("bash")
         .args(&config["build"])
-        .spawn()
+        .status()
         .expect("Failed to build the target.");
+    assert!(status.success());
     
     // Start ssh connections
     println!("{} Start ssh connections to {} remote hosts.", "[2/7]".yellow(), config["hostnames"].len());
