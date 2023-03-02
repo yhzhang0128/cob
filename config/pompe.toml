@@ -1,0 +1,19 @@
+# Envtest files and directories
+build = ["script/build_pompe.sh"]
+
+log-dir = ["/users/Yunhao/log/"]
+local-dir = ["/opt/chance/cob/target_systems/pompe/examples/", "/opt/chance/cob/target_systems/pompe/examples/"]
+remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
+
+config-files = ["conf-pompe"]
+binary-files = ["pompe-client", "pompe-app"]
+
+client-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
+               "--iter", "-1", "--max-async", "4"]
+# Note that the last parameter needs an index to fill up the {}
+server-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
+               "--conf"]
+server-idx-arg = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen-sec", ".conf"]
+
+client-hosts = ["host4"]
+server-hosts = ["host0", "host1", "host2", "host3"]
