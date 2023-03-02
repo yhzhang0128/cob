@@ -25,7 +25,7 @@ pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleEr
     println!("{} Build target {:?} with {}.", "[1/7]".yellow(), target, config["build"][0]);
     Command::new("bash")
         .args(&config["build"])
-        .output()
+        .spawn()
         .expect("Failed to build the target.");
     
     // Start ssh connections
