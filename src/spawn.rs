@@ -119,6 +119,7 @@ pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
     let server_cmd = format!("{}{}", binary_dir, server_bin);
 
     // Spawn server processes
+    println!("{} Spawn {} server processes on remote hosts.", "[5/7]".yellow(), &config["server-hosts"].len());
     let mut server_id = 0;
     for server in &config["server-hosts"] {
         match ssh_conns.get(server) {
@@ -136,7 +137,6 @@ pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
         }
         server_id += 1;
     }
-    println!("{} Execute {} server processes on remote hosts.", "[5/7]".yellow(), server_id);
     thread::sleep(time::Duration::from_millis(1000));
 
     // Create geo-location latency mapping
@@ -158,7 +158,7 @@ pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
     }
     
     // Spawn client processes
-    println!("Here: {:?} || {:?}", &config["client-hosts"], &config["server-hosts"]);
+    println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len() * config["server-hosts"].len());
     let mut client_id = 0;
     for client in &config["client-hosts"] {
         let mut server_id = 0;
@@ -188,7 +188,6 @@ pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
         }
         client_id += 1;
     }
-    println!("{} Execute {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len() * config["server-hosts"].len());
 
     Ok(process)
 }
