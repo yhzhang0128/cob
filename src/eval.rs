@@ -51,8 +51,8 @@ pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleEr
     // Collect output and close connections
     println!("{} Collect output from {} processes and close ssh connections.", "[7/7]".yellow(), processes.len());
     killall(&target, false).await?;
-    close_ssh_conns(ssh_conns).await?;
-
     thread::sleep(time::Duration::from_millis(1000));
+
+    close_ssh_conns(ssh_conns).await?;
     Ok(())
 }
