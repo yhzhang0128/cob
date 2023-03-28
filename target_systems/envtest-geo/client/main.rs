@@ -87,18 +87,21 @@ fn tcp_client(term: Arc<AtomicBool>,
         
         let addr = format!("{}:{}", host, port);
         let mut stream = TcpStream::connect(addr)
-            .map_err(|_| EnvTestError::TcpConnError)?;
+            .expect("TCP connect error!");
+            //.map_err(|_| EnvTestError::TcpConnError)?;
 
         let sent = SystemTime::now();
 
         // Send message
         let mut rx_bytes = [0u8; 64];
         stream.write_all(&mut rx_bytes)
-            .map_err(|_| EnvTestError::TcpWriteError)?;
+            .expect("TCP write error!");
+            //.map_err(|_| EnvTestError::TcpWriteError)?;
 
         // Receive message
         stream.read(&mut rx_bytes)
-            .map_err(|_| EnvTestError::TcpReadError)?;
+            .expect("TCP read error!");
+            //.map_err(|_| EnvTestError::TcpReadError)?;
 
         // Measure RTT
         let duration = sent.elapsed().unwrap().as_millis();
