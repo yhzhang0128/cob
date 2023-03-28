@@ -78,7 +78,6 @@ fn tcp_client(term: Arc<AtomicBool>,
     //println!("Client{} listens to host {} port {}", args.idx, host, port);
     
     while !term.load(Ordering::Relaxed) {
-        let sent = SystemTime::now();
         //Insert latency (obsolete, use tc instead)
         //thread::sleep(time::Duration::from_millis(args.latency));
         
@@ -86,7 +85,14 @@ fn tcp_client(term: Arc<AtomicBool>,
         let mut stream = TcpStream::connect(addr)
             .map_err(|_| EnvTestError::TcpConnError)?;
 
+        let sent = SystemTime::now();
+
+        // Send message
         let mut rx_bytes = [0u8; 64];
+        stream.write_all(&mut rx_bytes)
+            .map_err(|_| EnvTestError::TcpWriteError)?;
+
+        // Receive message
         stream.read(&mut rx_bytes)
             .map_err(|_| EnvTestError::TcpReadError)?;
 

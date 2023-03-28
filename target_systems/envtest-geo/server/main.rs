@@ -44,10 +44,17 @@ async fn main() -> Result<(), EnvTestError> {
     for stream in listener.incoming() {
         let mut stream = stream.unwrap();
 
+        // Receive message
+        let mut rx_bytes = [0u8; 64];
+        stream.read(&mut rx_bytes)
+            .map_err(|_| EnvTestError::TcpReadError)?;
+
         let sys_time = SystemTime::now();
         let response = format!("{:?}, server{}\n", sys_time, idx);
 
-        stream.write_all(response.as_bytes()).unwrap();
+        // Send message
+        stream.write_all(response.as_bytes())
+            .map_err(|_| EnvTestError::TcpWriteError)?;
     }
 
     Ok(())

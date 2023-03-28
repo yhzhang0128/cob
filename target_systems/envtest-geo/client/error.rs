@@ -4,6 +4,7 @@ pub enum EnvTestError {
     FileOpError,
     TcpConnError,
     TcpReadError,
+    TcpWriteError,
     SigTermHandlerError,
 }
 
