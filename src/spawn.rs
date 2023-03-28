@@ -288,6 +288,7 @@ pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
     let mut client_id = 0;
     let mut server_id = 0;
     for client in &config["client-hosts"] {
+        let latency = &config["client-latencies"][client_id];
         match ssh_conns.get(client) {
             None => { Err(OracleError::InvalidClientHost)? }
             Some(s) => {
@@ -298,7 +299,24 @@ pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
                              .arg("--serveridx")
                              .arg(server_id.to_string())
                              .arg("--latency")
-                             .arg(&config["client-latencies"][client_id])
+                             .arg(latency)
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+                // remove network delay
+                // sudo tc -s qdisc
+                process.push(s.command("sudo")
+                             .args(["tc", "-s", "qdisc"])
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+                // add network delay
+                // sudo tc qdisc add dev enp1s0d1 root netem delay 97ms
+                process.push(s.command("sudo")
+                             .args(["tc", "qdisc", "add", "dev", "enp1s0d1", "root", "netem", "delay"])
+                             .arg(format!("{}ms", latency))
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?

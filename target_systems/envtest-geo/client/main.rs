@@ -80,7 +80,7 @@ fn tcp_client(term: Arc<AtomicBool>,
     while !term.load(Ordering::Relaxed) {
         let sent = SystemTime::now();
         //Insert latency (obsolete, use tc instead)
-        thread::sleep(time::Duration::from_millis(args.latency));
+        //thread::sleep(time::Duration::from_millis(args.latency));
         
         let addr = format!("{}:{}", host, port);
         let mut stream = TcpStream::connect(addr)
