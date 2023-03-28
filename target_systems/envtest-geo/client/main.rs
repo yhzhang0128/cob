@@ -56,13 +56,14 @@ async fn main() -> Result<(), EnvTestError> {
     for x in &latencies {
         sum = sum + x;
     }
-    let avg = sum as f32 / latencies.len() as f32;
 
-    println!("client->server [{}->{}] = {:.1}ms with {} samples, latency arg is {}ms", args.idx, args.serveridx, avg, latencies.len(), args.latency);
-    if args.idx == 1 || args.idx == 2 {
-        println!("{:?}", latencies);
+    if latencies.len() == 0 {
+        println!("client->server [{}->{}] = {:.1}ms <- {}ms, {} samples", args.idx, args.serveridx, 0, 0, args.latency);
+    } else {
+        let avg = sum as f32 / latencies.len() as f32;
+        println!("client->server [{}->{}] = {:.1}ms <- {}ms, {} samples", args.idx, args.serveridx, avg, latencies.len(), args.latency);
     }
-    // println!("Client{}: latency={:?}, count={:?}.", args.idx, average_latencies, count);
+
     Ok(())
 }
 
@@ -101,7 +102,7 @@ fn tcp_client(term: Arc<AtomicBool>,
 
         // Measure RTT
         let duration = sent.elapsed().unwrap().as_millis();
-        if duration != 0 {
+        if duration != 0 {  // Naive test that the server is alive
             latencies.push(duration);
         }
 
