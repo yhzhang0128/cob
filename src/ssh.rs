@@ -14,6 +14,15 @@ pub async fn start_ssh_conns(hosts: &Vec<String>) -> Result<HashMap<String, Sess
             .map_err(|_| OracleError::SshConnFailed)?;
 
         bar.inc(1);
+
+        // remove any network delay
+        // sudo tc qdisc del dev enp1s0d1 root netem
+        session.command("sudo")
+            .args(["tc", "qdisc", "del", "dev", "enp1s0d1", "root", "netem"])
+            .spawn()
+            .await
+            .map_err(|_| OracleError::SshCommandFailed)?;
+
         result.insert(String::from(host), session);
     }
 
