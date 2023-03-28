@@ -8,6 +8,7 @@ use {
 #[derive(Debug)]
 pub enum TargetType {
     EnvTest,
+    EnvTestGeo,
     HotStuff,
     Pompe,
     Unknown,

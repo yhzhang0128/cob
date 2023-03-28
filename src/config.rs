@@ -6,6 +6,7 @@ use crate::error::OracleError;
 pub fn read_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, OracleError> {
     let target_config = match target {
         TargetType::EnvTest => "config/envtest",
+        TargetType::EnvTestGeo => "config/envtest_geo",
         TargetType::HotStuff => "config/hotstuff",
         TargetType::Pompe => "config/pompe",
         _ => Err( OracleError::ConfigError )?

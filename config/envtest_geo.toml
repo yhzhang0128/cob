@@ -1,0 +1,24 @@
+# Envtest files and directories
+build = ["script/build_envtest_geo.sh"]
+
+log-dir = ["/users/Yunhao/log/"]
+local-dir = ["/opt/chance/cob/target/debug/", "/opt/chance/cob/config/"]
+remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
+
+config-files = ["envtest_geo.toml"]
+binary-files = ["envtest_geo_client", "envtest_geo_server"]
+
+client-args = ["--config", "/opt/chance/target_config/envtest_geo"]
+server-args = ["--config", "/opt/chance/target_config/envtest_geo"]
+
+server-hosts = ["host0", "host1", "host2", "host3"]
+server-ports = ["10000", "10000", "10000", "10000"]
+
+client-hosts = ["slower_0_0", "slower_0_1", "slower_0_2", "slower_0_3",
+                              "slower_1_1", "slower_1_2", "slower_1_3",
+                                            "slower_2_2", "slower_2_3",
+                                                          "slower_3_3"]
+client-latencies = ["0", "91", "158", "269",
+                         "0",  "71",  "208",
+                               "0",   "137",
+                                      "0"]

@@ -41,6 +41,7 @@ async fn main() -> Result<(), OracleError> {
 fn target_type(target_str: &String) -> Result<TargetType, OracleError> {
     match target_str.as_str() {
         "envtest" => { return Ok(TargetType::EnvTest); }
+        "envtest_geo" => { return Ok(TargetType::EnvTestGeo); }
         "hotstuff" => { return Ok(TargetType::HotStuff); }
         "pompe" => { return Ok(TargetType::Pompe); }
         _ => { Err(OracleError::UnknownTarget)? }

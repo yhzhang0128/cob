@@ -15,6 +15,7 @@ pub async fn spawn_target<'a>(target: &TargetType,
 ) -> Result<Vec<RemoteChild<'a>>, OracleError> {
     return match target {
         TargetType::EnvTest => spawn_envtest(ssh_conns, config).await,
+        TargetType::EnvTestGeo => spawn_envtest_geo(ssh_conns, config).await,
         TargetType::HotStuff => spawn_hotstuff(ssh_conns, config).await,
         TargetType::Pompe => spawn_pompe(ssh_conns, config).await,
         _ => Err(OracleError::UnknownTarget)?
@@ -242,6 +243,70 @@ pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
             server_id += 1;
         }
         client_id += 1;
+    }
+
+    Ok(process)
+}
+
+pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
+                                   config: &'a HashMap<String, Vec<String>>
+) -> Result<Vec<RemoteChild<'a>>, OracleError> {
+    let mut process = vec![];
+    // process will be returned and its lifetime (e.g., the lifetime of
+    // the remote processes) should continue after this function returns
+
+    let binary_dir = &config["remote-dir"][0];
+    let client_bin = &config["binary-files"][0];
+    let server_bin = &config["binary-files"][1];
+    let client_cmd = format!("{}{}", binary_dir, client_bin);
+    let server_cmd = format!("{}{}", binary_dir, server_bin);
+
+    // Spawn server processes
+    println!("{} Spawn {} server processes on remote hosts.", "[5/7]".yellow(), &config["server-hosts"].len());
+    let mut server_id = 0;
+    for server in &config["server-hosts"] {
+        match ssh_conns.get(server) {
+            None => { Err(OracleError::InvalidServerHost)? }
+            Some(s) => {
+                process.push(s.command(server_cmd.as_str())
+                             .args(&config["server-args"])
+                             .arg("--idx")
+                             .arg(server_id.to_string())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+        server_id += 1;
+    }
+    thread::sleep(time::Duration::from_millis(1000));
+
+    // Spawn client processes
+    println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len() * config["server-hosts"].len());
+
+    let mut client_id = 0;
+    let mut server_id = 0;
+    for client in &config["client-hosts"] {
+        match ssh_conns.get(client) {
+            None => { Err(OracleError::InvalidClientHost)? }
+            Some(s) => {
+                process.push(s.command(client_cmd.as_str())
+                             .args(&config["client-args"])
+                             .arg("--idx")
+                             .arg(client_id.to_string())
+                             .arg("--serveridx")
+                             .arg(server_id.to_string())
+                             .arg("--latency")
+                             .arg(&config["client-latencies"][client_id])
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+        client_id += 1;
+        server_id = (server_id + 1) % config["server-hosts"].len();
     }
 
     Ok(process)
