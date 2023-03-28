@@ -100,8 +100,10 @@ fn tcp_client(term: Arc<AtomicBool>,
             .map_err(|_| EnvTestError::TcpReadError)?;
 
         // Measure RTT
-        let duration = sent.elapsed().unwrap();
-        latencies.push(duration.as_millis());
+        let duration = sent.elapsed().unwrap().as_millis();
+        if duration != 0 {
+            latencies.push(duration);
+        }
 
         // Log RTT
         log.write_all(&format!("{:?}\n", duration).as_bytes())
