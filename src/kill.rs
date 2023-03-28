@@ -11,7 +11,8 @@ pub async fn killall(target: &TargetType, print: bool) -> Result<(), OracleError
     let client_bin = &config["binary-files"][0];
     let server_bin = &config["binary-files"][1];
 
-    for (host, s) in ssh_conns {
+    // Kill client processes
+    for (host, s) in &ssh_conns {
         let kill1 = s.command("killall")
             .args([client_bin.as_str()])
             .output()
@@ -23,7 +24,10 @@ pub async fn killall(target: &TargetType, print: bool) -> Result<(), OracleError
                 println!("  [warning] stderr from {}: {:?}", host, String::from_utf8(kill1.stderr).unwrap());
             }
         }
+    }
 
+    // Kill server processes
+    for (host, s) in &ssh_conns {
         let kill2 = s.command("killall")
             .args([server_bin.as_str()])
             .output()

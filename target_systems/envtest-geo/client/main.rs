@@ -102,9 +102,9 @@ fn tcp_client(term: Arc<AtomicBool>,
 
         // Measure RTT
         let duration = sent.elapsed().unwrap().as_millis();
-        if duration != 0 {  // Naive test that the server is alive
+        //if duration != 0 {  // Naive test that the server is alive
             latencies.push(duration);
-        }
+        //}
 
         // Log RTT
         log.write_all(&format!("{:?}\n", duration).as_bytes())
