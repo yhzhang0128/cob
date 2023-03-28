@@ -73,11 +73,17 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
         for bin in &config["binary-files"] {
             let file = format!("{}{}", local_bin_dir, bin);
             let bin_dir = format!("{}:{}", host, remote_bin_dir);
-            Command::new("scp")
+            let scp_bin = Command::new("scp")
                 .arg("-r")
                 .args([file.as_str(), bin_dir.as_str()])
                 .output()
                 .map_err(|_| OracleError::BinaryCopyFailed)?;
+
+            if scp_bin.stderr.len() > 0 {
+                println!("scp stderr on {}: {:?}", host, String::from_utf8(scp_bin.stderr).unwrap());
+                Err(OracleError::SshCommandFailed)?
+            }
+
             bar.inc(1);
         }
 
@@ -85,12 +91,18 @@ pub async fn prepare_files(ssh_conns: &HashMap<String, Session>, config: &HashMa
         for con in &config["config-files"] {
             let file = format!("{}{}", local_config_dir, con);
             let config_dir = format!("{}:{}", host, remote_config_dir);
-            Command::new("scp")
+            let scp_con = Command::new("scp")
                 .arg("-r")
                 .args([file.as_str(), config_dir.as_str()])
                 .output()
                 .map_err(|_| OracleError::BinaryCopyFailed)?;
             bar.inc(1);
+
+            if scp_con.stderr.len() > 0 {
+                println!("scp stderr on {}: {:?}", host, String::from_utf8(scp_con.stderr).unwrap());
+                Err(OracleError::SshCommandFailed)?
+            }
+
         }
     }
     bar.finish();
