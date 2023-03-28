@@ -64,10 +64,6 @@ async fn main() -> Result<(), EnvTestError> {
         println!("client->server [{}->{}] = {:.1}ms <- {}ms, {} samples", args.idx, args.serveridx, avg, args.latency, latencies.len());
     }
 
-    if args.idx == 1 || args.idx == 2 {
-        println!("{:?}", latencies);
-    }
-
     Ok(())
 }
 
@@ -85,11 +81,6 @@ fn tcp_client(term: Arc<AtomicBool>,
     let port = &config["server-ports"][args.serveridx];
     //println!("Client{} listens to host {} port {}", args.idx, host, port);
     
-    if args.idx == 1 || args.idx == 2 {
-        println!("#start at {:?}", SystemTime::now());
-    }
-
-    let mut flag = true;
     while !term.load(Ordering::Relaxed) {
         //Insert latency (obsolete, use tc instead)
         //thread::sleep(time::Duration::from_millis(args.latency));
@@ -97,7 +88,6 @@ fn tcp_client(term: Arc<AtomicBool>,
         let addr = format!("{}:{}", host, port);
         let mut stream = TcpStream::connect(addr)
             .expect("TCP connect error!");
-            //.map_err(|_| EnvTestError::TcpConnError)?;
 
         let sent = SystemTime::now();
 
@@ -105,30 +95,22 @@ fn tcp_client(term: Arc<AtomicBool>,
         let mut rx_bytes = [0u8; 64];
         stream.write_all(&mut rx_bytes)
             .expect("TCP write error!");
-            //.map_err(|_| EnvTestError::TcpWriteError)?;
 
         // Receive message
         stream.read(&mut rx_bytes)
             .expect("TCP read error!");
-            //.map_err(|_| EnvTestError::TcpReadError)?;
 
         // Measure RTT
         let duration = sent.elapsed().unwrap().as_millis();
-        //if duration != 0 {  // Naive test that the server is alive
+        if duration != 0 {  // Naive test that the server is alive
             latencies.push(duration);
-        //}
-        if flag && duration == 0 {
-            flag = false;
-            if args.idx == 1 || args.idx == 2 {
-                println!("#zero at {:?}", SystemTime::now());
-            }
         }
 
         // Log RTT
         log.write_all(&format!("{:?}\n", duration).as_bytes())
             .map_err(|_| EnvTestError::FileOpError)?;
 
-        thread::sleep(time::Duration::from_millis(50));
+        thread::sleep(time::Duration::from_millis(30));
     }
 
     Ok(())
