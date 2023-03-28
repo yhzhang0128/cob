@@ -305,9 +305,9 @@ pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
                              .map_err(|_| OracleError::SshCommandFailed)?
                 );
                 // remove network delay
-                // sudo tc -s qdisc
+                // sudo tc qdisc del dev enp1s0d1 root netem
                 process.push(s.command("sudo")
-                             .args(["tc", "-s", "qdisc"])
+                             .args(["tc", "qdisc", "del", "dev", "enp1s0d1", "root", "netem"])
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?
