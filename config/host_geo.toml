@@ -1,4 +1,8 @@
 # Non-geo setup
 
-hostnames = ["host0",   "host1",   "host2",   "host3", "host4",   "host5",   "host6",   "host7", ]
-locations = ["eu-west", "us-east", "us-west", "au"   , "eu-west", "us-east", "us-west", "au"]
+hostnames = ["host0", "host1", "host2", "host3",
+             "host4", "host5", "host6", "host7",
+             "slower_0_0", "slower_0_1", "slower_0_2", "slower_0_3",
+                           "slower_1_1", "slower_1_2", "slower_1_3",
+                                         "slower_2_2", "slower_2_3",
+                                                       "slower_3_3"]
