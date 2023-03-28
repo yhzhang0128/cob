@@ -12,8 +12,16 @@ pub fn read_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, 
         _ => Err( OracleError::ConfigError )?
     };
 
+    let host_config = match target {
+        TargetType::EnvTest => "config/host",
+        TargetType::EnvTestGeo => "config/host_geo",
+        TargetType::HotStuff => "config/host",
+        TargetType::Pompe => "config/host",
+        _ => Err( OracleError::ConfigError )?
+    };
+
     let config = Config::builder()
-        .add_source(File::with_name("config/host"))
+        .add_source(File::with_name(host_config))
         .add_source(File::with_name(target_config))
         .build()
         .map_err(|_| OracleError::ConfigError)?;

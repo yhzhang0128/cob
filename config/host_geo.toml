@@ -1,0 +1,4 @@
+# Non-geo setup
+
+hostnames = ["host0",   "host1",   "host2",   "host3", "host4",   "host5",   "host6",   "host7", ]
+locations = ["eu-west", "us-east", "us-west", "au"   , "eu-west", "us-east", "us-west", "au"]
