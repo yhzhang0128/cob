@@ -294,13 +294,13 @@ pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
             Some(s) => {
                 // add network delay
                 // sudo tc qdisc add dev enp1s0d1 root netem delay ??ms
-                println!("[DEBUG] client {} latency {}ms", client, latency);
-                s.command("sudo")
-                    .args(["tc", "qdisc", "add", "dev", "enp1s0d1", "root", "netem", "delay"])
-                    .arg(format!("{}ms", latency))
-                    .output()
-                    .await
-                    .map_err(|_| OracleError::SshCommandFailed)?;
+                // println!("[DEBUG] client {} latency {}ms", client, latency);
+                // s.command("sudo")
+                //     .args(["tc", "qdisc", "add", "dev", "enp1s0d1", "root", "netem", "delay"])
+                //     .arg(format!("{}ms", latency))
+                //     .output()
+                //     .await
+                //     .map_err(|_| OracleError::SshCommandFailed)?;
 
                 process.push(s.command(client_cmd.as_str())
                              .args(&config["client-args"])
