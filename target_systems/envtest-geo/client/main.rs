@@ -59,6 +59,9 @@ async fn main() -> Result<(), EnvTestError> {
     let avg = sum as f32 / latencies.len() as f32;
 
     println!("client->server [{}->{}] = {:.1}ms with {} samples, latency arg is {}ms", args.idx, args.serveridx, avg, latencies.len(), args.latency);
+    if args.idx == 1 || args.idx == 2 {
+        println!("{:?}", latencies);
+    }
     // println!("Client{}: latency={:?}, count={:?}.", args.idx, average_latencies, count);
     Ok(())
 }
