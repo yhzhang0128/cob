@@ -292,6 +292,16 @@ pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
         match ssh_conns.get(client) {
             None => { Err(OracleError::InvalidClientHost)? }
             Some(s) => {
+                // add network delay
+                // sudo tc qdisc add dev enp1s0d1 root netem delay ??ms
+                println!("[DEBUG] client {} latency {}ms", client, latency);
+                s.command("sudo")
+                    .args(["tc", "qdisc", "add", "dev", "enp1s0d1", "root", "netem", "delay"])
+                    .arg(format!("{}ms", latency))
+                    .output()
+                    .await
+                    .map_err(|_| OracleError::SshCommandFailed)?;
+
                 process.push(s.command(client_cmd.as_str())
                              .args(&config["client-args"])
                              .arg("--idx")
@@ -300,16 +310,6 @@ pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
                              .arg(server_id.to_string())
                              .arg("--latency")
                              .arg(latency)
-                             .spawn()
-                             .await
-                             .map_err(|_| OracleError::SshCommandFailed)?
-                );
-                // add network delay
-                // sudo tc qdisc add dev enp1s0d1 root netem delay ??ms
-                println!("[DEBUG] client {} latency {}ms", client, latency);
-                process.push(s.command("sudo")
-                             .args(["tc", "qdisc", "add", "dev", "enp1s0d1", "root", "netem", "delay"])
-                             .arg(format!("{}ms", latency))
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?
