@@ -19,7 +19,7 @@ pub async fn start_ssh_conns(hosts: &Vec<String>) -> Result<HashMap<String, Sess
         // sudo tc qdisc del dev enp1s0d1 root netem
         session.command("sudo")
             .args(["tc", "qdisc", "del", "dev", "enp1s0d1", "root", "netem"])
-            .spawn()
+            .output()
             .await
             .map_err(|_| OracleError::SshCommandFailed)?;
 
