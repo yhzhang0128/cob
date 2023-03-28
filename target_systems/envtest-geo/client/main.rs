@@ -58,10 +58,10 @@ async fn main() -> Result<(), EnvTestError> {
     }
 
     if latencies.len() == 0 {
-        println!("client->server [{}->{}] = {:.1}ms <- {}ms, {} samples", args.idx, args.serveridx, 0, 0, args.latency);
+        println!("client->server [{}->{}] = {:.1}ms <- {}ms", args.idx, args.serveridx, 0, args.latency);
     } else {
         let avg = sum as f32 / latencies.len() as f32;
-        println!("client->server [{}->{}] = {:.1}ms <- {}ms, {} samples", args.idx, args.serveridx, avg, latencies.len(), args.latency);
+        println!("client->server [{}->{}] = {:.1}ms <- {}ms, {} samples", args.idx, args.serveridx, avg, args.latency, latencies.len());
     }
 
     Ok(())
