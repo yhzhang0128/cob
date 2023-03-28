@@ -85,6 +85,11 @@ fn tcp_client(term: Arc<AtomicBool>,
     let port = &config["server-ports"][args.serveridx];
     //println!("Client{} listens to host {} port {}", args.idx, host, port);
     
+    if args.idx == 1 || args.idx == 2 {
+        println!("#start at {:?}", SystemTime::now());
+    }
+
+    let mut flag = true;
     while !term.load(Ordering::Relaxed) {
         //Insert latency (obsolete, use tc instead)
         //thread::sleep(time::Duration::from_millis(args.latency));
@@ -112,6 +117,12 @@ fn tcp_client(term: Arc<AtomicBool>,
         //if duration != 0 {  // Naive test that the server is alive
             latencies.push(duration);
         //}
+        if flag && duration == 0 {
+            flag = false;
+            if args.idx == 1 || args.idx == 2 {
+                println!("#zero at {:?}", SystemTime::now());
+            }
+        }
 
         // Log RTT
         log.write_all(&format!("{:?}\n", duration).as_bytes())
