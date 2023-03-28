@@ -311,7 +311,7 @@ pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
                     .arg(format!("{}ms", latency))
                     .output()
                     .await
-                    .map_err(|_| OracleError::SshCommandFailed)?
+                    .map_err(|_| OracleError::SshCommandFailed)?;
             }
         }
         client_id += 1;
