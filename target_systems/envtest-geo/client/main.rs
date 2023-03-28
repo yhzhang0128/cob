@@ -64,6 +64,10 @@ async fn main() -> Result<(), EnvTestError> {
         println!("client->server [{}->{}] = {:.1}ms <- {}ms, {} samples", args.idx, args.serveridx, avg, args.latency, latencies.len());
     }
 
+    if args.idx == 1 || args.idx == 2 {
+        println!("{:?}", latencies);
+    }
+
     Ok(())
 }
 
