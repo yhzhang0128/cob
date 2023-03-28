@@ -58,7 +58,7 @@ async fn main() -> Result<(), EnvTestError> {
     }
     let avg = sum as f32 / latencies.len() as f32;
 
-    println!("client->server [{}->{}] = {:.1}ms", args.idx, args.serveridx, avg);
+    println!("client->server [{}->{}] = {:.1}ms, expected {}ms", args.idx, args.serveridx, avg, args.latency);
     // println!("Client{}: latency={:?}, count={:?}.", args.idx, average_latencies, count);
     Ok(())
 }
@@ -80,7 +80,7 @@ fn tcp_client(term: Arc<AtomicBool>,
     while !term.load(Ordering::Relaxed) {
         let sent = SystemTime::now();
         //Insert latency (obsolete, use tc instead)
-        //thread::sleep(time::Duration::from_millis(args.latency));
+        thread::sleep(time::Duration::from_millis(args.latency));
         
         let addr = format!("{}:{}", host, port);
         let mut stream = TcpStream::connect(addr)
