@@ -214,7 +214,7 @@ pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
     }
     
     // Spawn client processes
-    println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len());
+    println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len() * config["server-hosts"].len());
     let mut client_id = 0;
     for client in &config["client-hosts"] {
         let mut server_id = 0;
@@ -283,7 +283,7 @@ pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
     thread::sleep(time::Duration::from_millis(1000));
 
     // Spawn client processes
-    println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len() * config["server-hosts"].len());
+    println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len());
 
     let mut client_id = 0;
     let mut server_id = 0;
