@@ -45,6 +45,7 @@ fn target_type(target_str: &String) -> Result<TargetType, OracleError> {
         "hotstuff" => { return Ok(TargetType::HotStuff); }
         "hotstuff-bump" => { return Ok(TargetType::HotStuffBumped); }
         "pompe" => { return Ok(TargetType::Pompe); }
+        "pompe-bump" => { return Ok(TargetType::PompeBumped); }
         _ => { Err(OracleError::UnknownTarget)? }
     }
 

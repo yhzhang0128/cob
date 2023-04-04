@@ -10,6 +10,7 @@ pub fn read_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, 
         TargetType::HotStuff => "config/hotstuff",
         TargetType::HotStuffBumped => "config/hotstuff_bumped",
         TargetType::Pompe => "config/pompe",
+        TargetType::PompeBumped => "config/pompe_bumped",
         _ => Err( OracleError::ConfigError )?
     };
 
@@ -19,6 +20,7 @@ pub fn read_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, 
         TargetType::HotStuff => "config/host",
         TargetType::HotStuffBumped => "config/host_geo",
         TargetType::Pompe => "config/host",
+        TargetType::PompeBumped => "config/host_geo",
         _ => Err( OracleError::ConfigError )?
     };
 

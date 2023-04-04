@@ -1,0 +1,28 @@
+# Envtest files and directories
+client-hosts = ["client0"]
+server-hosts = ["host0", "host1", "host2", "host3"]
+bump-hosts = ["strong_0", "strong_1", "strong_2", "strong_3"]
+
+build = ["script/build_pompe_bump.sh"]
+
+local-dir = ["/opt/chance/cob/target_systems/pompe-bumped/examples/", "/opt/chance/cob/target_systems/pompe-bumped/examples/"]
+remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
+log-dir = ["/users/Yunhao/log/"]
+
+config-files = ["conf-pompe"]
+binary-files = ["pompe-client", "pompe-app", "speedbump"]
+
+# Note that the last parameter needs an index to fill up the {}
+server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf",
+               "--conf"]
+server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
+
+
+client-args = ["/opt/chance/target_config/conf-pompe/bump0.gen.conf",
+               "--iter", "-1", "--max-async", "4"]
+
+bump-args = ["/opt/chance/target_config/conf-pompe/bump0.gen.conf",
+             "/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
+
+# Obsolete
+#bump-idx-arg = ["/opt/chance/target_config/conf-hotstuff/bump0.gen-sec", ".conf"]
