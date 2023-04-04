@@ -13,7 +13,7 @@ pub async fn killall(target: &TargetType, print: bool) -> Result<(), OracleError
         println!("Killing {}", bin);
         for (host, s) in &ssh_conns {
             let kill = s.command("killall")
-                .args(["-r", bin.as_str()])
+                .args([bin.as_str()])
                 .output()
                 .await
                 .map_err(|_| OracleError::SshCommandFailed)?;
