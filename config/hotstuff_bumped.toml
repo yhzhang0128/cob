@@ -5,7 +5,7 @@ bump-hosts = ["strong_0", "strong_1", "strong_2", "strong_3"]
 
 build = ["script/build_hotstuff_bump.sh"]
 
-local-dir = ["/opt/chance/cob/target_systems/hotstuff/examples/", "/opt/chance/cob/target_systems/hotstuff/examples/"]
+local-dir = ["/opt/chance/cob/target_systems/hotstuff-bumped/examples/", "/opt/chance/cob/target_systems/hotstuff-bumped/examples/"]
 remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 log-dir = ["/users/Yunhao/log/"]
 
