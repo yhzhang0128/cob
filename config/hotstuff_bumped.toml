@@ -22,4 +22,6 @@ client-args = ["/opt/chance/target_config/conf-hotstuff/bump0.gen.conf",
                "--iter", "-1", "--max-async", "4"]
 
 bump-args = ["/opt/chance/target_config/conf-hotstuff/bump0.gen.conf"]
-bump-idx-arg = ["/opt/chance/target_config/conf-hotstuff/bump0.gen-sec", ".conf"]
+
+# Obsolete
+#bump-idx-arg = ["/opt/chance/target_config/conf-hotstuff/bump0.gen-sec", ".conf"]
