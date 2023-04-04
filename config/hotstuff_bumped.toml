@@ -12,13 +12,15 @@ log-dir = ["/users/Yunhao/log/"]
 config-files = ["conf-hotstuff"]
 binary-files = ["hotstuff-client", "hotstuff-app", "speedbump"]
 
-client-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
-               "--iter", "-1", "--max-async", "4"]
 # Note that the last parameter needs an index to fill up the {}
 server-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
                "--conf"]
 server-idx-arg = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen-sec", ".conf"]
 
-bump-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
+
+client-args = ["/opt/chance/target_config/conf-hotstuff/bump0.gen.conf",
+               "--iter", "-1", "--max-async", "4"]
+
+bump-args = ["/opt/chance/target_config/conf-hotstuff/bump0.gen.conf",
                "--conf"]
-bump-idx-arg = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen-sec", ".conf"]
+bump-idx-arg = ["/opt/chance/target_config/conf-hotstuff/bump0.gen-sec", ".conf"]
