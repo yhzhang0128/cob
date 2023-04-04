@@ -43,6 +43,7 @@ fn target_type(target_str: &String) -> Result<TargetType, OracleError> {
         "envtest" => { return Ok(TargetType::EnvTest); }
         "envtest-geo" => { return Ok(TargetType::EnvTestGeo); }
         "hotstuff" => { return Ok(TargetType::HotStuff); }
+        "hotstuff-bump" => { return Ok(TargetType::HotStuffBumped); }
         "pompe" => { return Ok(TargetType::Pompe); }
         _ => { Err(OracleError::UnknownTarget)? }
     }

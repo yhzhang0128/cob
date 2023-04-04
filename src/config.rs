@@ -8,6 +8,7 @@ pub fn read_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, 
         TargetType::EnvTest => "config/envtest",
         TargetType::EnvTestGeo => "config/envtest_geo",
         TargetType::HotStuff => "config/hotstuff",
+        TargetType::HotStuffBumped => "config/hotstuff_bumped",
         TargetType::Pompe => "config/pompe",
         _ => Err( OracleError::ConfigError )?
     };
@@ -16,6 +17,7 @@ pub fn read_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, 
         TargetType::EnvTest => "config/host",
         TargetType::EnvTestGeo => "config/host_geo",
         TargetType::HotStuff => "config/host",
+        TargetType::HotStuffBumped => "config/host_geo",
         TargetType::Pompe => "config/host",
         _ => Err( OracleError::ConfigError )?
     };

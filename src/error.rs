@@ -7,6 +7,7 @@ pub enum OracleError {
     SshCommandFailed,
     BinaryCopyFailed,
     InvalidClientHost,
+    InvalidBumpHost,
     InvalidServerHost,
     SpawnNotImplemented,
 }

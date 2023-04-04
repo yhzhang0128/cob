@@ -10,6 +10,7 @@ pub enum TargetType {
     EnvTest,
     EnvTestGeo,
     HotStuff,
+    HotStuffBumped,
     Pompe,
     Unknown,
 }
