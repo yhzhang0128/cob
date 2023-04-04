@@ -129,13 +129,13 @@ pub async fn spawn_hotstuff_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
     println!("{} Spawn {} speedbump processes on remote hosts.", "[5.5/7]".yellow(), &config["bump-hosts"].len());
     let mut bump_id = 0;
     for speedbump in &config["bump-hosts"] {
-        let idx_arg = format!("{}{}{}", &config["bump-idx-arg"][0], bump_id, &config["bump-idx-arg"][1]);
+        //let idx_arg = format!("{}{}{}", &config["bump-idx-arg"][0], bump_id, &config["bump-idx-arg"][1]);
         match ssh_conns.get(speedbump) {
             None => { Err(OracleError::InvalidBumpHost)? }
             Some(s) => {
                 process.push(s.command(bump_cmd.as_str())
                              .args(&config["bump-args"])
-                             .arg(idx_arg)
+                             //.arg(idx_arg)
                              .arg("--idx")
                              .arg(bump_id.to_string())
                              .spawn()
