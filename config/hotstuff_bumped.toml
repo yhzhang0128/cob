@@ -18,3 +18,7 @@ client-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
 server-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
                "--conf"]
 server-idx-arg = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen-sec", ".conf"]
+
+bump-args = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen.conf",
+               "--conf"]
+bump-idx-arg = ["/opt/chance/target_config/conf-hotstuff/hotstuff.gen-sec", ".conf"]
