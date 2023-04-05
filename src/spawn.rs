@@ -299,14 +299,23 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
     let mut bump_id = 0;
     for speedbump in &config["bump-hosts"] {
         //let idx_arg = format!("{}{}{}", &config["bump-idx-arg"][0], bump_id, &config["bump-idx-arg"][1]);
+        let latency = &config["bump-latency"][bump_id];
         match ssh_conns.get(speedbump) {
             None => { Err(OracleError::InvalidBumpHost)? }
             Some(s) => {
+                // Setup network latency
+                s.command("sudo")
+                    .args(["tc", "qdisc", "add", "dev", "enp1s0d1", "root", "netem", "delay"])
+                    .arg(format!("{}ms", latency))
+                    .output()
+                    .await
+                    .map_err(|_| OracleError::SshCommandFailed)?;
+                // Spawn speedbump process
                 process.push(s.command(bump_cmd.as_str())
                              .args(&config["bump-args"])
                              //.arg(idx_arg)
                              .arg("--idx")
-                             .arg(bump_id.to_string())
+                             .arg(&config["bump-idx"][bump_id])
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?
