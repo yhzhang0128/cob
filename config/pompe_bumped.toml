@@ -13,8 +13,7 @@ config-files = ["conf-pompe"]
 binary-files = ["pompe-client", "pompe-app", "speedbump"]
 
 # Note that the last parameter needs an index to fill up the {}
-server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf",
-               "--conf"]
+server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
 server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
 
 
