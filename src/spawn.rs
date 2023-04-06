@@ -324,8 +324,7 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
         }
         bump_id += 1;
     }
-    println!("Stop after using tc.");
-    thread::sleep(time::Duration::from_millis(1000000));
+    thread::sleep(time::Duration::from_millis(1000));
 
     // Spawn client processes
     println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len());
