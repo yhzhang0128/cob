@@ -49,7 +49,7 @@ pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleEr
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    println!("{} Collect output from {} processes and close ssh connections.", "[7/7]".yellow(), processes.len());
+    println!("{} Kill {} processes and collect output (may cause segfault during kill).", "[7/7]".yellow(), processes.len());
     killall(&target, false).await?;
     thread::sleep(time::Duration::from_millis(1000));
 
