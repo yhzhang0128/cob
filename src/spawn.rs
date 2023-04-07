@@ -265,9 +265,11 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
     let client_bin = &config["binary-files"][0];
     let server_bin = &config["binary-files"][1];
     let bumper_bin = &config["binary-files"][2];
+    let tc_script = &config["binary-files"][3];
     let client_cmd = format!("{}{}", binary_dir, client_bin);
     let server_cmd = format!("{}{}", binary_dir, server_bin);
     let bump_cmd = format!("{}{}", binary_dir, bumper_bin);
+    let tc_cmd = format!("{}{}", binary_dir, tc_script);
 
     // Spawn server processes
     println!("{} Spawn {} server processes on remote hosts.", "[5/7]".yellow(), &config["server-hosts"].len());
@@ -304,9 +306,8 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
             None => { Err(OracleError::InvalidBumpHost)? }
             Some(s) => {
                 // Setup network latency
-                s.command("sudo")
-                    .args(["tc", "qdisc", "add", "dev", "enp1s0d1", "root", "netem", "delay"])
-                    .arg(format!("{}ms", latency))
+                s.command(tc_cmd.as_str())
+                    .arg(latency)
                     .output()
                     .await
                     .map_err(|_| OracleError::SshCommandFailed)?;
