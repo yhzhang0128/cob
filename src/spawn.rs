@@ -19,8 +19,8 @@ pub async fn spawn_target<'a>(target: &TargetType,
         TargetType::HotStuff => spawn_hotstuff(ssh_conns, config).await,
         TargetType::HotStuffBumped => spawn_hotstuff_bumped(ssh_conns, config).await,
         TargetType::Pompe => spawn_pompe(ssh_conns, config).await,
-        TargetType::PompeBumped => spawn_pompe_bumped(ssh_conns, config).await,
-        TargetType::PompeUnbiasBumped => spawn_pompe_bumped(ssh_conns, config).await,
+        TargetType::PompeBumped => spawn_pompe_bumped(ssh_conns, config, false).await,
+        TargetType::PompeUnbiasBumped => spawn_pompe_bumped(ssh_conns, config, true).await,
         _ => Err(OracleError::UnknownTarget)?
     }
 }
@@ -255,7 +255,8 @@ pub async fn spawn_pompe<'a>(ssh_conns: &'a HashMap<String, Session>,
 }
 
 pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
-                                    config: &'a HashMap<String, Vec<String>>
+                                    config: &'a HashMap<String, Vec<String>>,
+                                    unbias: bool
 ) -> Result<Vec<RemoteChild<'a>>, OracleError> {
     let mut process = vec![];
     // process will be returned and its lifetime (e.g., the lifetime of
@@ -369,44 +370,69 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
     // let latency = &latency_config[&host_to_location[client]]
     //                              [host_to_lidx[server]];
     //println!("From {} to {}: {}ms", client, server, latency);
-    match ssh_conns.get(weak_client) {
-        None => { Err(OracleError::InvalidClientHost)? }
-        Some(s) => {
-            //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
-            //
-            process.push(s.command(client_cmd.as_str())
-                         .args(&config["weak-client-args"])
-                         .arg(&orderlog_arg)
-                         .arg(&execlog_arg)
-                         .arg("--cid")
-                         .arg(client_id.to_string())
-                         // .arg("--latency")
-                         // .arg(latency.to_string())
-                         .spawn()
-                         .await
-                         .map_err(|_| OracleError::SshCommandFailed)?
-            );
-        }
-    }
 
-    client_id += 1;
-    match ssh_conns.get(strong_client) {
-        None => { Err(OracleError::InvalidClientHost)? }
-        Some(s) => {
-            //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
-            //
-            process.push(s.command(client_cmd.as_str())
-                         .args(&config["strong-client-args"])
-                         .arg(&orderlog_arg)
-                         .arg(&execlog_arg)
-                         .arg("--cid")
-                         .arg(client_id.to_string())
-                         // .arg("--latency")
-                         // .arg(latency.to_string())
-                         .spawn()
-                         .await
-                         .map_err(|_| OracleError::SshCommandFailed)?
-            );
+    if unbias {
+        // Pompe unbias client
+        match ssh_conns.get(weak_client) {
+            None => { Err(OracleError::InvalidClientHost)? }
+            Some(s) => {
+                //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
+                //
+                process.push(s.command(client_cmd.as_str())
+                             .args(&config["weak-client-args"])
+                             .arg(&orderlog_arg)
+                             .arg(&execlog_arg)
+                             .arg("--cid")
+                             .arg(client_id.to_string())
+                             // .arg("--latency")
+                             // .arg(latency.to_string())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+    } else {
+        // Pompe original client
+        match ssh_conns.get(weak_client) {
+            None => { Err(OracleError::InvalidClientHost)? }
+            Some(s) => {
+                //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
+                //
+                process.push(s.command(client_cmd.as_str())
+                             .args(&config["weak-client-args"])
+                             .arg(&orderlog_arg)
+                             .arg(&execlog_arg)
+                             .arg("--cid")
+                             .arg(client_id.to_string())
+                             // .arg("--latency")
+                             // .arg(latency.to_string())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+
+        client_id += 1;
+        match ssh_conns.get(strong_client) {
+            None => { Err(OracleError::InvalidClientHost)? }
+            Some(s) => {
+                //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
+                //
+                process.push(s.command(client_cmd.as_str())
+                             .args(&config["strong-client-args"])
+                             .arg(&orderlog_arg)
+                             .arg(&execlog_arg)
+                             .arg("--cid")
+                             .arg(client_id.to_string())
+                             // .arg("--latency")
+                             // .arg(latency.to_string())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
         }
     }
 
