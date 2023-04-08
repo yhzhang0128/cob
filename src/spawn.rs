@@ -358,35 +358,55 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
     }
     thread::sleep(time::Duration::from_millis(500));
 
-    // Spawn client processes
-    println!("{} Spawn strong client process on remote hosts.", "[6/7]".yellow());
+    // Spawn strong client process
+    println!("{} Spawn strong/weak client processes on remote hosts.", "[6/7]".yellow());
     let mut client_id = 0;
-    for client in &config["client-hosts"] {
-        let orderlog_arg = format!("{}client{}.order.log", log_dir, server_id);
-        let execlog_arg = format!("{}client{}.exec.log", log_dir, server_id);
-        // let latency = &latency_config[&host_to_location[client]]
-        //                              [host_to_lidx[server]];
-        //println!("From {} to {}: {}ms", client, server, latency);
-        match ssh_conns.get(client) {
-            None => { Err(OracleError::InvalidClientHost)? }
-            Some(s) => {
-                //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
-                //
-                process.push(s.command(client_cmd.as_str())
-                             .args(&config["strong-client-args"])
-                             .arg(orderlog_arg)
-                             .arg(execlog_arg)
-                             .arg("--cid")
-                             .arg(client_id.to_string())
-                             // .arg("--latency")
-                             // .arg(latency.to_string())
-                             .spawn()
-                             .await
-                             .map_err(|_| OracleError::SshCommandFailed)?
-                );
-            }
+    let weak_client = &config["client-hosts"][0];
+    let strong_client = &config["client-hosts"][1];
+    let orderlog_arg = format!("{}client{}.order.log", log_dir, server_id);
+    let execlog_arg = format!("{}client{}.exec.log", log_dir, server_id);
+    // let latency = &latency_config[&host_to_location[client]]
+    //                              [host_to_lidx[server]];
+    //println!("From {} to {}: {}ms", client, server, latency);
+    match ssh_conns.get(weak_client) {
+        None => { Err(OracleError::InvalidClientHost)? }
+        Some(s) => {
+            //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
+            //
+            process.push(s.command(client_cmd.as_str())
+                         .args(&config["weak-client-args"])
+                         .arg(&orderlog_arg)
+                         .arg(&execlog_arg)
+                         .arg("--cid")
+                         .arg(client_id.to_string())
+                         // .arg("--latency")
+                         // .arg(latency.to_string())
+                         .spawn()
+                         .await
+                         .map_err(|_| OracleError::SshCommandFailed)?
+            );
         }
-        client_id += 1;
+    }
+
+    client_id += 1;
+    match ssh_conns.get(strong_client) {
+        None => { Err(OracleError::InvalidClientHost)? }
+        Some(s) => {
+            //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
+            //
+            process.push(s.command(client_cmd.as_str())
+                         .args(&config["strong-client-args"])
+                         .arg(&orderlog_arg)
+                         .arg(&execlog_arg)
+                         .arg("--cid")
+                         .arg(client_id.to_string())
+                         // .arg("--latency")
+                         // .arg(latency.to_string())
+                         .spawn()
+                         .await
+                         .map_err(|_| OracleError::SshCommandFailed)?
+            );
+        }
     }
 
     Ok(process)
