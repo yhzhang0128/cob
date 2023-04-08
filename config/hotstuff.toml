@@ -1,4 +1,5 @@
-# Envtest files and directories
+hostnames = ["host0", "host1", "host2", "host3", "host4"]
+
 client-hosts = ["host4"]
 server-hosts = ["host0", "host1", "host2", "host3"]
 

@@ -1,4 +1,8 @@
-# Envtest files and directories
+hostnames = ["client0", "client1",
+             "host0", "host1", "host2", "host3",
+             "weak_0", "weak_1", "weak_2", "weak_3",
+             "strong_0", "strong_1", "strong_2", "strong_3"]
+
 client-hosts = ["client0", "client1"]
 server-hosts = ["host0", "host1", "host2", "host3"]
 
@@ -20,7 +24,6 @@ binary-files = ["pompe-client", "pompe-app", "speedbump", "bump_tc.sh"]
 # Note that the last parameter needs an index to fill up the {}
 server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
 server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
-
 
 weak-client-args = ["/opt/chance/target_config/conf-pompe/weak.gen.conf"]
 

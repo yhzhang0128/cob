@@ -1,4 +1,6 @@
-# Envtest files and directories
+hostnames = ["host0", "host1", "host2", "host3",
+             "weak_0", "weak_1", "weak_2", "weak_3"]
+
 build = ["script/build_envtest_geo.sh"]
 
 log-dir = ["/users/Yunhao/log/"]

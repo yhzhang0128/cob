@@ -1,4 +1,7 @@
-# Envtest files and directories
+hostnames = ["client0",
+             "host0", "host1", "host2", "host3",
+             "strong_0", "strong_1", "strong_2", "strong_3"]
+
 client-hosts = ["client0"]
 server-hosts = ["host0", "host1", "host2", "host3"]
 bump-hosts = ["strong_0", "strong_1", "strong_2", "strong_3"]
