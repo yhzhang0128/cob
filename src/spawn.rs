@@ -294,14 +294,14 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
         }
         server_id += 1;
     }
-    thread::sleep(time::Duration::from_millis(1000));
+    thread::sleep(time::Duration::from_millis(500));
 
     // Spawn speedbump processes
-    println!("{} Spawn {} speedbump processes on remote hosts.", "[5.5/7]".yellow(), &config["bump-hosts"].len());
+    println!("{} Spawn {} strong speedbump processes on remote hosts.", "(1/2)".yellow(), &config["bump-hosts"].len());
     let mut bump_id = 0;
-    for speedbump in &config["bump-hosts"] {
+    for speedbump in &config["strong-bump-hosts"] {
         //let idx_arg = format!("{}{}{}", &config["bump-idx-arg"][0], bump_id, &config["bump-idx-arg"][1]);
-        let latency = &config["bump-latency"][bump_id];
+        let latency = &config["strong-bump-latency"][bump_id];
         match ssh_conns.get(speedbump) {
             None => { Err(OracleError::InvalidBumpHost)? }
             Some(s) => {
@@ -313,10 +313,10 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
                     .map_err(|_| OracleError::SshCommandFailed)?;
                 // Spawn speedbump process
                 process.push(s.command(bump_cmd.as_str())
-                             .args(&config["bump-args"])
+                             .args(&config["strong-bump-args"])
                              //.arg(idx_arg)
                              .arg("--idx")
-                             .arg(&config["bump-idx"][bump_id])
+                             .arg(bump_id.to_string())
                              .spawn()
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?
@@ -325,7 +325,7 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
         }
         bump_id += 1;
     }
-    thread::sleep(time::Duration::from_millis(1000));
+    thread::sleep(time::Duration::from_millis(500));
 
     // Spawn client processes
     println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len());
@@ -342,7 +342,7 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
                 //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
                 //
                 process.push(s.command(client_cmd.as_str())
-                             .args(&config["client-args"])
+                             .args(&config["strong-client-args"])
                              .arg(orderlog_arg)
                              .arg(execlog_arg)
                              .arg("--cid")

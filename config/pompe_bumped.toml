@@ -1,12 +1,12 @@
 # Envtest files and directories
 client-hosts = ["client0"]
 server-hosts = ["host0", "host1", "host2", "host3"]
-bump-hosts  =  ["weak_0",   "weak_1",   "weak_2",   "weak_3",
-                "strong_0", "strong_1", "strong_2", "strong_3"]
-bump-latency = ["2",       "160",      "192",      "229",
-                "2",       "147",      "185",      "216"]
-bump-idx     = ["0",       "1",        "2",        "3",
-                "0",       "1",        "2",        "3"]
+
+weak-bump-hosts =   ["weak_0", "weak_1", "weak_2", "weak_3"]
+weak-bump-latency = ["2",      "160",    "192",    "229"]
+
+strong-bump-hosts  =  ["strong_0", "strong_1", "strong_2", "strong_3"]
+strong-bump-latency = ["2",        "147",      "185",      "216"]
 
 build = ["script/build_pompe_bump.sh"]
 
@@ -22,7 +22,12 @@ server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
 server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
 
 
-client-args = ["/opt/chance/target_config/conf-pompe/strong.gen.conf"]
+weak-client-args = ["/opt/chance/target_config/conf-pompe/weak.gen.conf"]
 
-bump-args = ["/opt/chance/target_config/conf-pompe/strong.gen.conf",
-             "/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
+weak-bump-args = ["/opt/chance/target_config/conf-pompe/weak.gen.conf",
+                    "/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
+
+strong-client-args = ["/opt/chance/target_config/conf-pompe/strong.gen.conf"]
+
+strong-bump-args = ["/opt/chance/target_config/conf-pompe/strong.gen.conf",
+                    "/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
