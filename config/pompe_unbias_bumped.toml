@@ -19,7 +19,7 @@ remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 log-dir = ["/users/Yunhao/log/"]
 
 config-files = ["conf-pompe"]
-binary-files = ["pompe-client", "pompe-app", "speedbump", "bump_tc.sh"]
+binary-files = ["pompe-unbias-client", "pompe-app", "speedbump", "bump_tc.sh"]
 
 # Note that the last parameter needs an index to fill up the {}
 server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
