@@ -20,6 +20,7 @@ pub async fn spawn_target<'a>(target: &TargetType,
         TargetType::HotStuffBumped => spawn_hotstuff_bumped(ssh_conns, config).await,
         TargetType::Pompe => spawn_pompe(ssh_conns, config).await,
         TargetType::PompeBumped => spawn_pompe_bumped(ssh_conns, config).await,
+        TargetType::PompeUnbiasBumped => spawn_pompe_bumped(ssh_conns, config).await,
         _ => Err(OracleError::UnknownTarget)?
     }
 }

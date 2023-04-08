@@ -11,6 +11,7 @@ pub fn read_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, 
         TargetType::HotStuffBumped => "config/hotstuff_bumped",
         TargetType::Pompe => "config/pompe",
         TargetType::PompeBumped => "config/pompe_bumped",
+        TargetType::PompeUnbiasBumped => "config/pompe_unbias_bumped",
         _ => Err( OracleError::ConfigError )?
     };
 
