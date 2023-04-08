@@ -379,7 +379,7 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
                 //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
                 //
                 process.push(s.command(client_cmd.as_str())
-                             .args(&config["weak-client-args"])
+                             .args(&config["client-args"])
                              .arg(&orderlog_arg)
                              .arg(&execlog_arg)
                              .arg("--cid")

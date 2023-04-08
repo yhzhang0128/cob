@@ -25,12 +25,11 @@ binary-files = ["pompe-unbias-client", "pompe-app", "speedbump", "bump_tc.sh"]
 server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
 server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
 
-weak-client-args = ["/opt/chance/target_config/conf-pompe/weak.gen.conf"]
+client-args = ["/opt/chance/target_config/conf-pompe/weak.gen.conf",
+               "/opt/chance/target_config/conf-pompe/strong.gen.conf"]
 
 weak-bump-args = ["/opt/chance/target_config/conf-pompe/weak.gen.conf",
                     "/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
-
-strong-client-args = ["/opt/chance/target_config/conf-pompe/strong.gen.conf"]
 
 strong-bump-args = ["/opt/chance/target_config/conf-pompe/strong.gen.conf",
                     "/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
