@@ -22,10 +22,7 @@ server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
 server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
 
 
-client-args = ["/opt/chance/target_config/conf-pompe/bump0.gen.conf"]
+client-args = ["/opt/chance/target_config/conf-pompe/strong.gen.conf"]
 
-bump-args = ["/opt/chance/target_config/conf-pompe/bump0.gen.conf",
+bump-args = ["/opt/chance/target_config/conf-pompe/strong.gen.conf",
              "/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
-
-# Obsolete
-#bump-idx-arg = ["/opt/chance/target_config/conf-hotstuff/bump0.gen-sec", ".conf"]
