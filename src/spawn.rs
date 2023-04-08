@@ -296,8 +296,8 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
     }
     thread::sleep(time::Duration::from_millis(500));
 
-    // Spawn speedbump processes
-    println!("{} Spawn {} strong speedbump processes on remote hosts.", "(1/2)".yellow(), &config["bump-hosts"].len());
+    // Spawn strong speedbump processes
+    println!("{} Spawn {} strong speedbump processes on remote hosts.", "(1/2)".yellow(), &config["strong-bump-hosts"].len());
     let mut bump_id = 0;
     for speedbump in &config["strong-bump-hosts"] {
         //let idx_arg = format!("{}{}{}", &config["bump-idx-arg"][0], bump_id, &config["bump-idx-arg"][1]);
@@ -327,8 +327,39 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
     }
     thread::sleep(time::Duration::from_millis(500));
 
+    // Spawn weak speedbump processes
+    println!("{} Spawn {} weak speedbump processes on remote hosts.", "(2/2)".yellow(), &config["weak-bump-hosts"].len());
+    let mut bump_id = 0;
+    for speedbump in &config["weak-bump-hosts"] {
+        //let idx_arg = format!("{}{}{}", &config["bump-idx-arg"][0], bump_id, &config["bump-idx-arg"][1]);
+        let latency = &config["weak-bump-latency"][bump_id];
+        match ssh_conns.get(speedbump) {
+            None => { Err(OracleError::InvalidBumpHost)? }
+            Some(s) => {
+                // Setup network latency
+                s.command(tc_cmd.as_str())
+                    .arg(latency)
+                    .output()
+                    .await
+                    .map_err(|_| OracleError::SshCommandFailed)?;
+                // Spawn speedbump process
+                process.push(s.command(bump_cmd.as_str())
+                             .args(&config["weak-bump-args"])
+                             //.arg(idx_arg)
+                             .arg("--idx")
+                             .arg(bump_id.to_string())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+        bump_id += 1;
+    }
+    thread::sleep(time::Duration::from_millis(500));
+
     // Spawn client processes
-    println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len());
+    println!("{} Spawn strong client process on remote hosts.", "[6/7]".yellow());
     let mut client_id = 0;
     for client in &config["client-hosts"] {
         let orderlog_arg = format!("{}client{}.order.log", log_dir, server_id);

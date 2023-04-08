@@ -1,5 +1,5 @@
 # Envtest files and directories
-client-hosts = ["client0"]
+client-hosts = ["client0", "client1"]
 server-hosts = ["host0", "host1", "host2", "host3"]
 
 weak-bump-hosts =   ["weak_0", "weak_1", "weak_2", "weak_3"]
