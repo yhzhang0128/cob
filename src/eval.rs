@@ -16,11 +16,16 @@ use crate::prep::prepare_files;
 use crate::spawn::spawn_target;
 use crate::config::read_config;
 
-pub async fn evaluate(target: &TargetType, duration: u64) -> Result<(), OracleError>{
+pub async fn evaluate(target: &TargetType, d: u64) -> Result<(), OracleError>{
+    let config = read_config(&target)?;
+    let mut duration = d;
+    if config.contains_key("default-duration") {
+        duration = config["default-duration"][0].parse::<u64>().unwrap();
+    }
+    
     println!("{}", format!("Target: {:?}", target).green().bold());
     println!("{}", format!("Duration: {:?}ms", duration).green().bold());
 
-    let config = read_config(&target)?;
     // Build the target
     println!("{} Build target {:?} with {}.", "[1/7]".yellow(), target, config["build"][0]);
     let status = Command::new("bash")

@@ -1,3 +1,5 @@
+default-duration = ["30000"]
+
 hostnames = ["client0", "client1",
              "host0", "host1", "host2", "host3",
              "weak_0", "weak_1", "weak_2", "weak_3",
