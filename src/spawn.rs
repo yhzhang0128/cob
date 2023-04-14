@@ -513,22 +513,22 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
 
         for _replica in 1..distribution[location_id] + 1 {
             println!("Spawn strong bump {} on {}", bump_id, speedbump);
-            //println!("Spawn strong bump {} {:?} --idx {}", bump_cmd, &config["strong-bump-args"], bump_id);
-            // match ssh_conns.get(speedbump) {
-            //     None => { Err(OracleError::InvalidBumpHost)? }
-            //     Some(s) => {
-            //         // Spawn speedbump processes
-            //         process.push(s.command(bump_cmd.as_str())
-            //                      .args(&config["strong-bump-args"])
-            //                      //.arg(idx_arg)
-            //                      .arg("--idx")
-            //                      .arg(bump_id.to_string())
-            //                      .spawn()
-            //                      .await
-            //                      .map_err(|_| OracleError::SshCommandFailed)?
-            //         );
-            //     }
-            // }
+            // println!("Spawn strong bump {} {:?} --idx {}", bump_cmd, &config["strong-bump-args"], bump_id);
+            match ssh_conns.get(speedbump) {
+                None => { Err(OracleError::InvalidBumpHost)? }
+                Some(s) => {
+                    // Spawn speedbump processes
+                    process.push(s.command(bump_cmd.as_str())
+                                 .args(&config["strong-bump-args"])
+                                 //.arg(idx_arg)
+                                 .arg("--idx")
+                                 .arg(bump_id.to_string())
+                                 .spawn()
+                                 .await
+                                 .map_err(|_| OracleError::SshCommandFailed)?
+                    );
+                }
+            }
             bump_id += 1;
         }
         location_id += 1;
@@ -557,22 +557,22 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
 
         for _replica in 1..distribution[location_id] + 1 {
             println!("Spawn weak bump {} on {}", bump_id, speedbump);
-            //println!("Spawn weak bump {} {:?} --idx {}", bump_cmd, &config["strong-bump-args"], bump_id);
-            // match ssh_conns.get(speedbump) {
-            //     None => { Err(OracleError::InvalidBumpHost)? }
-            //     Some(s) => {
-            //         // Spawn speedbump processes
-            //         process.push(s.command(bump_cmd.as_str())
-            //                      .args(&config["weak-bump-args"])
-            //                      //.arg(idx_arg)
-            //                      .arg("--idx")
-            //                      .arg(bump_id.to_string())
-            //                      .spawn()
-            //                      .await
-            //                      .map_err(|_| OracleError::SshCommandFailed)?
-            //         );
-            //     }
-            // }
+            // println!("Spawn weak bump {} {:?} --idx {}", bump_cmd, &config["strong-bump-args"], bump_id);
+            match ssh_conns.get(speedbump) {
+                None => { Err(OracleError::InvalidBumpHost)? }
+                Some(s) => {
+                    // Spawn speedbump processes
+                    process.push(s.command(bump_cmd.as_str())
+                                 .args(&config["weak-bump-args"])
+                                 //.arg(idx_arg)
+                                 .arg("--idx")
+                                 .arg(bump_id.to_string())
+                                 .spawn()
+                                 .await
+                                 .map_err(|_| OracleError::SshCommandFailed)?
+                    );
+                }
+            }
             bump_id += 1;
         }
         location_id += 1;
