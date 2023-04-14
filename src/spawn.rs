@@ -600,24 +600,24 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
 
     if unbias {
         // Pompe unbias client
-        // match ssh_conns.get(weak_client) {
-        //     None => { Err(OracleError::InvalidClientHost)? }
-        //     Some(s) => {
-        //         //println!("Spawn client {} {:?} --cid {}", client_cmd, &config["client-args"], client_id);
-        //         process.push(s.command(client_cmd.as_str())
-        //                      .args(&config["client-args"])
-        //                      .arg(&orderlog_arg)
-        //                      .arg(&execlog_arg)
-        //                      .arg("--cid")
-        //                      .arg(client_id.to_string())
-        //                      // .arg("--latency")
-        //                      // .arg(latency.to_string())
-        //                      .spawn()
-        //                      .await
-        //                      .map_err(|_| OracleError::SshCommandFailed)?
-        //         );
-        //     }
-        // }
+        match ssh_conns.get(weak_client) {
+            None => { Err(OracleError::InvalidClientHost)? }
+            Some(s) => {
+                //println!("Spawn client {} {:?} --cid {}", client_cmd, &config["client-args"], client_id);
+                process.push(s.command(client_cmd.as_str())
+                             .args(&config["client-args"])
+                             .arg(&orderlog_arg)
+                             .arg(&execlog_arg)
+                             .arg("--cid")
+                             .arg(client_id.to_string())
+                             // .arg("--latency")
+                             // .arg(latency.to_string())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
     } else {
         // Pompe original client
         Err(OracleError::SpawnNotImplemented)?
