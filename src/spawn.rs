@@ -21,7 +21,7 @@ pub async fn spawn_target<'a>(target: &TargetType,
         TargetType::Pompe => spawn_pompe(ssh_conns, config).await,
         TargetType::PompeBumped => spawn_pompe_bumped(ssh_conns, config, false).await,
         TargetType::PompeUnbiasBumped => spawn_pompe_bumped(ssh_conns, config, true).await,
-        TargetType::LargePompeUnbiasBumped => spawn_pompe_bumped(ssh_conns, config, true).await,
+        TargetType::LargePompeUnbiasBumped => spawn_large_pompe_bumped(ssh_conns, config, true).await,
         _ => Err(OracleError::UnknownTarget)?
     }
 }
@@ -433,6 +433,182 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
                 );
             }
         }
+    }
+
+    Ok(process)
+}
+
+
+pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
+                                    config: &'a HashMap<String, Vec<String>>,
+                                    unbias: bool
+) -> Result<Vec<RemoteChild<'a>>, OracleError> {
+    let mut process = vec![];
+    // process will be returned and its lifetime (e.g., the lifetime of
+    // the remote processes) should continue after this function returns
+
+    let log_dir = &config["log-dir"][0];
+    let binary_dir = &config["remote-dir"][0];
+    let client_bin = &config["binary-files"][0];
+    let server_bin = &config["binary-files"][1];
+    let bumper_bin = &config["binary-files"][2];
+    let tc_script = &config["binary-files"][3];
+    let client_cmd = format!("{}{}", binary_dir, client_bin);
+    let server_cmd = format!("{}{}", binary_dir, server_bin);
+    let bump_cmd = format!("{}{}", binary_dir, bumper_bin);
+    let tc_cmd = format!("{}{}", binary_dir, tc_script);
+
+    // Spawn server processes
+    println!("{} Spawn {} server processes on remote hosts.", "[5/7]".yellow(), &config["server-hosts"].len() * 4);
+    let mut server_id = 0;
+    for server in &config["server-hosts"] {
+        let log_arg = format!("{}server{}.log", log_dir, server_id);
+        let idx_arg = format!("{}{}{}", &config["server-idx-arg"][0], server_id, &config["server-idx-arg"][1]);
+
+        // Spawn 4 replica processes per machine
+        for _replica in 1..4 {
+            match ssh_conns.get(server) {
+                None => { Err(OracleError::InvalidServerHost)? }
+                Some(s) => {
+                    process.push(s.command(server_cmd.as_str())
+                                 .args(&config["server-args"])
+                                 .arg(&log_arg)
+                                 .arg("--conf")
+                                 .arg(&idx_arg)
+                                 .spawn()
+                                 .await
+                                 .map_err(|_| OracleError::SshCommandFailed)?
+                    );
+                }
+            }
+            server_id += 1;
+        }
+    }
+    thread::sleep(time::Duration::from_millis(500));
+
+    let distribution = [4, 10, 3, 4, 12, 3, 3, 15, 5, 3, 3, 15];
+    let mut total = 0;
+    for d in distribution {
+        total += d;
+    }
+    // Spawn strong speedbump processes
+    println!("{} Spawn {} strong speedbump processes on remote hosts.", "(1/2)".yellow(), total);
+    let mut bump_id = 0;
+    let mut location_id = 0;
+    for speedbump in &config["strong-bump-hosts"] {
+        //let idx_arg = format!("{}{}{}", &config["bump-idx-arg"][0], bump_id, &config["bump-idx-arg"][1]);
+        let latency = &config["strong-bump-latency"][bump_id];
+
+        // Setup network latency
+        match ssh_conns.get(speedbump) {
+            None => { Err(OracleError::InvalidBumpHost)? }
+            Some(s) => {
+                s.command(tc_cmd.as_str())
+                    .arg(latency)
+                    .output()
+                    .await
+                    .map_err(|_| OracleError::SshCommandFailed)?;
+            }
+        }
+
+        for _replica in 1..distribution[location_id] {
+            match ssh_conns.get(speedbump) {
+                None => { Err(OracleError::InvalidBumpHost)? }
+                Some(s) => {
+                    // Spawn speedbump processes
+                    process.push(s.command(bump_cmd.as_str())
+                                 .args(&config["strong-bump-args"])
+                                 //.arg(idx_arg)
+                                 .arg("--idx")
+                                 .arg(bump_id.to_string())
+                                 .spawn()
+                                 .await
+                                 .map_err(|_| OracleError::SshCommandFailed)?
+                    );
+                }
+            }
+            bump_id += 1;
+        }
+        location_id += 1;
+    }
+    thread::sleep(time::Duration::from_millis(500));
+
+    // Spawn weak speedbump processes
+    println!("{} Spawn {} weak speedbump processes on remote hosts.", "(2/2)".yellow(), total);
+    let mut bump_id = 0;
+    let mut location_id = 0;
+    for speedbump in &config["weak-bump-hosts"] {
+        //let idx_arg = format!("{}{}{}", &config["bump-idx-arg"][0], bump_id, &config["bump-idx-arg"][1]);
+        let latency = &config["weak-bump-latency"][bump_id];
+
+        // Setup network latency
+        match ssh_conns.get(speedbump) {
+            None => { Err(OracleError::InvalidBumpHost)? }
+            Some(s) => {
+                s.command(tc_cmd.as_str())
+                    .arg(latency)
+                    .output()
+                    .await
+                    .map_err(|_| OracleError::SshCommandFailed)?;
+            }
+        }
+
+        for _replica in 1..distribution[location_id] {
+            match ssh_conns.get(speedbump) {
+                None => { Err(OracleError::InvalidBumpHost)? }
+                Some(s) => {
+                    // Spawn speedbump processes
+                    process.push(s.command(bump_cmd.as_str())
+                                 .args(&config["weak-bump-args"])
+                                 //.arg(idx_arg)
+                                 .arg("--idx")
+                                 .arg(bump_id.to_string())
+                                 .spawn()
+                                 .await
+                                 .map_err(|_| OracleError::SshCommandFailed)?
+                    );
+                }
+            }
+            bump_id += 1;
+        }
+        location_id += 1;
+    }
+    thread::sleep(time::Duration::from_millis(500));
+
+    // Spawn strong client process
+    println!("{} Spawn strong/weak client processes on remote hosts.", "[6/7]".yellow());
+    let client_id = 0;
+    let weak_client = &config["client-hosts"][0];
+    let _strong_client = &config["client-hosts"][1];
+    let orderlog_arg = format!("{}client{}.order.log", log_dir, server_id);
+    let execlog_arg = format!("{}client{}.exec.log", log_dir, server_id);
+    // let latency = &latency_config[&host_to_location[client]]
+    //                              [host_to_lidx[server]];
+    //println!("From {} to {}: {}ms", client, server, latency);
+
+    if unbias {
+        // Pompe unbias client
+        match ssh_conns.get(weak_client) {
+            None => { Err(OracleError::InvalidClientHost)? }
+            Some(s) => {
+                //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
+                process.push(s.command(client_cmd.as_str())
+                             .args(&config["client-args"])
+                             .arg(&orderlog_arg)
+                             .arg(&execlog_arg)
+                             .arg("--cid")
+                             .arg(client_id.to_string())
+                             // .arg("--latency")
+                             // .arg(latency.to_string())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
+            }
+        }
+    } else {
+        // Pompe original client
+        Err(OracleError::SpawnNotImplemented)?
     }
 
     Ok(process)
