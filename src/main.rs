@@ -34,6 +34,7 @@ async fn main() -> Result<(), OracleError> {
             }
         }
         Action::List { } => {
+            println!("large-pompe-unbiased-bump");
             println!("pompe-unbiased-bump");
             println!("pompe-bump");
             println!("pompe");
@@ -56,6 +57,7 @@ fn target_type(target_str: &String) -> Result<TargetType, OracleError> {
         "pompe" => { return Ok(TargetType::Pompe); }
         "pompe-bump" => { return Ok(TargetType::PompeBumped); }
         "pompe-unbias-bump" => { return Ok(TargetType::PompeUnbiasBumped); }
+        "large-pompe-unbias-bump" => { return Ok(TargetType::LargePompeUnbiasBumped); }
         _ => { Err(OracleError::UnknownTarget)? }
     }
 

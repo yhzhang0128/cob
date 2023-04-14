@@ -1,0 +1,49 @@
+default-duration = ["30000"]
+
+hostnames = ["client0", "client1",
+             "strong_0", "strong_1", "strong_2", "strong_3", "strong_4", "strong_5",
+             "strong_6", "strong_7", "strong_8", "strong_9", "strong_10", "strong_11",
+             "weak_0", "weak_1", "weak_2", "weak_3", "weak_4", "weak_5",
+             "weak_6", "weak_7", "weak_8", "weak_9", "weak_10", "weak_11",
+             "host0", "host1", "host2", "host3", "host4",
+             "host5", "host6", "host7", "host8", "host9",
+             "host10", "host11", "host12", "host13", "host14",
+             "host15", "host16", "host17", "host18", "host19"]
+
+client-hosts = ["client0", "client1"]
+server-hosts = ["host0", "host1", "host2", "host3", "host4",
+             "host5", "host6", "host7", "host8", "host9",
+             "host10", "host11", "host12", "host13", "host14",
+             "host15", "host16", "host17", "host18", "host19"]
+
+weak-bump-hosts = ["weak_0", "weak_1", "weak_2", "weak_3", "weak_4", "weak_5",
+                   "weak_6", "weak_7", "weak_8", "weak_9", "weak_10", "weak_11"]
+
+strong-bump-hosts = ["strong_0", "strong_1", "strong_2", "strong_3", "strong_4", "strong_5",
+                     "strong_6", "strong_7", "strong_8", "strong_9", "strong_10", "strong_11"]
+
+# Washington vs. London
+strong-bump-latency = ["141", "55", "375", "76", "91", "111", "78", "71", "233", "157", "68", "2"]
+weak-bump-latency =   ["10", "119", "259", "2", "20", "40", "16", "145", "162", "270", "87", "76"]
+
+build = ["script/build_pompe_bump.sh"]
+
+local-dir = ["/opt/chance/cob/target_systems/pompe-bumped/examples/", "/opt/chance/cob/target_systems/pompe-bumped/examples/"]
+remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
+log-dir = ["/users/Yunhao/log/"]
+
+config-files = ["conf-pompe-large"]
+binary-files = ["pompe-unbias-2clients", "pompe-app", "speedbump", "bump_tc.sh"]
+
+# Note that the last parameter needs an index to fill up the {}
+server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
+server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
+
+client-args = ["/opt/chance/target_config/conf-pompe/weak.gen.conf",
+               "/opt/chance/target_config/conf-pompe/strong.gen.conf"]
+
+weak-bump-args = ["/opt/chance/target_config/conf-pompe/weak.gen.conf",
+                  "/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
+
+strong-bump-args = ["/opt/chance/target_config/conf-pompe/strong.gen.conf",
+                    "/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
