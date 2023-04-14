@@ -486,7 +486,7 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
     }
     thread::sleep(time::Duration::from_millis(500));
 
-    let distribution = [4, 10, 3, 4, 10, 3, 3, 10, 5, 3, 3, 10, 2, 5, 5];
+    let distribution = [4, 10, 3, 4, 10, 2, 3, 3, 10, 5, 5, 3, 3, 10, 5];
     let mut total = 0;
     for d in distribution {
         total += d;
