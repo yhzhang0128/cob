@@ -21,6 +21,7 @@ pub async fn spawn_target<'a>(target: &TargetType,
         TargetType::Pompe => spawn_pompe(ssh_conns, config).await,
         TargetType::PompeBumped => spawn_pompe_bumped(ssh_conns, config, false).await,
         TargetType::PompeUnbiasBumped => spawn_pompe_bumped(ssh_conns, config, true).await,
+        TargetType::LargePompeBumped => spawn_large_pompe_bumped(ssh_conns, config, false).await,
         TargetType::LargePompeUnbiasBumped => spawn_large_pompe_bumped(ssh_conns, config, true).await,
         _ => Err(OracleError::UnknownTarget)?
     }
@@ -440,8 +441,8 @@ pub async fn spawn_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
 
 
 pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session>,
-                                    config: &'a HashMap<String, Vec<String>>,
-                                    unbias: bool
+                                          config: &'a HashMap<String, Vec<String>>,
+                                          _unbias: bool
 ) -> Result<Vec<RemoteChild<'a>>, OracleError> {
     let mut process = vec![];
     // process will be returned and its lifetime (e.g., the lifetime of
@@ -587,7 +588,7 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
     }
     thread::sleep(time::Duration::from_millis(500));
 
-    // Spawn strong client process
+    // Spawn client process
     println!("{} Spawn strong/weak client processes on remote hosts.", "[6/7]".yellow());
     let client_id = 0;
     let weak_client = &config["client-hosts"][0];
@@ -598,35 +599,27 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
     //                              [host_to_lidx[server]];
     //println!("From {} to {}: {}ms", client, server, latency);
 
-    if unbias {
-        // Pompe unbias client
-        match ssh_conns.get(weak_client) {
-            None => { Err(OracleError::InvalidClientHost)? }
-            Some(s) => {
-                //println!("Spawn client {} {:?} --cid {}", client_cmd, &config["client-args"], client_id);
-                process.push(s.command(client_cmd.as_str())
-                             .args(&config["client-args"])
-                             .arg(&orderlog_arg)
-                             .arg(&execlog_arg)
-                             .arg("--cid")
-                             .arg(client_id.to_string())
-                             // .arg("--latency")
-                             // .arg(latency.to_string())
-                             .spawn()
-                             .await
-                             .map_err(|_| OracleError::SshCommandFailed)?
-                );
-            }
+    match ssh_conns.get(weak_client) {
+        None => { Err(OracleError::InvalidClientHost)? }
+        Some(s) => {
+            //println!("Spawn client {} {:?} --cid {}", client_cmd, &config["client-args"], client_id);
+            process.push(s.command(client_cmd.as_str())
+                         .args(&config["client-args"])
+                         .arg(&orderlog_arg)
+                         .arg(&execlog_arg)
+                         .arg("--cid")
+                         .arg(client_id.to_string())
+                         // .arg("--latency")
+                         // .arg(latency.to_string())
+                         .spawn()
+                         .await
+                         .map_err(|_| OracleError::SshCommandFailed)?
+            );
         }
-    } else {
-        // Pompe original client
-        Err(OracleError::SpawnNotImplemented)?
     }
 
     Ok(process)
 }
-
-
 
 pub async fn spawn_envtest<'a>(ssh_conns: &'a HashMap<String, Session>,
                                config: &'a HashMap<String, Vec<String>>
