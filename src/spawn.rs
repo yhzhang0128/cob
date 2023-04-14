@@ -462,11 +462,10 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
     println!("{} Spawn {} server processes on remote hosts.", "[5/7]".yellow(), &config["server-hosts"].len() * 4);
     let mut server_id = 0;
     for server in &config["server-hosts"] {
-        let log_arg = format!("{}server{}.log", log_dir, server_id);
-        let idx_arg = format!("{}{}{}", &config["server-idx-arg"][0], server_id, &config["server-idx-arg"][1]);
-
         // Spawn 4 replica processes per machine
         for _replica in 1..4 {
+            let log_arg = format!("{}server{}.log", log_dir, server_id);
+            let idx_arg = format!("{}{}{}", &config["server-idx-arg"][0], server_id, &config["server-idx-arg"][1]);
             match ssh_conns.get(server) {
                 None => { Err(OracleError::InvalidServerHost)? }
                 Some(s) => {
@@ -497,7 +496,7 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
     let mut location_id = 0;
     for speedbump in &config["strong-bump-hosts"] {
         //let idx_arg = format!("{}{}{}", &config["bump-idx-arg"][0], bump_id, &config["bump-idx-arg"][1]);
-        let latency = &config["strong-bump-latency"][bump_id];
+        let latency = &config["strong-bump-latency"][location_id];
 
         // Setup network latency
         match ssh_conns.get(speedbump) {
@@ -539,7 +538,7 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
     let mut location_id = 0;
     for speedbump in &config["weak-bump-hosts"] {
         //let idx_arg = format!("{}{}{}", &config["bump-idx-arg"][0], bump_id, &config["bump-idx-arg"][1]);
-        let latency = &config["weak-bump-latency"][bump_id];
+        let latency = &config["weak-bump-latency"][location_id];
 
         // Setup network latency
         match ssh_conns.get(speedbump) {
