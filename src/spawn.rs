@@ -467,20 +467,20 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
             let log_arg = format!("{}server{}.log", log_dir, server_id);
             let idx_arg = format!("{}{}{}", &config["server-idx-arg"][0], server_id, &config["server-idx-arg"][1]);
             println!("Spawn server {} {:?} {} --conf {}", server_cmd, &config["server-args"], &log_arg, idx_arg);
-            match ssh_conns.get(server) {
-                None => { Err(OracleError::InvalidServerHost)? }
-                Some(s) => {
-                    process.push(s.command(server_cmd.as_str())
-                                 .args(&config["server-args"])
-                                 .arg(&log_arg)
-                                 .arg("--conf")
-                                 .arg(&idx_arg)
-                                 .spawn()
-                                 .await
-                                 .map_err(|_| OracleError::SshCommandFailed)?
-                    );
-                }
-            }
+            // match ssh_conns.get(server) {
+            //     None => { Err(OracleError::InvalidServerHost)? }
+            //     Some(s) => {
+            //         process.push(s.command(server_cmd.as_str())
+            //                      .args(&config["server-args"])
+            //                      .arg(&log_arg)
+            //                      .arg("--conf")
+            //                      .arg(&idx_arg)
+            //                      .spawn()
+            //                      .await
+            //                      .map_err(|_| OracleError::SshCommandFailed)?
+            //         );
+            //     }
+            // }
             server_id += 1;
         }
     }
