@@ -27,8 +27,16 @@ strong-bump-hosts = ["strong_0", "strong_1", "strong_2", "strong_3", "strong_4_0
                      "strong_8", "strong_9", "strong_10", "strong_11_0", "strong_11_1"]
 
 # Washington vs. London
-strong-bump-latency = ["141", "55", "375", "76", "91", "91", "111", "78", "71", "71", "233", "157", "68", "2", "2"]
-weak-bump-latency =   ["10", "119", "259", "2", "20", "20", "40", "16", "145", "145", "162", "270", "87", "76", "76"]
+# strong-bump-latency = ["141", "55", "375", "76", "91", "91", "111", "78", "71", "71", "233", "157", "68", "2", "2"]
+# weak-bump-latency =   ["10", "119", "259", "2", "20", "20", "40", "16", "145", "145", "162", "270", "87", "76", "76"]
+
+# London vs. Munich
+# strong-bump-latency = ["10", "119", "259", "2", "20", "20", "40", "16", "145", "145", "162", "270", "87", "76", "76"]
+# weak-bump-latency =   ["15", "134", "265", "21", "2", "2", "42", "17", "159", "159", "166", "220", "104", "92", "92"]
+
+# Munich vs. Tokyo
+strong-bump-latency = ["15", "134", "265", "21", "2", "2", "42", "17", "159", "159", "166", "220", "104", "92", "92"]
+weak-bump-latency =   ["248", "136", "105", "270", "220", "220", "317", "257", "107", "107", "80", "2", "161", "158", "158"]
 
 build = ["script/build_pompe_bump.sh"]
 
@@ -37,7 +45,7 @@ remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 log-dir = ["/users/Yunhao/log/"]
 
 config-files = ["conf-pompe-large"]
-binary-files = ["pompe-unbias-2clients", "pompe-app", "speedbump", "bump_tc.sh"]
+binary-files = ["large-pompe-unbias-2clients", "pompe-app", "speedbump", "bump_tc.sh"]
 
 # Note that the last parameter needs an index to fill up the {}
 server-args = ["/opt/chance/target_config/conf-pompe-large/hotstuff.gen.conf"]
