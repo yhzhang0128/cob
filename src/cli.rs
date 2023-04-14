@@ -50,4 +50,6 @@ pub enum Action {
         )]
         duration: u64,
     },
+    #[clap(about = "List target systems supported.")]
+    List {},
 }

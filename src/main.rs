@@ -33,6 +33,15 @@ async fn main() -> Result<(), OracleError> {
                 }
             }
         }
+        Action::List { } => {
+            println!("pompe-unbiased-bump");
+            println!("pompe-bump");
+            println!("pompe");
+            println!("hotstuff-bump");
+            println!("hotstuff");
+            println!("envtest-geo");
+            println!("envtest");
+        }
     };
 
     Ok(())
