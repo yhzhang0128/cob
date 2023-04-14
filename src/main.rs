@@ -34,7 +34,7 @@ async fn main() -> Result<(), OracleError> {
             }
         }
         Action::List { } => {
-            println!("large-pompe-unbiased-bump");
+            println!("large-pompe-unbias-bump");
             println!("pompe-unbiased-bump");
             println!("pompe-bump");
             println!("pompe");
