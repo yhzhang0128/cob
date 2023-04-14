@@ -530,6 +530,10 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
                 }
             }
             bump_id += 1;
+            // Slow down, o.w., ssh may be refused
+            if distribution[location_id] > 5 {
+                thread::sleep(time::Duration::from_millis(50));
+            }
         }
         location_id += 1;
     }
@@ -574,6 +578,10 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
                 }
             }
             bump_id += 1;
+            // Slow down, o.w., ssh may be refused
+            if distribution[location_id] > 5 {
+                thread::sleep(time::Duration::from_millis(50));
+            }
         }
         location_id += 1;
     }
