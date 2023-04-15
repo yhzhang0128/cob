@@ -54,7 +54,7 @@ pub async fn evaluate(target: &TargetType, d: u64) -> Result<(), OracleError>{
     pb.finish_with_message(finish_msg);
 
     // Collect output and close connections
-    println!("{} Kill {} processes and collect output {}.", "[7/7]".yellow(), processes.len(), "(may cause segfault during kill)".red());
+    println!("{} Kill {} processes and collect output {}.", "[7/7]".yellow(), processes.len(), "(may cause segfault during kill)".green());
     killall(&target, false).await?;
     thread::sleep(time::Duration::from_millis(1000));
 
