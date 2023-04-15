@@ -14,6 +14,7 @@ pub enum TargetType {
     Pompe,
     PompeBumped,
     PompeUnbiasBumped,
+    LargeHotStuffBumped,
     LargePompeBumped,
     LargePompeUnbiasBumped,
     Unknown,
