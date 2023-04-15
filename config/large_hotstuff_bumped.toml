@@ -1,4 +1,4 @@
-default-duration = ["60000"]
+default-duration = ["120000"]
 
 hostnames = ["client0", "client1",
              "strong_0", "strong_1", "strong_2", "strong_3", "strong_4_0",
