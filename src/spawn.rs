@@ -594,8 +594,8 @@ pub async fn spawn_large_pompe_bumped<'a>(ssh_conns: &'a HashMap<String, Session
     let client_id = 0;
     let weak_client = &config["client-hosts"][0];
     let _strong_client = &config["client-hosts"][1];
-    let orderlog_arg = format!("{}client{}.order.log", log_dir, server_id);
-    let execlog_arg = format!("{}client{}.exec.log", log_dir, server_id);
+    let orderlog_arg = format!("{}client{}.order.log", log_dir, client_id);
+    let execlog_arg = format!("{}client{}.exec.log", log_dir, client_id);
     // let latency = &latency_config[&host_to_location[client]]
     //                              [host_to_lidx[server]];
     //println!("From {} to {}: {}ms", client, server, latency);
