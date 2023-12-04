@@ -14,3 +14,7 @@
 	path = target_systems/pompe-bumped
 	url = git@github.com:Pompe-org/libhotstuff.git
 	branch = cob-pompe-bump
+[submodule "target_systems/themis-src-anon-cob"]
+	path = target_systems/themis-src-anon-cob
+	url = git@github.com:yhzhang0128/themis-src-anon-cob.git
+	branch = themis-cob
