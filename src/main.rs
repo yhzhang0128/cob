@@ -37,6 +37,7 @@ async fn main() -> Result<(), OracleError> {
             println!("large-pompe-unbias-bump");
             println!("large-pompe-bump");
             println!("large-hotstuff-bump");
+            println!("large-themis-bump");
             println!("pompe-unbiased-bump");
             println!("pompe-bump");
             println!("pompe");
@@ -60,8 +61,10 @@ fn target_type(target_str: &String) -> Result<TargetType, OracleError> {
         "pompe-bump" => { return Ok(TargetType::PompeBumped); }
         "pompe-unbias-bump" => { return Ok(TargetType::PompeUnbiasBumped); }
         "large-hotstuff-bump" => { return Ok(TargetType::LargeHotStuffBumped); }
+        "large-themis-bump" => { return Ok(TargetType::LargeThemisBumped); }
         "large-pompe-bump" => { return Ok(TargetType::LargePompeBumped); }
-        "large-pompe-unbias-bump" => { return Ok(TargetType::LargePompeUnbiasBumped); }
+        // This one is deprecated.
+        //"large-pompe-unbias-bump" => { return Ok(TargetType::LargePompeUnbiasBumped); }
         _ => { Err(OracleError::UnknownTarget)? }
     }
 

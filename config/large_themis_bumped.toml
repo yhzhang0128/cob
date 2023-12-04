@@ -1,0 +1,55 @@
+default-duration = ["30000"]
+
+hostnames = ["client0", "client1",
+             "strong_0", "strong_1", "strong_2", "strong_3", "strong_4_0",
+             "strong_4_1", "strong_5", "strong_6", "strong_7_0", "strong_7_1",
+             "strong_8", "strong_9", "strong_10", "strong_11_0", "strong_11_1",
+             "weak_0", "weak_1", "weak_2", "weak_3", "weak_4_0",
+             "weak_4_1", "weak_5", "weak_6", "weak_7_0", "weak_7_1",
+             "weak_8", "weak_9", "weak_10", "weak_11_0", "weak_11_1",
+             "host0", "host1", "host2", "host3", "host4",
+             "host5", "host6", "host7", "host8", "host9",
+             "host10", "host11", "host12", "host13", "host14",
+             "host15", "host16", "host17", "host18", "host19"]
+
+client-hosts = ["client0", "client1"]
+server-hosts = ["host0", "host1", "host2", "host3", "host4",
+                "host5", "host6", "host7", "host8", "host9",
+                "host10", "host11", "host12", "host13", "host14",
+                "host15", "host16", "host17", "host18", "host19"]
+
+weak-bump-hosts = ["weak_0", "weak_1", "weak_2", "weak_3", "weak_4_0",
+                   "weak_4_1", "weak_5", "weak_6", "weak_7_0", "weak_7_1",
+                   "weak_8", "weak_9", "weak_10", "weak_11_0", "weak_11_1"]
+
+strong-bump-hosts = ["strong_0", "strong_1", "strong_2", "strong_3", "strong_4_0",
+                     "strong_4_1", "strong_5", "strong_6", "strong_7_0", "strong_7_1",
+                     "strong_8", "strong_9", "strong_10", "strong_11_0", "strong_11_1"]
+
+strong-bump-latency = ["10", "119", "259", "2", "20", "20", "40", "16", "145", "145", "162", "270", "87", "76", "76"]          # London
+weak-bump-latency =   ["15", "134", "265", "21", "2", "2", "42", "17", "159", "159", "166", "220", "104", "92", "92"]          # Munich
+
+# strong-bump-latency = ["10", "119", "259", "2", "20", "20", "40", "16", "145", "145", "162", "270", "87", "76", "76"]          # London
+# weak-bump-latency =   ["248", "136", "105", "270", "220", "220", "317", "257", "107", "107", "80", "2", "161", "158", "158"]   # Tokyo
+
+build = ["script/build_pompe_bump.sh"]
+
+local-dir = ["/opt/chance/cob/target_systems/pompe-bumped/examples/", "/opt/chance/cob/target_systems/pompe-bumped/examples/"]
+remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
+log-dir = ["/users/Yunhao/log/"]
+
+config-files = ["conf-pompe-large"]
+binary-files = ["large-hotstuff-2clients", "hotstuff-app", "speedbump", "bump_tc.sh"]
+
+# Note that the last parameter needs an index to fill up the {}
+server-args = ["/opt/chance/target_config/conf-pompe-large/hotstuff.gen.conf"]
+server-idx-arg = ["/opt/chance/target_config/conf-pompe-large/hotstuff.gen-sec", ".conf"]
+
+client-args = ["/opt/chance/target_config/conf-pompe-large/weak.gen.conf",
+               "/opt/chance/target_config/conf-pompe-large/strong.gen.conf"]
+
+weak-bump-args = ["/opt/chance/target_config/conf-pompe-large/weak.gen.conf",
+                  "/opt/chance/target_config/conf-pompe-large/hotstuff.gen.conf"]
+
+strong-bump-args = ["/opt/chance/target_config/conf-pompe-large/strong.gen.conf",
+                    "/opt/chance/target_config/conf-pompe-large/hotstuff.gen.conf"]

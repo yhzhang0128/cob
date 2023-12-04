@@ -23,7 +23,8 @@ pub async fn spawn_target<'a>(target: &TargetType,
         TargetType::PompeUnbiasBumped => spawn_pompe_bumped(ssh_conns, config, true).await,
         TargetType::LargeHotStuffBumped => spawn_large_pompe_bumped(ssh_conns, config, false).await,
         TargetType::LargePompeBumped => spawn_large_pompe_bumped(ssh_conns, config, false).await,
-        TargetType::LargePompeUnbiasBumped => spawn_large_pompe_bumped(ssh_conns, config, true).await,
+        TargetType::LargeThemisBumped => spawn_large_pompe_bumped(ssh_conns, config, false).await,
+        //TargetType::LargePompeUnbiasBumped => spawn_large_pompe_bumped(ssh_conns, config, true).await,
         _ => Err(OracleError::UnknownTarget)?
     }
 }
