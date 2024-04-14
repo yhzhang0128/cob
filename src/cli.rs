@@ -12,6 +12,7 @@ pub enum TargetType {
     HotStuff,
     HotStuffBumped,
     Pompe,
+    PompeSRO,
     PompeBumped,
     PompeUnbiasBumped,
     LargeHotStuffBumped,
