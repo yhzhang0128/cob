@@ -1,18 +1,25 @@
-hostnames = ["host0", "host1", "host2", "host3", "client0"]
+# 4 nodes
+#hostnames = ["host0", "host1", "host2", "host3", "client0"]
+#server-hosts = ["host0", "host1", "host2", "host3"]
+#config-files = ["conf-pompe"]
+#client-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
+#server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
+#server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
+
+# 10 nodes
+hostnames = ["host0", "host1", "host2", "host3", "host4", "host5", "host6", "host7", "host8", "host9", "client0"]
+server-hosts = ["host0", "host1", "host2", "host3", "host4", "host5", "host6", "host7", "host8", "host9"]
+config-files = ["conf-pompe-10"]
+client-args = ["/opt/chance/target_config/conf-pompe-10/hotstuff.gen.conf"]
+server-args = ["/opt/chance/target_config/conf-pompe-10/hotstuff.gen.conf"]
+server-idx-arg = ["/opt/chance/target_config/conf-pompe-10/hotstuff.gen-sec", ".conf"]
 
 client-hosts = ["client0"]
-server-hosts = ["host0", "host1", "host2", "host3"]
-
 build = ["script/build_pompe.sh"]
-
+binary-files = ["pompe-client", "pompe-app"]
 local-dir = ["/opt/chance/cob/target_systems/pompe/examples/", "/opt/chance/cob/target_systems/pompe/examples/"]
 remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 log-dir = ["/users/Yunhao/log/"]
 
-config-files = ["conf-pompe"]
-binary-files = ["pompe-client", "pompe-app"]
 
-client-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
-# Note that the last parameter needs an index to fill up the {}
-server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
-server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
+
