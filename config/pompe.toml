@@ -1,6 +1,6 @@
-hostnames = ["host0", "host1", "host2", "host3", "host4", "host5", "host6", "host7"]
+hostnames = ["host0", "host1", "host2", "host3", "client0"]
 
-client-hosts = ["host4", "host5", "host6", "host7"]
+client-hosts = ["client0"]
 server-hosts = ["host0", "host1", "host2", "host3"]
 
 build = ["script/build_pompe.sh"]
