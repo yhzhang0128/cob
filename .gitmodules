@@ -6,6 +6,10 @@
 	path = target_systems/pompe
 	url = git@github.com:Pompe-org/libhotstuff.git
 	branch = cob-pompe
+[submodule "target_systems/pompe-sro"]
+	path = target_systems/pompe-sro
+	url = git@github.com:Pompe-org/libhotstuff.git
+	branch = cob-pompe-sro
 [submodule "target_systems/hotstuff-bumped"]
 	path = target_systems/hotstuff-bumped
 	url = git@github.com:Pompe-org/libhotstuff.git
