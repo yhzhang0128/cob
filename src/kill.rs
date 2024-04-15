@@ -27,7 +27,7 @@ pub async fn killall(target: &TargetType, print: bool) -> Result<(), OracleError
     }
     
     // Kill speedbump processes
-    if config["binary-files"].len() > 2 {
+    if config["binary-files"].len() == 4 {
         let speedbump_bin = &config["binary-files"][2];
         for (host, s) in &ssh_conns {
             let kill1 = s.command("killall")
