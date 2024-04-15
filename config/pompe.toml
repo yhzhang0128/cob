@@ -52,10 +52,13 @@ client-args = ["/opt/chance/target_config/conf-pompe-49/hotstuff.gen.conf"]
 server-args = ["/opt/chance/target_config/conf-pompe-49/hotstuff.gen.conf"]
 server-idx-arg = ["/opt/chance/target_config/conf-pompe-49/hotstuff.gen-sec", ".conf"]
 
+# With emulated latency
+binary-files = ["pompe-client", "pompe-app", "bump_tc.sh"]
+# Without emulated latency
+binary-files = ["pompe-client", "pompe-app"]
 
 client-hosts = ["client0"]
 build = ["script/build_pompe.sh"]
-binary-files = ["pompe-client", "pompe-app"]
 local-dir = ["/opt/chance/cob/target_systems/pompe/examples/", "/opt/chance/cob/target_systems/pompe/examples/"]
 remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 log-dir = ["/users/Yunhao/log/"]
