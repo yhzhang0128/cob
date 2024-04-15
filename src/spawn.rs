@@ -259,17 +259,17 @@ pub async fn spawn_pompe<'a>(ssh_conns: &'a HashMap<String, Session>,
     thread::sleep(time::Duration::from_millis(1000));
 
     // Spawn client processes
-    println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len());
+    let client_per_host = 2;
+    println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len() * client_per_host);
     let mut client_id = 0;
     for client in &config["client-hosts"] {
-        let orderlog_arg = format!("{}client{}.order.log", log_dir, server_id);
-        let execlog_arg = format!("{}client{}.exec.log", log_dir, server_id);
-        // let latency = &latency_config[&host_to_location[client]]
-        //                              [host_to_lidx[server]];
-        //println!("From {} to {}: {}ms", client, server, latency);
-        match ssh_conns.get(client) {
-            None => { Err(OracleError::InvalidClientHost)? }
-            Some(s) => {
+        for _i in 1..client_per_host+1 {
+            let orderlog_arg = format!("{}client{}.order.log", log_dir, client_id);
+            let execlog_arg = format!("{}client{}.exec.log", log_dir, client_id);
+
+            match ssh_conns.get(client) {
+                None => { Err(OracleError::InvalidClientHost)? }
+                Some(s) => {
                 //println!("ssh: {} {:?} --idx {} --serveridx {} --latency {}", client_cmd, &config["client-args"], client_id, server_id, latency);
                 //
                 process.push(s.command(client_cmd.as_str())
@@ -284,9 +284,10 @@ pub async fn spawn_pompe<'a>(ssh_conns: &'a HashMap<String, Session>,
                              .await
                              .map_err(|_| OracleError::SshCommandFailed)?
                 );
+                }
             }
+            client_id += 1;
         }
-        client_id += 1;
     }
 
     Ok(process)
