@@ -59,7 +59,7 @@ binary-files = ["pompe-client", "pompe-app", "bump_tc.sh"]
 
 client-hosts = ["client0", "client1"]
 build = ["script/build_pompe_sro.sh"]
-local-dir = ["/opt/chance/cob/target_systems/pompe_sro/examples/", "/opt/chance/cob/target_systems/pompe_sro/examples/"]
+local-dir = ["/opt/chance/cob/target_systems/pompe-sro/examples/", "/opt/chance/cob/target_systems/pompe-sro/examples/"]
 remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
 log-dir = ["/users/Yunhao/log/"]
 
