@@ -31,7 +31,7 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Action {
-    #[clap(about = "Kill processes on remote hots.")]
+    #[clap(about = "Kill processes on remote hosts.")]
     Kill {
         #[clap(
             short = 't', long = "target",
