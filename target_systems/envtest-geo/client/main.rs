@@ -20,8 +20,6 @@ struct Args {
     #[arg(long)]
     config: String,
     #[arg(long)]
-    latency: u64,
-    #[arg(long)]
     idx: u32,
     #[arg(long)]
     serveridx: usize,
@@ -58,10 +56,10 @@ async fn main() -> Result<(), EnvTestError> {
     }
 
     if latencies.len() == 0 {
-        println!("client->server [{}->{}] = {:.1}ms <- {}ms", args.idx, args.serveridx, 0, args.latency);
+        println!("client->server [{}->{}] = {:.1}ms", args.idx, args.serveridx, 0);
     } else {
         let avg = sum as f32 / latencies.len() as f32;
-        println!("client->server [{}->{}] = {:.1}ms <- {}ms, {} samples", args.idx, args.serveridx, avg, args.latency, latencies.len());
+        println!("client->server [{}->{}] = {:.1}ms, {} samples", args.idx, args.serveridx, avg, latencies.len());
     }
 
     Ok(())

@@ -1,5 +1,6 @@
 hostnames = ["host0", "host1", "host2", "host3",
-             "host4", "host5", "host6", "host7"]
+             "host4", "host5", "host6", "host7",
+             "host8", "host9", "host10", "host11"]
 
 build = ["script/build_envtest_geo.sh"]
 
@@ -13,8 +14,11 @@ binary-files = ["envtest_geo_client", "envtest_geo_server"]
 client-args = ["--config", "/opt/home/target_config/envtest_geo"]
 server-args = ["--config", "/opt/home/target_config/envtest_geo"]
 
-server-hosts = ["host0", "host1", "host2", "host3"]
-server-ports = ["10000", "10000", "10000", "10000"]
+server-hosts = ["host0", "host1", "host2", "host3",
+                "host4", "host5", "host6", "host7",
+                "host8", "host9", "host10", "host11"]
+server-ports = ["10000", "10000", "10000", "10000",
+                "10000", "10000", "10000", "10000",
+                "10000", "10000", "10000", "10000"]
 
-client-hosts = ["host4", "host5", "host6", "host7"]
-client-latencies = ["2", "160", "192", "229"]
+client-hosts = ["host0"]

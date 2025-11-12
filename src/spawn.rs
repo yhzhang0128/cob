@@ -783,38 +783,26 @@ pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
     println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len());
 
     let mut client_id = 0;
-    let mut server_id = 0;
     for client in &config["client-hosts"] {
-        let latency = &config["client-latencies"][client_id];
+        // Assume that tc scripts have been executed on client hosts
         match ssh_conns.get(client) {
             None => { Err(OracleError::InvalidClientHost)? }
             Some(s) => {
-                // add network delay
-                // sudo tc qdisc add dev enp1s0d1 root netem delay ??ms
-                println!("[DEBUG] client {} latency {}ms", client, latency);
-                s.command("sudo")
-                    .args(["tc", "qdisc", "add", "dev", "enp1s0d1", "root", "netem", "delay"])
-                    .arg(format!("{}ms", latency))
-                    .output()
-                    .await
-                    .map_err(|_| OracleError::SshCommandFailed)?;
-
-                process.push(s.command(client_cmd.as_str())
-                             .args(&config["client-args"])
-                             .arg("--idx")
-                             .arg(client_id.to_string())
-                             .arg("--serveridx")
-                             .arg(server_id.to_string())
-                             .arg("--latency")
-                             .arg(latency)
-                             .spawn()
-                             .await
-                             .map_err(|_| OracleError::SshCommandFailed)?
-                );
+                for server_id in 0..config["server-hosts"].len() {
+                    process.push(s.command(client_cmd.as_str())
+                                 .args(&config["client-args"])
+                                 .arg("--idx")
+                                 .arg(client_id.to_string())
+                                 .arg("--serveridx")
+                                 .arg(server_id.to_string())
+                                 .spawn()
+                                 .await
+                                 .map_err(|_| OracleError::SshCommandFailed)?
+                    );
+                }
             }
         }
         client_id += 1;
-        server_id = (server_id + 1) % config["server-hosts"].len();
     }
 
     Ok(process)
