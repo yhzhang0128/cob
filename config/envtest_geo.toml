@@ -1,20 +1,20 @@
 hostnames = ["host0", "host1", "host2", "host3",
-             "weak_0", "weak_1", "weak_2", "weak_3"]
+             "host4", "host5", "host6", "host7"]
 
 build = ["script/build_envtest_geo.sh"]
 
 log-dir = ["/users/Yunhao/log/"]
-local-dir = ["/opt/chance/cob/target/debug/", "/opt/chance/cob/config/"]
-remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
+local-dir = ["/opt/home/cob/target/debug/", "/opt/home/cob/config/"]
+remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
 
 config-files = ["envtest_geo.toml"]
 binary-files = ["envtest_geo_client", "envtest_geo_server"]
 
-client-args = ["--config", "/opt/chance/target_config/envtest_geo"]
-server-args = ["--config", "/opt/chance/target_config/envtest_geo"]
+client-args = ["--config", "/opt/home/target_config/envtest_geo"]
+server-args = ["--config", "/opt/home/target_config/envtest_geo"]
 
 server-hosts = ["host0", "host1", "host2", "host3"]
 server-ports = ["10000", "10000", "10000", "10000"]
 
-client-hosts = ["weak_0", "weak_1", "weak_2", "weak_3"]
+client-hosts = ["host4", "host5", "host6", "host7"]
 client-latencies = ["2", "160", "192", "229"]
