@@ -788,18 +788,14 @@ pub async fn spawn_envtest_geo<'a>(ssh_conns: &'a HashMap<String, Session>,
         match ssh_conns.get(client) {
             None => { Err(OracleError::InvalidClientHost)? }
             Some(s) => {
-                for server_id in 0..config["server-hosts"].len() {
-                    process.push(s.command(client_cmd.as_str())
-                                 .args(&config["client-args"])
-                                 .arg("--idx")
-                                 .arg(client_id.to_string())
-                                 .arg("--serveridx")
-                                 .arg(server_id.to_string())
-                                 .spawn()
-                                 .await
-                                 .map_err(|_| OracleError::SshCommandFailed)?
-                    );
-                }
+                process.push(s.command(client_cmd.as_str())
+                             .args(&config["client-args"])
+                             .arg("--idx")
+                             .arg(client_id.to_string())
+                             .spawn()
+                             .await
+                             .map_err(|_| OracleError::SshCommandFailed)?
+                );
             }
         }
         client_id += 1;
