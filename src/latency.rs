@@ -3,7 +3,9 @@ use std::collections::HashMap;
 use crate::ssh::start_ssh_conns;
 
 
-static HOSTS: [&'static str; 3] = ["host0", "host1", "host2"];
+static HOSTS: [&'static str; 12] = ["host0", "host1", "host2", "host3",
+                                    "host4", "host5", "host6", "host7",
+                                    "host8", "host9", "host10", "host11"];
 
 // The command below can get the NIC interface name with IP address 10.*.*.*
 // using the ifconfig command. It works on CloudLab, but not tested elsewhere.
