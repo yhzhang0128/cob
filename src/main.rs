@@ -6,11 +6,14 @@ pub mod prep;
 pub mod error;
 pub mod spawn;
 pub mod config;
+pub mod latency;
 
 use cli::*;
 use clap::Parser;
 use kill::killall;
 use eval::evaluate;
+use latency::setup_latency;
+use latency::remove_latency;
 use crate::error::OracleError;
 
 #[tokio::main]
@@ -18,6 +21,14 @@ async fn main() -> Result<(), OracleError> {
     let cli = Cli::parse();
 
     match cli.action {
+        Action::Latency { setup_str } => {
+            match setup_str.as_str() {
+                "local" => { remove_latency()?; }
+                "geo" => { remove_latency()?; setup_latency()?; }
+                _ => { println!("Usage: cargo run latency -s [geo | local]") }
+            }
+        }
+
         Action::Kill { target_str } => {
             let target = target_type(&target_str)?;
             killall(&target, true).await?

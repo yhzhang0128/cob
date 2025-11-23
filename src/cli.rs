@@ -31,6 +31,16 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Action {
+    #[clap(about = "Setup latency emulation.")]
+    Latency {
+        #[clap(
+            short = 's', long = "setup",
+            default_value = "geo",
+            help = "Specify the setup for latency emulation (local or geo)."
+
+        )]
+        setup_str: String,
+    },
     #[clap(about = "Kill processes on remote hosts.")]
     Kill {
         #[clap(
