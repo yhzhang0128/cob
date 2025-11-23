@@ -10,4 +10,5 @@ pub enum OracleError {
     InvalidBumpHost,
     InvalidServerHost,
     SpawnNotImplemented,
+    LatencyMapIncomplete
 }

@@ -23,8 +23,8 @@ async fn main() -> Result<(), OracleError> {
     match cli.action {
         Action::Latency { setup_str } => {
             match setup_str.as_str() {
+                "geo" => { setup_latency().await?; }
                 "local" => { remove_latency().await?; }
-                "geo" => { remove_latency().await?; setup_latency().await?; }
                 _ => { println!("Usage: cargo run latency -s [geo | local]") }
             }
         }
