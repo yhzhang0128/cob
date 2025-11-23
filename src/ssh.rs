@@ -16,11 +16,11 @@ pub async fn start_ssh_conns(hosts: &Vec<String>) -> Result<HashMap<String, Sess
         // remove any network delay
         // sudo tc qdisc del dev enp1s0d1 root netem
         // sudo tc qdisc del dev enp1s0d1 root;
-        session.command("sudo")
-            .args(["tc", "qdisc", "del", "dev", "enp1s0d1", "root"])
-            .output()
-            .await
-            .map_err(|_| OracleError::SshCommandFailed)?;
+        //session.command("sudo")
+        //    .args(["tc", "qdisc", "del", "dev", "enp1s0d1", "root"])
+        //    .output()
+        //    .await
+        //    .map_err(|_| OracleError::SshCommandFailed)?;
 
         bar.inc(1);
         result.insert(String::from(host), session);
