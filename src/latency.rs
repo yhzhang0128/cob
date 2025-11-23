@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::ssh::start_ssh_conns;
 
 
-static HOSTS: [&'static str; 1] = ["host0"];
+static HOSTS: [&'static str; 3] = ["host0", "host1", "host2"];
 
 // The command below can get the NIC interface name with IP address 10.*.*.*
 // using the ifconfig command. It works on CloudLab, but not tested elsewhere.
@@ -70,29 +70,29 @@ pub async fn setup_latency() -> Result<(), OracleError>  {
          .await
          .map_err(|_| OracleError::SshCommandFailed)?;
 
-        s.raw_command(format!("sudo tc qdisc add dev {} root handle 1: htb", NIC))
+        s.raw_command(format!("sudo tc qdisc add dev `{}` root handle 1: htb", NIC))
          .output()
          .await
          .map_err(|_| OracleError::SshCommandFailed)?;
 
-        s.raw_command(format!("sudo tc class add dev {} parent 1: classid 1:1 htb rate 10gibps", NIC))
+        s.raw_command(format!("sudo tc class add dev `{}` parent 1: classid 1:1 htb rate 10gibps", NIC))
          .output()
          .await
          .map_err(|_| OracleError::SshCommandFailed)?;
 
         for idx in 0..latencies.len() {
-            //println!("{}", format!("sudo tc class add dev {} parent 1:1 classid 1:{} htb rate 1gibps", NIC, idx+2));
-            s.raw_command(format!("sudo tc class add dev {} parent 1:1 classid 1:{} htb rate 1gibps", NIC, idx+2))
+            //println!("{}", format!("sudo tc class add dev `{}` parent 1:1 classid 1:{} htb rate 1gibps", NIC, idx+2));
+            s.raw_command(format!("sudo tc class add dev `{}` parent 1:1 classid 1:{} htb rate 1gibps", NIC, idx+2))
              .output()
              .await
              .map_err(|_| OracleError::SshCommandFailed)?;
-            //println!("{}", format!("sudo tc qdisc add dev {} handle {}: parent 1:{} netem delay {}ms", NIC, idx+2, idx+2, latencies[idx]));
-            s.raw_command(format!("sudo tc qdisc add dev {} handle {}: parent 1:{} netem delay {}ms", NIC, idx+2, idx+2, latencies[idx]))
+            //println!("{}", format!("sudo tc qdisc add dev `{}` handle {}: parent 1:{} netem delay {}ms", NIC, idx+2, idx+2, latencies[idx]));
+            s.raw_command(format!("sudo tc qdisc add dev `{}` handle {}: parent 1:{} netem delay {}ms", NIC, idx+2, idx+2, latencies[idx]))
              .output()
              .await
              .map_err(|_| OracleError::SshCommandFailed)?;
-            //println!("{}", format!("sudo tc filter add dev {} parent 1: protocol ip u32 match ip dst `dig +short host{}-link-0`/32 flowid 1:{};", NIC, idx, idx+2));
-            s.raw_command(format!("sudo tc filter add dev {} parent 1: protocol ip u32 match ip dst `dig +short host{}-link-0`/32 flowid 1:{};", NIC, idx, idx+2))
+            //println!("{}", format!("sudo tc filter add dev `{}` parent 1: protocol ip u32 match ip dst `dig +short host{}-link-0`/32 flowid 1:{};", NIC, idx, idx+2));
+            s.raw_command(format!("sudo tc filter add dev `{}` parent 1: protocol ip u32 match ip dst `dig +short host{}-link-0`/32 flowid 1:{};", NIC, idx, idx+2))
              .output()
              .await
              .map_err(|_| OracleError::SshCommandFailed)?;
