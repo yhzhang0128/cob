@@ -200,39 +200,6 @@ pub async fn spawn_pompe<'a>(ssh_conns: &'a HashMap<String, Session>,
     let client_cmd = format!("{}{}", binary_dir, client_bin);
     let server_cmd = format!("{}{}", binary_dir, server_bin);
 
-    if config["binary-files"].len() > 2 {
-        let latency = "150";
-        let tc_script = &config["binary-files"][2];
-        let tc_cmd = format!("{}{}", binary_dir, tc_script);
-
-        println!("Adding {}ms latency to {} server hosts", latency.yellow(), &config["server-hosts"].len());
-        for server in &config["server-hosts"] {
-            match ssh_conns.get(server) {
-                None => { Err(OracleError::InvalidServerHost)? }
-                Some(s) => {
-                    s.command(tc_cmd.as_str())
-                     .arg(latency)
-                     .output()
-                     .await
-                     .map_err(|_| OracleError::SshCommandFailed)?;
-                }
-            }
-        }
-        println!("Adding {}ms latency to {} client hosts", latency.yellow(), &config["client-hosts"].len());
-        for client in &config["client-hosts"] {
-            match ssh_conns.get(client) {
-                None => { Err(OracleError::InvalidServerHost)? }
-                Some(s) => {
-                    s.command(tc_cmd.as_str())
-                     .arg(latency)
-                     .output()
-                     .await
-                     .map_err(|_| OracleError::SshCommandFailed)?;
-                }
-            }
-        }
-    }
-
     // Spawn server processes
     println!("{} Spawn {} server processes on remote hosts.", "[5/7]".yellow(), &config["server-hosts"].len());
     let mut server_id = 0;

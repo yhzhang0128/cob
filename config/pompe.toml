@@ -1,18 +1,18 @@
 # 4 nodes
-hostnames = ["host0", "host1", "host2", "host3", "client0", "client1"]
+hostnames = ["host0", "host1", "host2", "host3", "host4", "host5"]
 server-hosts = ["host0", "host1", "host2", "host3"]
 config-files = ["conf-pompe"]
-client-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
-server-args = ["/opt/chance/target_config/conf-pompe/hotstuff.gen.conf"]
-server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
+client-args = ["/opt/home/target_config/conf-pompe/hotstuff.gen.conf"]
+server-args = ["/opt/home/target_config/conf-pompe/hotstuff.gen.conf"]
+server-idx-arg = ["/opt/home/target_config/conf-pompe/hotstuff.gen-sec", ".conf"]
 
 # 10 nodes
 #hostnames = ["host0", "host1", "host2", "host3", "host4", "host5", "host6", "host7", "host8", "host9", "client0", "client1"]
 #server-hosts = ["host0", "host1", "host2", "host3", "host4", "host5", "host6", "host7", "host8", "host9"]
 #config-files = ["conf-pompe-10"]
-#client-args = ["/opt/chance/target_config/conf-pompe-10/hotstuff.gen.conf"]
-#server-args = ["/opt/chance/target_config/conf-pompe-10/hotstuff.gen.conf"]
-#server-idx-arg = ["/opt/chance/target_config/conf-pompe-10/hotstuff.gen-sec", ".conf"]
+#client-args = ["/opt/home/target_config/conf-pompe-10/hotstuff.gen.conf"]
+#server-args = ["/opt/home/target_config/conf-pompe-10/hotstuff.gen.conf"]
+#server-idx-arg = ["/opt/home/target_config/conf-pompe-10/hotstuff.gen-sec", ".conf"]
 
 # 19 nodes
 #hostnames = ["host0", "host1", "host2", "host3", "host4",
@@ -24,9 +24,9 @@ server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".con
 #             "host10", "host11", "host12", "host13", "host14",
 #             "host15", "host16", "host17", "host18"]
 #config-files = ["conf-pompe-19"]
-#client-args = ["/opt/chance/target_config/conf-pompe-19/hotstuff.gen.conf"]
-#server-args = ["/opt/chance/target_config/conf-pompe-19/hotstuff.gen.conf"]
-#server-idx-arg = ["/opt/chance/target_config/conf-pompe-19/hotstuff.gen-sec", ".conf"]
+#client-args = ["/opt/home/target_config/conf-pompe-19/hotstuff.gen.conf"]
+#server-args = ["/opt/home/target_config/conf-pompe-19/hotstuff.gen.conf"]
+#server-idx-arg = ["/opt/home/target_config/conf-pompe-19/hotstuff.gen-sec", ".conf"]
 
 # 34 nodes
 #hostnames = ["host0", "host1", "host2", "host3", "host4", "host5", "host6", "host7", "host8", "host9", "host10", "host11", "host12", "host13", "host14", "host15", "host16", "host17", "host18", "host19",
@@ -35,9 +35,9 @@ server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".con
 #server-hosts = ["host0", "host1", "host2", "host3", "host4", "host5", "host6", "host7", "host8", "host9", "host10", "host11", "host12", "host13", "host14", "host15", "host16", "host17", "host18", "host19",
 #             "strong_0", "strong_1", "strong_2", "strong_3", "strong_4_0", "strong_4_1", "strong_5", "strong_6", "strong_7_0", "strong_7_1", "strong_8", "strong_9", "strong_10", "strong_11_0"]
 #config-files = ["conf-pompe-34"]
-#client-args = ["/opt/chance/target_config/conf-pompe-34/hotstuff.gen.conf"]
-#server-args = ["/opt/chance/target_config/conf-pompe-34/hotstuff.gen.conf"]
-#server-idx-arg = ["/opt/chance/target_config/conf-pompe-34/hotstuff.gen-sec", ".conf"]
+#client-args = ["/opt/home/target_config/conf-pompe-34/hotstuff.gen.conf"]
+#server-args = ["/opt/home/target_config/conf-pompe-34/hotstuff.gen.conf"]
+#server-idx-arg = ["/opt/home/target_config/conf-pompe-34/hotstuff.gen-sec", ".conf"]
 
 # 49 nodes
 #hostnames = ["host0", "host1", "host2", "host3", "host4", "host5", "host6", "host7", "host8", "host9", "host10", "host11", "host12", "host13", "host14", "host15", "host16", "host17", "host18", "host19",
@@ -48,19 +48,19 @@ server-idx-arg = ["/opt/chance/target_config/conf-pompe/hotstuff.gen-sec", ".con
 #                "strong_0", "strong_1", "strong_2", "strong_3", "strong_4_0", "strong_4_1", "strong_5", "strong_6", "strong_7_0", "strong_7_1", "strong_8", "strong_9", "strong_10", "strong_11_0", "strong_11_1",
 #                "weak_0", "weak_1", "weak_2", "weak_3", "weak_4_0", "weak_4_1", "weak_5", "weak_6", "weak_7_0", "weak_7_1", "weak_8", "weak_9", "weak_10", "weak_11_0"]
 #config-files = ["conf-pompe-49"]
-#client-args = ["/opt/chance/target_config/conf-pompe-49/hotstuff.gen.conf"]
-#server-args = ["/opt/chance/target_config/conf-pompe-49/hotstuff.gen.conf"]
-#server-idx-arg = ["/opt/chance/target_config/conf-pompe-49/hotstuff.gen-sec", ".conf"]
+#client-args = ["/opt/home/target_config/conf-pompe-49/hotstuff.gen.conf"]
+#server-args = ["/opt/home/target_config/conf-pompe-49/hotstuff.gen.conf"]
+#server-idx-arg = ["/opt/home/target_config/conf-pompe-49/hotstuff.gen-sec", ".conf"]
 
 # With emulated latency
 binary-files = ["pompe-client", "pompe-app", "bump_tc.sh"]
 # Without emulated latency
 #binary-files = ["pompe-client", "pompe-app"]
 
-client-hosts = ["client0", "client1"]
+client-hosts = ["host4", "host5"]
 build = ["script/build_pompe.sh"]
-local-dir = ["/opt/chance/cob/target_systems/pompe/examples/", "/opt/chance/cob/target_systems/pompe/examples/"]
-remote-dir = ["/opt/chance/target_binary/", "/opt/chance/target_config/"]
+local-dir = ["/opt/home/cob/target_systems/pompe/examples/", "/opt/home/cob/target_systems/pompe/examples/"]
+remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
 log-dir = ["/users/Yunhao/log/"]
 
 
