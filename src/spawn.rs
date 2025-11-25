@@ -226,7 +226,7 @@ pub async fn spawn_pompe<'a>(ssh_conns: &'a HashMap<String, Session>,
     thread::sleep(time::Duration::from_millis(1000));
 
     // Spawn client processes
-    let client_per_host = 2;
+    let client_per_host = 1;
     println!("{} Spawn {} client processes on remote hosts.", "[6/7]".yellow(), config["client-hosts"].len() * client_per_host);
     let mut client_id = 0;
     for client in &config["client-hosts"] {
