@@ -1,7 +1,16 @@
-hostnames = ["host0", "host1", "host2", "host3", "host4", "host5"]
+hostnames = ["host0", "host1", "host2", "host3",
+             "host4", "host5", "host6", "host7",
+             "host8", "host9", "host10", "host11"]
 
-client-hosts = ["host4", "host5"]
-server-hosts = ["host0", "host1", "host2", "host3"]
+# host3  London
+# host4  Munich
+# host9  Tokyo
+# host11 Washington
+
+client-hosts = ["host3", "host11"]
+server-hosts = ["host0", "host1", "host2", "host3",
+                "host4", "host5", "host6", "host7",
+                "host8", "host9", "host10", "host11"]
 
 build = ["script/build_hotstuff.sh"]
 
@@ -9,12 +18,12 @@ local-dir = ["/opt/home/cob/target_systems/hotstuff/examples/", "/opt/home/cob/t
 remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
 log-dir = ["/users/Yunhao/log/"]
 
-config-files = ["conf-hotstuff"]
+config-files = ["conf-hotstuff-12"]
 binary-files = ["hotstuff-client", "hotstuff-app"]
 
-client-args = ["/opt/home/target_config/conf-hotstuff/hotstuff.gen.conf",
+client-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
                "--iter", "-1", "--max-async", "4"]
 # Note that the last parameter needs an index to fill up the {}
-server-args = ["/opt/home/target_config/conf-hotstuff/hotstuff.gen.conf",
+server-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
                "--conf"]
-server-idx-arg = ["/opt/home/target_config/conf-hotstuff/hotstuff.gen-sec", ".conf"]
+server-idx-arg = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen-sec", ".conf"]
