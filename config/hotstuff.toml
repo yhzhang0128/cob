@@ -22,7 +22,7 @@ config-files = ["conf-hotstuff-12"]
 binary-files = ["hotstuff-client", "hotstuff-app"]
 
 client-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
-               "--iter", "-1", "--max-async", "4"]
+               "--iter", "-1", "--max-async", "5"]
 # Note that the last parameter needs an index to fill up the {}
 server-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
                "--conf"]
