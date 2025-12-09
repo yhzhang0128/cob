@@ -1,3 +1,5 @@
+use std::time;
+use std::thread;
 use crate::TargetType;
 use crate::error::OracleError;
 use crate::ssh::start_ssh_conns;
@@ -13,6 +15,7 @@ pub async fn killall(target: &TargetType, print: bool) -> Result<(), OracleError
 
     // Kill client processes
     for (host, s) in &ssh_conns {
+        println!("Killing client on host {}.", host);
         let kill1 = s.command("killall")
             .args([client_bin.as_str()])
             .output()
@@ -24,8 +27,10 @@ pub async fn killall(target: &TargetType, print: bool) -> Result<(), OracleError
                 println!("  [warning] stderr from {}: {:?}", host, String::from_utf8(kill1.stderr).unwrap());
             }
         }
+        thread::sleep(time::Duration::from_millis(10));
     }
-    
+    thread::sleep(time::Duration::from_millis(1000));
+
     // Kill speedbump processes
     if config["binary-files"].len() == 4 {
         let speedbump_bin = &config["binary-files"][2];
