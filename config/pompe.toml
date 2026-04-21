@@ -63,9 +63,12 @@ binary-files = ["pompe-client", "pompe-app"]
 # host9  Tokyo
 # host11 Washington
 
-#client-hosts = ["host3", "host11"]
-client-hosts = ["host0", "host1", "host2", "host3", "host4", "host5",
-                "host6", "host7", "host8", "host9", "host10", "host11"]
+# Run 2 clients when measuring bias
+client-hosts = ["host4", "host9"]
+
+# Run 12 clients when measuring performance
+#client-hosts = ["host0", "host1", "host2", "host3", "host4", "host5",
+#                "host6", "host7", "host8", "host9", "host10", "host11"]
 build = ["script/build_pompe.sh"]
 local-dir = ["/opt/home/cob/target_systems/pompe/examples/", "/opt/home/cob/target_systems/pompe/examples/"]
 remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
