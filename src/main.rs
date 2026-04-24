@@ -45,18 +45,10 @@ async fn main() -> Result<(), OracleError> {
             }
         }
         Action::List { } => {
-            println!("large-pompe-unbias-bump");
-            println!("large-pompe-bump");
-            println!("large-hotstuff-bump");
-            println!("large-themis-bump");
-            println!("pompe-unbiased-bump");
-            println!("pompe-bump");
-            println!("pompe");
-            println!("pompe-sro");
-            println!("hotstuff-bump");
             println!("hotstuff");
-            println!("envtest-geo");
+            println!("pompe");
             println!("envtest");
+            println!("envtest-geo");
         }
     };
 
@@ -65,19 +57,10 @@ async fn main() -> Result<(), OracleError> {
 
 fn target_type(target_str: &String) -> Result<TargetType, OracleError> {
     match target_str.as_str() {
+        "hotstuff" => { return Ok(TargetType::HotStuff); }
+        "pompe" => { return Ok(TargetType::Pompe); }
         "envtest" => { return Ok(TargetType::EnvTest); }
         "envtest-geo" => { return Ok(TargetType::EnvTestGeo); }
-        "hotstuff" => { return Ok(TargetType::HotStuff); }
-        "hotstuff-bump" => { return Ok(TargetType::HotStuffBumped); }
-        "pompe" => { return Ok(TargetType::Pompe); }
-        "pompe-sro" => { return Ok(TargetType::PompeSRO) }
-        "pompe-bump" => { return Ok(TargetType::PompeBumped); }
-        "pompe-unbias-bump" => { return Ok(TargetType::PompeUnbiasBumped); }
-        "large-hotstuff-bump" => { return Ok(TargetType::LargeHotStuffBumped); }
-        "large-themis-bump" => { return Ok(TargetType::LargeThemisBumped); }
-        "large-pompe-bump" => { return Ok(TargetType::LargePompeBumped); }
-        // This one is deprecated.
-        //"large-pompe-unbias-bump" => { return Ok(TargetType::LargePompeUnbiasBumped); }
         _ => { Err(OracleError::UnknownTarget)? }
     }
 

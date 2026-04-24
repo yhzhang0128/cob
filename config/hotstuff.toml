@@ -12,7 +12,8 @@ server-hosts = ["host0", "host1", "host2", "host3",
                 "host4", "host5", "host6", "host7",
                 "host8", "host9", "host10", "host11"]
 
-build = ["script/build_hotstuff.sh"]
+build = ["script/build_hotstuff_bias.sh"]
+#build = ["script/build_hotstuff_perf.sh"]
 
 local-dir = ["/opt/home/cob/target_systems/hotstuff/examples/", "/opt/home/cob/target_systems/hotstuff/examples/"]
 remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]

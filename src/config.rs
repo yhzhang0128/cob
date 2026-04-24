@@ -8,15 +8,7 @@ pub fn read_config(target: &TargetType) -> Result<HashMap<String, Vec<String>>, 
         TargetType::EnvTest => "config/envtest",
         TargetType::EnvTestGeo => "config/envtest_geo",
         TargetType::HotStuff => "config/hotstuff",
-        TargetType::HotStuffBumped => "config/hotstuff_bumped",
         TargetType::Pompe => "config/pompe",
-        TargetType::PompeSRO => "config/pompe_sro",
-        TargetType::PompeBumped => "config/pompe_bumped",
-        TargetType::PompeUnbiasBumped => "config/pompe_unbias_bumped",
-        TargetType::LargeHotStuffBumped => "config/large_hotstuff_bumped",
-        TargetType::LargeThemisBumped => "config/large_themis_bumped",
-        TargetType::LargePompeBumped => "config/large_pompe_bumped",
-        TargetType::LargePompeUnbiasBumped => "config/large_pompe_unbias_bumped",
         _ => Err( OracleError::ConfigError )?
     };
 
