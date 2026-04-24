@@ -1,7 +1,7 @@
-[submodule "target_systems/libhotstuff"]
+[submodule "target_systems/hotstuff"]
 	path = target_systems/hotstuff
 	url = git@github.com:Pompe-org/libhotstuff.git
-	branch = cob-hotstuff-pos
+	branch = cob-hotstuff-pos-lockstep
 [submodule "target_systems/pompe"]
 	path = target_systems/pompe
 	url = git@github.com:Pompe-org/libhotstuff.git
@@ -10,15 +10,3 @@
 	path = target_systems/pompe-sro
 	url = git@github.com:Pompe-org/libhotstuff.git
 	branch = cob-pompe-sro
-[submodule "target_systems/hotstuff-bumped"]
-	path = target_systems/hotstuff-bumped
-	url = git@github.com:Pompe-org/libhotstuff.git
-	branch = cob-hotstuff-bump
-[submodule "target_systems/pompe-bumped"]
-	path = target_systems/pompe-bumped
-	url = git@github.com:Pompe-org/libhotstuff.git
-	branch = cob-pompe-bump
-[submodule "target_systems/themis-src-anon-cob"]
-	path = target_systems/themis-src-anon-cob
-	url = git@github.com:yhzhang0128/themis-src-anon-cob.git
-	branch = themis-cob
