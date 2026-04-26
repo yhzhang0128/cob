@@ -5,5 +5,5 @@
 [submodule "target_systems/pompe"]
 	path = target_systems/pompe
 	url = git@github.com:Pompe-org/libhotstuff.git
-	branch = cob-pompe-lockstep
+	branch = cob-pompe-sro-lockstep
 
