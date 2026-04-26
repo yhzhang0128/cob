@@ -25,14 +25,23 @@ binary-files = ["pompe-client", "pompe-app"]
 # host9  Tokyo
 # host11 Washington
 
-# Run 2 clients when measuring bias
-client-hosts = ["host4", "host9"]
-build = ["script/build_pompe_sro_perf.sh"]
+# Pompe: 2 clients, measuring bias
+#client-hosts = ["host4", "host9"]
+#build = ["script/build_pompe_bias.sh"]
 
-# Run 12 clients when measuring performance
+# Pompe: 12 clients, measuring performance
 #client-hosts = ["host0", "host1", "host2", "host3", "host4", "host5",
 #                "host6", "host7", "host8", "host9", "host10", "host11"]
 #build = ["script/build_pompe_perf.sh"]
+
+# Pompe-SRO: 2 clients, measuring bias
+#client-hosts = ["host4", "host9"]
+#build = ["script/build_pompe_sro_bias.sh"]
+
+# Pompe-SRO: 12 clients, measuring performance
+client-hosts = ["host0", "host1", "host2", "host3", "host4", "host5",
+                "host6", "host7", "host8", "host9", "host10", "host11"]
+build = ["script/build_pompe_sro_perf.sh"]
 
 local-dir = ["/opt/home/cob/target_systems/pompe/examples/", "/opt/home/cob/target_systems/pompe/examples/"]
 remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
