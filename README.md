@@ -348,7 +348,7 @@ build = ["script/build_pompe_sro_bias.sh"]
 
 Again, we need to run two commands in parallel on the **control** machine.
 
-#### Experiment #2 Command #1
+#### Experiment #4 Command #1
 
 ```console
 > cd $WORKDIR/cob
@@ -358,7 +358,7 @@ Server is listening on control:30000...
 
 This is the same as Experiment #1 and #2.
 
-#### Experiment #2 Command #2
+#### Experiment #4 Command #2
 
 ```
 > cargo run eval -t pompe
@@ -413,6 +413,41 @@ Run the same experiment for other city pairs by updating the `client-hosts` in `
 
 ### Run Experiment #5
 
+Experiment #5 measures the effect of front-running in HotStuff, Pompe, Themis, and Pompe-SRO.
+
+#### HotStuff, Pompe, and Pompe-SRO
+
+Redo Experiments #1, #2, and #4 with 2 differences:
+
+1. Put the two clients on the same host in `client-hosts` of `pompe.toml`.
+2. Run `script/frontrun.py` instead of `script/sync_send.py`.
+
+The `frontrun.py` allows the attacker to invoke its command 10ms earlier than the victim.
+This does not make a big difference in Pompe-SRO, but HotStuff and Pompe would certainly order the attacker first.
+
+#### Themis
+Uncomment the following lines in `themis_sim.py`:
+
+```python
+ATTACKER = [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25 ]
+VICTIM   = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30 ]
+Location1 = ATTACKER
+Location2 = VICTIM
+```
+
+This allows the attacker to be 5ms faster than the victim to all the 12 cities, and Themis will be fully biased to the attacker as well.
+
+### Run Experiment #6
+
+Experiment #6 measures the performance of the two SRO implementations.
+
+### Run Experiment #7
+
+Experiment #7 measures the end-to-end performance of Pompe-SRO against Pompe.
+
 ### Run Experiment #8
+
+Experiment #8 measures the end-to-end performance of HotStuff-SRO against HotStuff.
+This experiment is not included in the submission version of the paper, and we are still working on it.
 
 ## Use a non-CloudLab Server Cluster
