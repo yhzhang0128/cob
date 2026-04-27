@@ -439,15 +439,80 @@ This allows the attacker to be 5ms faster than the victim to all the 12 cities, 
 
 ### Run Experiment #6
 
-Experiment #6 measures the performance of the two SRO implementations.
+Experiment #6 measures the performance of the two SRO implementations in Figure 11.
+The SGX implementation of SRO is in [this repo](https://github.com/MaggieQi/ThemisTest/tree/main/sgx_sro), and refer to its README about its usage.
 
 ### Run Experiment #7
 
 Experiment #7 measures the end-to-end performance of Pompe-SRO against Pompe.
+Different from Experiment #2 and #4, Experiment #7 does NOT need `script/sync_send.py`.
+
+#### Pompe Performance
+
+Use the following lines of `config/pompe.toml`:
+
+```toml
+# Pompe: 12 clients, measuring performance
+client-hosts = ["host0", "host1", "host2", "host3", "host4", "host5",
+                "host6", "host7", "host8", "host9", "host10", "host11"]
+build = ["script/build_pompe_perf.sh"]
+```
+
+Then run `cargo run eval -t pompe` directly, and COB will spawn 12 clients this time:
+
+```console
+> cargo run eval -t pompe
+...
+[5/7] Spawn 12 server processes on remote hosts.
+[6/7] Spawn 12 client processes on remote hosts.
+  Terminate experiment after 30000ms.
+[7/7] Kill 24 processes and collect output (may cause segfault during kill).
+Killing client on host host3.
+max_async_num = 200
+[DEBUG] client3 receives 4875 ordering, 4512 consensus responses
+[DEBUG] client3 ordering latency: median = 1.346353 sec, 90% = 1.459864 sec
+[DEBUG] client3 consensus latency: median = 3.389179 sec, 90% = 4.056864 sec, 99% = 4.313350 sec
+...
+Killing client on host host2.
+max_async_num = 200
+[DEBUG] client2 receives 3839 ordering, 3512 consensus responses
+[DEBUG] client2 ordering latency: median = 1.584098 sec, 90% = 1.786124 sec
+[DEBUG] client2 consensus latency: median = 3.699636 sec, 90% = 4.471912 sec, 99% = 5.466683 sec
+...
+[DEBUG] server1 finished 59339 ordering phases; timer triggered 16 times; send 56643 exec responses to clients with 56643 callbacks
+...
+```
+
+The output above only shows printings from client2, client3, and server1.
+Printings from other clients and servers are omitted.
+Since `host2` and `host3` represents Canberra and London,
+the `client2 consensus latency` and `client3 consensus latency` above provide the **y-axis** latency in Figure 12.
+A convenient way of getting the throughput is to see the `server1 finished 59339 ordering phases` printing, and divide the number `59339` by 30 (i.e., the experiment period).
+Therefore, the throughput above is `59339/30=1978`, providing the **x-axis** of the points.
+
+Lastly, modifying the `max_async_num` gives us different load from the 12 clients, leading to different system throughput.
+For Figure 12, we run experiments with `max_async_num` being 10, 20, 40, 80, 120, 200, 400, and 600.
+To update `max_async_num`, modify the `max-async` field of file `cob/target_systems/pompe/examples/conf-pompe-12/hotstuff.gen.conf`.
+
+#### Pompe-SRO Performance
+
+Running Pompe-SRO is similar to running Pompe, and the only difference is in `config/pompe.toml`:
+
+```toml
+# Pompe-SRO: 12 clients, measuring performance
+client-hosts = ["host0", "host1", "host2", "host3", "host4", "host5",
+                "host6", "host7", "host8", "host9", "host10", "host11"]
+build = ["script/build_pompe_sro_perf.sh"]
+```
+
+```console
+> cargo run eval -t pompe
+...
+```
 
 ### Run Experiment #8
 
-Experiment #8 measures the end-to-end performance of HotStuff-SRO against HotStuff.
-This experiment is not included in the submission version of the paper, and we are still working on it.
+Experiment #8 plans to measure the end-to-end performance of HotStuff-SRO against HotStuff.
+HotStuff-SRO and this experiment are not included in the submission version of the paper, and it is still work in progress.
 
 ## Use a non-CloudLab Server Cluster
