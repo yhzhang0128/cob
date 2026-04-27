@@ -122,9 +122,29 @@ PING host1-link-0 (10.10.1.2) 56(84) bytes of data.
 The ping latency is 119*2=238ms because it is a round trip between **host0** and **host1**.
 Before running an experiment, make sure that latency emulation has been setup properly.
 
-### Understand the TOML configuration
+### Understand the Process of Running an Experiment
 
+We now go through `config/pompe.toml` and help you understand the process of running an experiment.
 
+The `build = ["script/build_pompe_sro_bias.sh"]` in `pompe.toml` means that COB runs this script first to build the binary for Pompe.
+With the binaries ready, COB copies the config and binary files to all the machines in `hostnames` according to the following lines in `pompe.toml`.
+
+```console
+config-files = ["conf-pompe-12"]
+binary-files = ["pompe-client", "pompe-app"]
+local-dir = ["/opt/home/cob/target_systems/pompe/examples/", "/opt/home/cob/target_systems/pompe/examples/"]
+remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
+```
+
+Specifically, for config files, COB will copy `/opt/home/cob/target_systems/pompe/examples/conf-pompe-12` from **control** to `/opt/home/target_config/` on **host0**..**host11**.
+For binary files, COB will copy the two files `/opt/home/cob/target_systems/pompe/examples/pompe-client` and `/opt/home/cob/target_systems/pompe/examples/pompe-app` from **control** to directory `/opt/home/target_binary/` on **host0**..**host11**.
+You don't need to modify anything here if you are using the CloudLab profiles we provide.
+
+After copying all the files, COB runs the server binary on all the machines in `server-hosts`, and runs the client binary on all the machines in `client-hosts`.
+By default, COB runs an experiment for 30 seconds, and then kills the client/server processes on all the 12 machines.
+The stdout and stderr output from all the client/server processes will then be printed in the shell of **control** before COB terminates.
+Other than stdout/stderr printing, the `/users/Yunhao/log/` directory (i.e., `log-dir` in `pompe.toml`) on each of **host0**..**host11** holds log files by the client/server processes.
+These log files contain more details of the experiment result.
 
 ## Detailed Instructions
 
