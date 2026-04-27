@@ -152,7 +152,7 @@ These log files contain more details of the experiment result.
 
 Experiment #1 measures bias in HotStuff.
 Read the following lines in `config/hotstuff.toml` first.
-The `client-hosts` below shows that we will measure bias between London and Washington.
+The `client-hosts` below shows that we are measuring bias between London and Washington.
 
 ```toml
 # host3  London
@@ -166,7 +166,7 @@ client-hosts = ["host3", "host11"]
 When measuring bias between other cities, update the two elements of `client-hosts` accordingly.
 You need to run two commands in parallel on the **control** machine for Experiment #1.
 
-#### Command #1
+#### Experiment #1 Command #1
 
 ```console
 > cd $WORKDIR/cob
@@ -175,8 +175,11 @@ Server is listening on control:30000...
 ```
 
 The `sync_send.py` script will ensure that commands from the two different cities are invoked at the same time.
+In CloudLab, the ping latency between **control** and **host3** (or **control** and **host11**) is about 0.1ms,
+so we actually mean that two clients on **host3** and **host11** will invoke their command at roughly the same time
+(i.e., the time difference is negligible compared with the network latency in the latency table).
 
-#### Command #2
+#### Experiment #1 Command #2
 
 ```console
 > cd $WORKDIR/cob
@@ -205,14 +208,106 @@ Server#0: client0=6, client1=0, skip=0
 Server#7: client0=0, client1=13, skip=0
 ```
 
-The `-d 80000` means that the experiment will last for 80000ms (i.e., 80 seconds).
 According to the latency table, `Server#8` represents Singapore,
-and the `client0=4, client1=0` means that, during the experiment time period, there are 4 times when both clients invoke a command at the same time and the London client (i.e., `client-hosts[0]` in `hotstuff.toml`) is ordered earlier in the system output.
-The `Pr[L ≺ W]` is then calculated by the sum of the first column (i.e., client0) divided by the sum of both columns.
+and the `client0=4, client1=0` means that, during the experiment time period, there are 4 times when both clients invoke a command at the same time and the London client (i.e., `client-hosts[0]` in `hotstuff.toml`) is ordered earlier by a Singapore leader.
+The `Pr[L ≺ W]` in Figure 8 is calculated by the sum of the first column (i.e., client0) divided by the sum of both columns.
 Similarly, `Pr[W ≺ L]` is the sum of the second column divided by the sum of both.
-To get a more accurate result, you could run the experiment more than 80 seconds.
+
+The `-d 80000` above means that the experiment will last for 80000ms (i.e., 80 seconds).
+You can run the experiment longer to get a better result.
 
 ### Run Experiment #2
+
+Experiment #2 measures bias in Pompe.
+Read the following lines in `config/pompe.toml` first.
+The `client-hosts` shows that we are measuring bias between Munich and Tokyo.
+
+```toml
+# host3  London
+# host4  Munich
+# host9  Tokyo
+# host11 Washington
+
+# Pompe: 2 clients, measuring bias
+client-hosts = ["host4", "host9"]
+build = ["script/build_pompe_bias.sh"]
+```
+
+Note that there exist different possibilities for `client-hosts` and `build` in `pompe.toml`.
+COB will run Experiment #2 when you only keep the ones above.
+
+#### Experiment #2 Command #1
+
+```console
+> cd $WORKDIR/cob
+> python3 script/sync_send.py
+Server is listening on control:30000...
+```
+
+This is the same as Experiment #1.
+
+#### Experiment #2 Command #2
+
+```console
+> cd $WORKDIR/cob
+> cargo run eval -t pompe
+...
+[2/7] Start ssh connections to 12 remote hosts.
+[3/7] Setup directories for log, binary and config files on remote hosts.
+[4/7] Copy binary and config files to remote hosts.
+[5/7] Spawn 12 server processes on remote hosts.
+[6/7] Spawn 2 client processes on remote hosts.
+  Terminate experiment after 30000ms.
+...
+[DEBUG] consensus 1 finalized -> [0, 7) curr_time=1777285635472357, elapsed=1777285635472ms
+[DEBUG] consensus 5 finalized -> [7, 17) curr_time=1777285637478393, elapsed=2006ms
+[DEBUG] consensus 9 finalized -> [17, 27) curr_time=1777285639560228, elapsed=2081ms
+...
+[DEBUG] consensus 57 finalized -> [137, 147) curr_time=1777285663607678, elapsed=2003ms
+[DEBUG] consensus 61 finalized -> [147, 157) curr_time=1777285665611530, elapsed=2003ms
+```
+
+Since we run the experiment for 30 seconds, and run consensus every 2 second in Pompe.
+You can see roughly 15 `consensus ? finalized` in the printing above.
+To get the result of Experiment #2, we need to inspect the log files from the two clients.
+This gives us a chance to touch log files.
+
+#### Inspect the result of Experiment #2
+
+```console
+> ssh host4
+> head log/client0.order.log
+idx=0, median=1777285632283963, latency=34606
+idx=1, median=1777285632684635, latency=34530
+idx=2, median=1777285633085445, latency=34490
+idx=3, median=1777285633486292, latency=34571
+idx=4, median=1777285633887068, latency=34545
+idx=5, median=1777285634287941, latency=34589
+idx=6, median=1777285634688674, latency=34513
+idx=7, median=1777285635089485, latency=34499
+idx=8, median=1777285635490346, latency=34563
+idx=9, median=1777285635891156, latency=34557
+> ssh host9
+> head log/client1.order.log
+idx=0, median=1777285632403845, latency=154430
+idx=1, median=1777285632804524, latency=154411
+idx=2, median=1777285633205343, latency=154409
+idx=3, median=1777285633606140, latency=154403
+idx=4, median=1777285634006930, latency=154404
+idx=5, median=1777285634407780, latency=154420
+idx=6, median=1777285634808583, latency=154412
+idx=7, median=1777285635209309, latency=154412
+idx=8, median=1777285635610199, latency=154404
+idx=9, median=1777285636011039, latency=154407
+```
+
+The two log files are `client0.order.log` on `host4` and `client1.order.log` on `host9`.
+Each `idx` means two clients invoking their command at the same time, and the `median` shows the median timestamp used to order their command in Pompe.
+For each `idx`, the `median` of client1 is higher than client0, meaning that the Munich client (client0) is ordered before the Tokyo client (client1) all the time,
+leading to the number `1` in Figure 8.
+Again, you can run the same experiment for other city pairs by updating the `client-hosts` in `pompe.toml`.
+
+### Run Experiment #3
 
 ### Run Experiment #8
 
