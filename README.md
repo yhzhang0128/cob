@@ -150,6 +150,70 @@ These log files contain more details of the experiment result.
 
 ### Run Experiment #1
 
+Experiment #1 measures bias in HotStuff.
+Read the following lines in `config/hotstuff.toml` first.
+The `client-hosts` below shows that we will measure bias between London and Washington.
+
+```toml
+# host3  London
+# host4  Munich
+# host9  Tokyo
+# host11 Washington
+
+client-hosts = ["host3", "host11"]
+```
+
+When measuring bias between other cities, update the two elements of `client-hosts` accordingly.
+You need to run two commands in parallel on the **control** machine for Experiment #1.
+
+#### Command #1
+
+```console
+> cd $WORKDIR/cob
+> python3 script/sync_send.py
+Server is listening on control:30000...
+```
+
+The `sync_send.py` script will ensure that commands from the two different cities are invoked at the same time.
+
+#### Command #2
+
+```console
+> cd $WORKDIR/cob
+> cargo run eval -t hotstuff -d 80000
+[1/7] Build target HotStuff with script/build_hotstuff_bias.sh.
+...
+[2/7] Start ssh connections to 12 remote hosts.
+[3/7] Setup directories for log, binary and config files on remote hosts.
+[4/7] Copy binary and config files to remote hosts.
+[5/7] Spawn 12 server processes on remote hosts.
+[6/7] Spawn 2 client processes on remote hosts.
+  Terminate experiment after 80000ms.
+[7/7] Kill 14 processes and collect output (may cause segfault during kill).
+...
+Server#8: client0=4, client1=0, skip=0
+Server#3: client0=8, client1=0, skip=0
+Server#9: client0=0, client1=3, skip=0
+Server#10: client0=0, client1=3, skip=0
+Server#11: client0=0, client1=11, skip=0
+Server#5: client0=12, client1=0, skip=0
+Server#4: client0=30, client1=0, skip=0
+Server#2: client0=0, client1=6, skip=0
+Server#1: client0=0, client1=22, skip=0
+Server#6: client0=12, client1=0, skip=0
+Server#0: client0=6, client1=0, skip=0
+Server#7: client0=0, client1=13, skip=0
+```
+
+The `-d 80000` means that the experiment will last for 80000ms (i.e., 80 seconds).
+According to the latency table, `Server#8` represents Singapore,
+and the `client0=4, client1=0` means that, during the experiment time period, there are 4 times when both clients invoke a command at the same time and the London client (i.e., `client-hosts[0]` in `hotstuff.toml`) is ordered earlier in the system output.
+The `Pr[L ≺ W]` is then calculated by the sum of the first column (i.e., client0) divided by the sum of both columns.
+Similarly, `Pr[W ≺ L]` is the sum of the second column divided by the sum of both.
+To get a more accurate result, you could run the experiment more than 80 seconds.
+
+### Run Experiment #2
+
 ### Run Experiment #8
 
 ## Use a non-CloudLab Server Cluster
