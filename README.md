@@ -152,4 +152,4 @@ These log files contain more details of the experiment result.
 
 ### Run Experiment #8
 
-### Use a non-CloudLab Cluster
+## Use a non-CloudLab Server Cluster
