@@ -272,7 +272,7 @@ You can see roughly 15 `consensus ? finalized` in the printing above.
 To get the result of Experiment #2, we need to inspect the log files from the two clients.
 This gives us a chance to touch log files.
 
-#### Get the result of Experiment #2
+#### Get the Result of Experiment #2
 
 ```console
 > ssh host4
@@ -310,7 +310,8 @@ The `latency` is just for debugging.
 
 ### Run Experiment #3
 
-You need to install `numpy`, `cycler`, and `networkx` in Python3.
+Experiment #2 measures bias in Themis.
+You need to install `numpy`, `cycler`, and `networkx` for Python3.
 They are required by the `themis_protocol()` function from [the simulation code of Themis](https://github.com/anonthemis/themis-src-anon/blob/main/Aequitas-hotstuff/simulations/adv_reorder.py).
 
 ```console
@@ -326,7 +327,91 @@ Note that `Location1` and `Location2` in [themis_sim.py](script/themis_sim.py) a
 so the result above means that Themis is biased towards the Washington client all the time.
 You can change the `Location1` and `Location2` variables, run the Python script again, and obtain the other results for Themis in Figure 8.
 
+The `num_txs=1000` in `themis_sim.py` means that we are simulating 1000 transactions (commands) in total.
+This is why each of the 2 clients invokes 500 commands in this experiment, and the number above is 500.
+
 ### Run Experiment #4
+
+Experiment #2 measures bias in Pompe-SRO.
+Make sure to do the following `build` in `config/pompe.toml`:
+
+```toml
+# host3  London
+# host4  Munich
+# host9  Tokyo
+# host11 Washington
+
+# Pompe-SRO: 2 clients, measuring bias
+client-hosts = ["host4", "host9"]
+build = ["script/build_pompe_sro_bias.sh"]
+```
+
+Again, we need to run two commands in parallel on the **control** machine.
+
+#### Experiment #2 Command #1
+
+```console
+> cd $WORKDIR/cob
+> python3 script/sync_send.py
+Server is listening on control:30000...
+```
+
+This is the same as Experiment #1 and #2.
+
+#### Experiment #2 Command #2
+
+```
+> cargo run eval -t pompe
+...
+[2/7] Start ssh connections to 12 remote hosts.
+[3/7] Setup directories for log, binary and config files on remote hosts.
+[4/7] Copy binary and config files to remote hosts.
+[5/7] Spawn 12 server processes on remote hosts.
+[6/7] Spawn 2 client processes on remote hosts.
+  Terminate experiment after 30000ms.
+[7/7] Kill 14 processes and collect output (may cause segfault during kill).
+...
+```
+
+Just like Experiment #2, we need to inspect the log files on `host4` and `host9` for the experiment result.
+
+#### Get the Result of Experiment #4
+
+```console
+> ssh host4
+> head log/client0.order.log
+idx=0, median=1777288690568095, noise=1383000, median-sent=34546
+idx=1, median=1777288690968846, noise=777000, median-sent=34481
+idx=2, median=1777288691369667, noise=1793000, median-sent=34446
+idx=3, median=1777288691770571, noise=1386000, median-sent=34483
+idx=4, median=1777288692171404, noise=719000, median-sent=34504
+idx=5, median=1777288692572256, noise=575000, median-sent=34524
+idx=6, median=1777288692973099, noise=498000, median-sent=34516
+idx=7, median=1777288693373924, noise=1277000, median-sent=34536
+idx=8, median=1777288693774744, noise=1627000, median-sent=34478
+idx=9, median=1777288694175636, noise=1985000, median-sent=34523
+> ssh host9
+> head log/client1.order.log
+idx=0, median=1777288690673146, noise=886000, median-sent=139500
+idx=1, median=1777288691074033, noise=915000, median-sent=139582
+idx=2, median=1777288691474857, noise=335000, median-sent=139550
+idx=3, median=1777288691875678, noise=1290000, median-sent=139548
+idx=4, median=1777288692276495, noise=788000, median-sent=139513
+idx=5, median=1777288692677366, noise=1061000, median-sent=139549
+idx=6, median=1777288693078220, noise=864000, median-sent=139547
+idx=7, median=1777288693479087, noise=745000, median-sent=139570
+idx=8, median=1777288693879896, noise=746000, median-sent=139545
+idx=9, median=1777288694280737, noise=168000, median-sent=139544
+```
+
+Recall that Pompe-SRO orders the commands by `median+noise`.
+For each `idx`, the `median` of client1 is roughly **105ms** higher than the `median` of `client0`,
+and each `noise` is randomly chosen from `[0ms..2000ms]`.
+The `Pr[M ≺ T]` in Figure 9 is thus the ratio of `idx` where client0 has a lower `median+noise`.
+After calculating both `Pr[M ≺ T]` and `Pr[T ≺ M]`, we get the number 0.45 in Figure 9.
+Run the same experiment for other city pairs by updating the `client-hosts` in `pompe.toml`.
+
+### Run Experiment #5
 
 ### Run Experiment #8
 
