@@ -69,11 +69,62 @@ You can then compile the binaries of HotStuff and Pompe:
 [ 95%] Built target hotstuff-app
 [100%] Built target pompe-app
 ```
+
 Make sure that you succeed in compiling HotStuff and Pompe before you proceed.
+If there's an error, you may need to search a bit and install some missing dependencies.
+Both Pompe and Pompe-SRO are in the `target_systems/pompe` submodule, and they are in different git branches.
 
 ### Test the Latency Emulation
 
+In `src/latency.rs`, you can find the following 12 lines of code:
+
+```rust
+static AMSTERDAM:    [u32; 12] = [0,   119, 281, 9,   15,  36,  10,  142, 172, 270, 91,  81 ];
+static AUSTIN:       [u32; 12] = [119, 0,   190, 111, 126, 150, 114, 43,  274, 138, 41,  54 ];
+static CANBERRA:     [u32; 12] = [281, 190, 0,   275, 276, 296, 278, 156, 99,  221, 235, 206];
+static LONDON:       [u32; 12] = [9,   115, 275, 0,   20,  40,  9,   137, 172, 243, 86,  76 ];
+static MUNICH:       [u32; 12] = [15,  126, 275, 34,  0,   41,  16,  158, 178, 220, 109, 92 ];
+static OULU:         [u32; 12] = [36,  153, 288, 40,  41,  0,   46,  170, 187, 274, 121, 112];
+static PARIS:        [u32; 12] = [11,  114, 269, 8,   16,  45,  0,   146, 152, 272, 91,  78 ];
+static SANFRANCISCO: [u32; 12] = [142, 42,  156, 137, 158, 170, 146, 0,   223, 107, 60,  71 ];
+static SINGAPORE:    [u32; 12] = [172, 274, 99,  172, 178, 187, 152, 223, 0,   83,  282, 270];
+static TOKYO:        [u32; 12] = [271, 139, 221, 243, 220, 274, 272, 107, 83,  0,   154, 163];
+static TORONTO:      [u32; 12] = [91,  41,  235, 87,  107, 121, 91,  62,  282, 154, 0,   71 ];
+static WASHINGTON:   [u32; 12] = [81,  54,  206, 76,  92,  111, 78,  71,  270, 163, 71,  0  ];
+```
+
+Each line contains an array of 12 integers.
+This is the latency table, e.g., the latency from Amsterdam to Austin is 119ms.
+We map the 12 lines to **host0**..**host11** (i.e., **host0** is for Amsterdam and **host1** is for Austin).
+You can setup the latency with cob:
+
+```console
+> cd $WORKDIR/cob
+> cargo run latency
+...
+Setting up latency on host5: Some([36, 153, 288, 40, 41, 0, 46, 170, 187, 274, 121, 112])
+...
+Setting up latency on host10: Some([91, 41, 235, 87, 107, 121, 91, 62, 282, 154, 0, 71])
+```
+
+After `cargo run latency`, you can test whether latency emulation has been setup properly:
+
+```console
+> ssh host0
+> ping host1
+PING host1-link-0 (10.10.1.2) 56(84) bytes of data.
+64 bytes from host1-link-0 (10.10.1.2): icmp_seq=1 ttl=64 time=238 ms
+64 bytes from host1-link-0 (10.10.1.2): icmp_seq=2 ttl=64 time=238 ms
+64 bytes from host1-link-0 (10.10.1.2): icmp_seq=3 ttl=64 time=238 ms
+...
+```
+
+The ping latency is 119*2=238ms because it is a round trip between **host0** and **host1**.
+Before running an experiment, make sure that latency emulation has been setup properly.
+
 ### Understand the TOML configuration
+
+
 
 ## Detailed Instructions
 
