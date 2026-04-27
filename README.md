@@ -272,7 +272,7 @@ You can see roughly 15 `consensus ? finalized` in the printing above.
 To get the result of Experiment #2, we need to inspect the log files from the two clients.
 This gives us a chance to touch log files.
 
-#### Inspect the result of Experiment #2
+#### Get the result of Experiment #2
 
 ```console
 > ssh host4
@@ -306,6 +306,7 @@ Each `idx` means two clients invoking their command at the same time, and the `m
 For each `idx`, the `median` of client1 is higher than client0, meaning that the Munich client (client0) is ordered before the Tokyo client (client1) all the time,
 leading to the number `1` in Figure 8.
 Again, you can run the same experiment for other city pairs by updating the `client-hosts` in `pompe.toml`.
+The `latency` is just for debugging.
 
 ### Run Experiment #3
 
