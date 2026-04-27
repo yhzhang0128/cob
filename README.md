@@ -310,6 +310,24 @@ The `latency` is just for debugging.
 
 ### Run Experiment #3
 
+You need to install `numpy`, `cycler`, and `networkx` in Python3.
+They are required by the `themis_protocol` function from [the simulation code of Themis](https://github.com/anonthemis/themis-src-anon/blob/main/Aequitas-hotstuff/simulations/adv_reorder.py).
+
+```console
+> sudo apt update && sudo apt install python3-numpy python3-cycler python3-networkx
+> cd $WORKDIR/cob
+> python3 script/themis_sim.py
+Themis
+Locatoin 1 < Location 2:  0
+Location 2 < Location 1:  500
+```
+
+Note that `Location1` and `Location2` in `themis_sim.py` are `LONDON` and `WASHINGTON` respectively,
+so the result above means that Themis is biased towards the Washington client all the time.
+You can change the `Location1` and `Location2` variables, run the Python script again, and obtain the other results for Themis in Figure 8.
+
+### Run Experiment #4
+
 ### Run Experiment #8
 
 ## Use a non-CloudLab Server Cluster
