@@ -126,8 +126,8 @@ Before running an experiment, make sure that latency emulation has been setup pr
 
 We now go through `config/pompe.toml` and help you understand the process of running an experiment.
 
-The `build = ["script/build_pompe_sro_bias.sh"]` in `pompe.toml` means that COB runs this script first to build the binary for Pompe.
-With the binaries ready, COB copies the config and binary files to all the machines in `hostnames` according to the following lines in `pompe.toml`.
+The `build = ["script/build_pompe_sro_bias.sh"]` in `pompe.toml` means that COB runs this script first to build the two binaries for Pompe.
+With the binaries ready, COB copies the config and binary files to all the 12 machines in `hostnames` according to the following lines in `pompe.toml`.
 
 ```console
 config-files = ["conf-pompe-12"]
