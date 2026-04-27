@@ -55,6 +55,11 @@ Location2 = WASHINGTON
 #Location1 = MUNICH
 #Location2 = TOKYO
 
+#ATTACKER = [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25 ]
+#VICTIM   = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30 ]
+#Location1 = ATTACKER
+#Location2 = VICTIM
+
 Latency_index = {"Amsterdam": 0, "Austin": 1, "Canberra": 2, "London": 3, "Munich": 4, "Oulu": 5, \
                  "Paris": 6, "SanFrancisco": 7, "Singapore": 8, "Tokyo": 9, "Toronto": 10, "Washington": 11}
 
