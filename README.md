@@ -71,7 +71,7 @@ You can then compile the binaries of HotStuff and Pompe:
 ```
 
 Make sure that you succeed in compiling HotStuff and Pompe before you proceed.
-If there's an error, you may need to search a bit and install some missing dependencies.
+If there's an error, you may need to search a bit and install missing dependencies.
 Both Pompe and Pompe-SRO are in the `target_systems/pompe` submodule, and they are in different git branches.
 
 ### Test the Latency Emulation
@@ -126,7 +126,7 @@ Before running an experiment, make sure that latency emulation has been setup pr
 
 We now go through `config/pompe.toml` and help you understand the process of running an experiment.
 
-The `build = ["script/build_pompe_sro_bias.sh"]` in `pompe.toml` means that COB runs this script first to build the two binaries for Pompe.
+The `build = ["script/build_pompe_bias.sh"]` in `pompe.toml` means that COB runs this script first to build the two binaries for Pompe.
 With the binaries ready, COB copies the config and binary files to all the 12 machines in `hostnames` according to the following lines in `pompe.toml`.
 
 ```console
