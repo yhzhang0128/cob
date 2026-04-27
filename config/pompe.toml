@@ -13,12 +13,16 @@ hostnames = ["host0", "host1", "host2", "host3",
 server-hosts = ["host0", "host1", "host2", "host3",
                 "host4", "host5", "host6", "host7",
                 "host8", "host9", "host10", "host11"]
+
 config-files = ["conf-pompe-12"]
+binary-files = ["pompe-client", "pompe-app"]
+local-dir = ["/opt/home/cob/target_systems/pompe/examples/", "/opt/home/cob/target_systems/pompe/examples/"]
+remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
+log-dir = ["/users/Yunhao/log/"]
+
 client-args = ["/opt/home/target_config/conf-pompe-12/hotstuff.gen.conf"]
 server-args = ["/opt/home/target_config/conf-pompe-12/hotstuff.gen.conf"]
 server-idx-arg = ["/opt/home/target_config/conf-pompe-12/hotstuff.gen-sec", ".conf"]
-
-binary-files = ["pompe-client", "pompe-app"]
 
 # host3  London
 # host4  Munich
@@ -42,7 +46,3 @@ build = ["script/build_pompe_sro_bias.sh"]
 #client-hosts = ["host0", "host1", "host2", "host3", "host4", "host5",
 #                "host6", "host7", "host8", "host9", "host10", "host11"]
 #build = ["script/build_pompe_sro_perf.sh"]
-
-local-dir = ["/opt/home/cob/target_systems/pompe/examples/", "/opt/home/cob/target_systems/pompe/examples/"]
-remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
-log-dir = ["/users/Yunhao/log/"]

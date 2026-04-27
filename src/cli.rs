@@ -53,7 +53,7 @@ pub enum Action {
         target_str: String,
         #[clap(
             short = 'd', long = "duration",
-            default_value = "15000",
+            default_value = "30000",
             help = "Specify the duration of experiment in ms."
         )]
         duration: u64,
