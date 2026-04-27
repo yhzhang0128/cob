@@ -5,7 +5,7 @@ This benchmark toolkit named Chance Oracle Benchmark (COB) is developed for pape
 ## Claims, Figures, and Experiments
 
 There are 8 experiments leading to the 5 figures in the evaluation section of this paper.
-The table below summarizes the claims supported by these figures and experiments.
+This table summarizes the claims supported by these figures and experiments.
 
 | Figures | Experiments  | Claims                                                                                                 |
 |---------|--------------|--------------------------------------------------------------------------------------------------------|
