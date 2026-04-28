@@ -32,7 +32,17 @@ If you have to use your own server machines, we provide some instructions for mo
 
 ### Clone and Build the Code
 
-In the **control** machine, clone the COB repo to your work directory `$WORKDIR`.
+In the CloudLab **control** machine, COB has been included in the disk image.
+
+```console
+> export WORKDIR=/opt/home
+> cd $WORKDIR
+> source env
+> source .zshrc
+> cd cob
+```
+
+If you use your own server cluster, clone the COB repo to your work directory.
 
 ```console
 > cd $WORKDIR
@@ -50,13 +60,14 @@ In the **control** machine, clone the COB repo to your work directory `$WORKDIR`
 Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.10s
 ```
 
-There are 2 submodules in COB: `target_systems/hotstuff` and `target_systems/pompe`.
-As mentioned in [this README](https://github.com/Pompe-org/libhotstuff/blob/master/README.rst), you can install the dependencies with `sudo apt-get install libssl-dev libuv1-dev cmake make`.
-Note that you need to install these dependencies on **all the 13 machines**.
-You can then compile the binaries of HotStuff and Pompe:
+There are 3 submodules in COB: `target_systems/hotstuff`, `target_systems/pompe`, and `target_systems/tvrf`.
+Dependencies have been installed for you in the CloudLab disk image, but if you are not using CloudLab,
+you need to install the dependencies on **all the machines** in your server cluster.
 
 ```console
+> sudo apt-get install libssl-dev libuv1-dev cmake make
 > cd $WORKDIR/cob/target_systems/hotstuff
+> git submodule update --init --recursive
 > ./build.sh
 ...
 [ 83%] Built target hotstuff-app
@@ -64,15 +75,26 @@ You can then compile the binaries of HotStuff and Pompe:
 [ 94%] Built target hotstuff-keygen
 [100%] Built target test_secp256k1
 > cd $WORKDIR/cob/target_systems/pompe
+> git submodule update --init
 > ./build.sh
+...
 [ 95%] Built target pompe-client
 [ 95%] Built target hotstuff-app
 [100%] Built target pompe-app
+> sudo apt-get install libprotobuf-dev protobuf-compiler pkg-config libsodium-dev libsodium23 libgmp-dev
+> cd $WORKDIR/cob/target_systems/tvrf
+> git submodule update --init --recursive
+> mkdir build
+> cd build
+> cmake ..
+> make -j
+...
+[100%] Built target generate_share
 ```
 
-Make sure that you succeed in compiling HotStuff and Pompe before you proceed.
-If there's an error, you may need to search a bit and install missing dependencies.
-Both Pompe and Pompe-SRO are in the `target_systems/pompe` submodule, and they are in different git branches.
+Make sure that you succeed in compiling HotStuff, Pompe, and TVRF before you proceed.
+Both Pompe and Pompe-SRO are in the `target_systems/pompe` submodule.
+They are just in different git branches.
 
 ### Test the Latency Emulation
 
@@ -311,8 +333,9 @@ The `latency` is just for debugging.
 ### Run Experiment #3
 
 Experiment #2 measures bias in Themis.
-You need to install `numpy`, `cycler`, and `networkx` for Python3.
-They are required by the `themis_protocol()` function from [the simulation code of Themis](https://github.com/anonthemis/themis-src-anon/blob/main/Aequitas-hotstuff/simulations/adv_reorder.py).
+You need to install `numpy`, `cycler`, and `networkx` for Python3,
+which are required by the `themis_protocol()` function from [the simulation code of Themis](https://github.com/anonthemis/themis-src-anon/blob/main/Aequitas-hotstuff/simulations/adv_reorder.py).
+They have been installed for you in the CloudLab profiles though.
 
 ```console
 > sudo apt update && sudo apt install python3-numpy python3-cycler python3-networkx
