@@ -12,7 +12,7 @@ remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
 log-dir = ["/users/Yunhao/log/"]
 
 client-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
-               "--iter", "-1", "--max-async", "50"]
+               "--iter", "-1", "--max-async", "5"]
 server-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
                "--conf"]
 server-idx-arg = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen-sec", ".conf"]
