@@ -463,7 +463,29 @@ This allows the attacker to be 5ms faster than the victim to all the 12 cities, 
 ### Run Experiment #6
 
 Experiment #6 measures the performance of the two SRO implementations in Figure 11.
-The SGX implementation of SRO is in [this repo](https://github.com/MaggieQi/ThemisTest/tree/main/sgx_sro), and refer to its README about its usage.
+The SGX implementation of SRO is in [this repo](https://github.com/MaggieQi/ThemisTest/tree/main/sgx_sro), and please refer to its README about its usage.
+
+The TVRF implementation of SRO is in `cob/target_systems/tvrf`.
+
+```console
+> cd $WORKDIR/cob/target_systems/tvrf
+> mkdir build
+> cd build
+> cmake ..
+> make -j
+...
+[100%] Built target generate_share
+> ./apps/random_beacon/generate_share
+...
+==========================
+share generate latency (avg) = 316us
+share combine latency        = 4913us
+```
+
+By default, the `generate_share` binary generates 100 shares, and combines a random set of 68 shares.
+The printing above shows the average latency of generating a share, and the latency of combining 68 shares.
+You can change the values of `nbNodes` and `threshold` in `apps/random_beacon/src/gen.cpp`.
+Note that the algorithm combines `threshold+1` shares, so the current `threshold` is 67 not 68.
 
 ### Run Experiment #7
 
@@ -532,6 +554,7 @@ build = ["script/build_pompe_sro_perf.sh"]
 > cargo run eval -t pompe
 ...
 ```
+The way of obtaining the experiment result for Pompe-SRO is the same as Pompe.
 
 ### Run Experiment #8
 
