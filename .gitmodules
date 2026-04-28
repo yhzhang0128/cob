@@ -2,8 +2,13 @@
 	path = target_systems/hotstuff
 	url = git@github.com:Pompe-org/libhotstuff.git
 	branch = cob-hotstuff-pos-lockstep
+
 [submodule "target_systems/pompe"]
 	path = target_systems/pompe
 	url = git@github.com:Pompe-org/libhotstuff.git
 	branch = cob-pompe-sro-lockstep
 
+[submodule "target_systems/tvrf"]
+	path = target_systems/tvrf
+	url = git@github.com:yhzhang0128/research-dvrf.git
+	branch = sro
