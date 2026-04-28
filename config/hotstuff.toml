@@ -1,30 +1,33 @@
 hostnames = ["host0", "host1", "host2", "host3",
              "host4", "host5", "host6", "host7",
              "host8", "host9", "host10", "host11"]
+server-hosts = ["host0", "host1", "host2", "host3",
+                "host4", "host5", "host6", "host7",
+                "host8", "host9", "host10", "host11"]
+
+config-files = ["conf-hotstuff-12"]
+binary-files = ["hotstuff-client", "hotstuff-app"]
+local-dir = ["/opt/home/cob/target_systems/hotstuff/examples/", "/opt/home/cob/target_systems/hotstuff/examples/"]
+remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
+log-dir = ["/users/Yunhao/log/"]
+
+client-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
+               "--iter", "-1", "--max-async", "50"]
+server-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
+               "--conf"]
+server-idx-arg = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen-sec", ".conf"]
 
 # host3  London
 # host4  Munich
 # host9  Tokyo
 # host11 Washington
 
+# HotStuff: 2 clients, measuring bias
 client-hosts = ["host3", "host11"]
-server-hosts = ["host0", "host1", "host2", "host3",
-                "host4", "host5", "host6", "host7",
-                "host8", "host9", "host10", "host11"]
-
 build = ["script/build_hotstuff_bias.sh"]
+
+# HotStuff: 12 clients, measuring performance
 #build = ["script/build_hotstuff_perf.sh"]
-
-local-dir = ["/opt/home/cob/target_systems/hotstuff/examples/", "/opt/home/cob/target_systems/hotstuff/examples/"]
-remote-dir = ["/opt/home/target_binary/", "/opt/home/target_config/"]
-log-dir = ["/users/Yunhao/log/"]
-
-config-files = ["conf-hotstuff-12"]
-binary-files = ["hotstuff-client", "hotstuff-app"]
-
-client-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
-               "--iter", "-1", "--max-async", "5"]
-# Note that the last parameter needs an index to fill up the {}
-server-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
-               "--conf"]
-server-idx-arg = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen-sec", ".conf"]
+#client-hosts = ["host0", "host1", "host2", "host3",
+#                "host4", "host5", "host6", "host7",
+#                "host8", "host9", "host10", "host11"]
