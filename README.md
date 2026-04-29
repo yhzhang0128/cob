@@ -595,6 +595,12 @@ If the hostnames in your cluster are not **host0**..**host11**, you need to gene
 1. In `target_systems/hotstuff` or `target_systems/pompe`, do `python3 scripts/gen_conf.py`. You need to modify the `ips` variable in `gen_conf.py` with the hostnames of your own servers.
 2. Replace the crypto key files in `target_systems/hotstuff/examples/conf-pompe-12` and `target_systems/pompe/examples/conf-pompe-12`.
 
+Again, remember to install the dependencies on all the machines.
+
+```console
+> sudo apt-get install libssl-dev libuv1-dev cmake make
+```
+
 ### Themis
 
 You need to install `numpy`, `cycler`, and `networkx` for Python3,
