@@ -601,6 +601,8 @@ Again, remember to install the dependencies on all the machines.
 > sudo apt-get install libssl-dev libuv1-dev cmake make
 ```
 
+Lastly, if you meet any problems, you could read and modify the Rust files under `src` of COB. There's not a lot of code.
+
 ### Themis
 
 You need to install `numpy`, `cycler`, and `networkx` for Python3,
@@ -609,7 +611,5 @@ which are required by the `themis_protocol()` function from [the simulation code
 ```console
 > sudo apt update && sudo apt install python3-numpy python3-cycler python3-networkx
 ```
-
-Lastly, if you meet any problems, you could read and modify the Rust files under `src` of COB. There's not a lot of code.
 
 For any further questions, please contact Yunhao Zhang (yz2327@cornell.edu).
