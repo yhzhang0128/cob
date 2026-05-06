@@ -578,17 +578,17 @@ The way of obtaining the experiment result for Pompe-SRO is the same as Pompe.
 
 ### Run Experiment 8️⃣
 
-Experiment #7 measures the end-to-end performance of HotStuff.
+Experiment #8 measures the performance of HotStuff.
 Use the following lines of `config/hotstuff.toml`:
 
 ```toml
-# Pompe: 12 clients, measuring performance
+# Pompe: 2 clients, measuring performance
 build = ["script/build_hotstuff_perf.sh"]
 client-hosts = ["host3", "host2"]
 ```
 
 Then run `cargo run eval -t hotstuff -d 60000`.
-Again, the `-d` argument specifies the duration of the experiment.
+Again, `-d 60000` specifies the duration of the experiment.
 
 ```console
 > cargo run eval -t hotstuff -d 60000
