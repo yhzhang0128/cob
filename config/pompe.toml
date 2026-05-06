@@ -30,8 +30,8 @@ server-idx-arg = ["/opt/home/target_config/conf-pompe-12/hotstuff.gen-sec", ".co
 # host11 Washington
 
 # Pompe: 2 clients, measuring bias
-#client-hosts = ["host4", "host9"]
-#build = ["script/build_pompe_bias.sh"]
+client-hosts = ["host4", "host9"]
+build = ["script/build_pompe_bias.sh"]
 
 # Pompe: 12 clients, measuring performance
 #client-hosts = ["host0", "host1", "host2", "host3", "host4", "host5",
@@ -39,8 +39,8 @@ server-idx-arg = ["/opt/home/target_config/conf-pompe-12/hotstuff.gen-sec", ".co
 #build = ["script/build_pompe_perf.sh"]
 
 # Pompe-SRO: 2 clients, measuring bias
-client-hosts = ["host4", "host9"]
-build = ["script/build_pompe_sro_bias.sh"]
+#client-hosts = ["host4", "host9"]
+#build = ["script/build_pompe_sro_bias.sh"]
 
 # Pompe-SRO: 12 clients, measuring performance
 #client-hosts = ["host0", "host1", "host2", "host3", "host4", "host5",

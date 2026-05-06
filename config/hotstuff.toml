@@ -17,6 +17,7 @@ server-args = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen.conf",
                "--conf"]
 server-idx-arg = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen-sec", ".conf"]
 
+# host2  Canberra
 # host3  London
 # host4  Munich
 # host9  Tokyo
@@ -28,6 +29,4 @@ build = ["script/build_hotstuff_bias.sh"]
 
 # HotStuff: 12 clients, measuring performance
 #build = ["script/build_hotstuff_perf.sh"]
-#client-hosts = ["host0", "host1", "host2", "host3",
-#                "host4", "host5", "host6", "host7",
-#                "host8", "host9", "host10", "host11"]
+#client-hosts = ["host3", "host2"]

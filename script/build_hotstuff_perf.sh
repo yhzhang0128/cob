@@ -1,1 +1,1 @@
-cd target_systems/hotstuff; git checkout cob-hotstuff-pos; ./build.sh
+cd target_systems/hotstuff; git checkout cob-hotstuff; ./build.sh
