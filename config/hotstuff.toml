@@ -27,6 +27,6 @@ server-idx-arg = ["/opt/home/target_config/conf-hotstuff-12/hotstuff.gen-sec", "
 client-hosts = ["host3", "host11"]
 build = ["script/build_hotstuff_bias.sh"]
 
-# HotStuff: 12 clients, measuring performance
-#build = ["script/build_hotstuff_perf.sh"]
+# HotStuff: 2 clients, measuring performance
 #client-hosts = ["host3", "host2"]
+#build = ["script/build_hotstuff_perf.sh"]

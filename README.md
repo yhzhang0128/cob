@@ -583,8 +583,8 @@ Use the following lines of `config/hotstuff.toml`:
 
 ```toml
 # Pompe: 2 clients, measuring performance
-build = ["script/build_hotstuff_perf.sh"]
 client-hosts = ["host3", "host2"]
+build = ["script/build_hotstuff_perf.sh"]
 ```
 
 Then run `cargo run eval -t hotstuff -d 60000`.
