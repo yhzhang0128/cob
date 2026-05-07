@@ -7,13 +7,13 @@ This benchmark toolkit named Chance Oracle Benchmark (COB) is developed for pape
 There are 8 experiments in total leading to the 5 figures in the evaluation section of the paper.
 This table summarizes the claims supported by these figures and experiments.
 
-| Figures    | Experiments  | Claims                                                                                                 |
-|------------|--------------|--------------------------------------------------------------------------------------------------------|
-| Fig. 8     | Exp. 1, 2, 3 | The 3 baseline systems are all vulnerable to bias.                                                     |
-| Fig. 9     | Exp. 4       | Pompe-SRO can control the degree of bias under a target Ɛ.                                             |
-| Fig. 10    | Exp. 5       | An attacker gets the mean reward in Pompe-SRO and the max in baselines.                                |
-| Fig. 11    | Exp. 6       | SRO latency is low and SRO is not the performance bottleneck in Pompe-SRO.                             |
-| Fig. 12,13 | Exp. 7, 8    | Pompe-SRO maintains the same end-to-end throughput as Pompe and incurs a latency overhead of 47%-67%.  |
+| Figures | Experiments  | Claims                                                                                                 |
+|---------|--------------|--------------------------------------------------------------------------------------------------------|
+| Fig. 8  | Exp. 1, 2, 3 | The 3 baseline systems are all vulnerable to bias.                                                     |
+| Fig. 9  | Exp. 4       | Pompe-SRO can control the degree of bias under a target Ɛ.                                             |
+| Fig. 10 | Exp. 5       | An attacker gets the mean reward in Pompe-SRO and the max in baselines.                                |
+| Fig. 11 | Exp. 6       | SRO latency is low and SRO is not the performance bottleneck in Pompe-SRO.                             |
+| Fig. 12 | Exp. 7, 8    | Pompe-SRO maintains the same end-to-end throughput as Pompe, and the latency increases by 1.12x-1.42x. |
 
 ## Getting Started Instructions
 
@@ -607,7 +607,7 @@ client0 sent 124, executed 119 commands, max_async=5
 ```
 
 In this experiment, `98+119=217` is the number of commands executed by HotStuff within 60 seconds,
-so the throughput is `217/60=3.6` as shown in Figure 12 and 13.
+so the throughput is `217/60=3.6` as shown in Figure 12.
 The median and 99% percentile latencies are also shown in the printing above.
 To obtain results with a higher load,
 update `config/hotstuff.toml` and change the `"--max-async", "5"` to `"--max-async", "7"`.
